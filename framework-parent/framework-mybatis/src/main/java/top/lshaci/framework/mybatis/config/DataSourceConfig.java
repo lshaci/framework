@@ -8,9 +8,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -42,11 +38,7 @@ import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
 @Slf4j
 public class DataSourceConfig {
 	
-	@Value("${mybatis.type-aliases-package}")
-	private String mybatisTypeAliasesPackage;
-	
-	@Value("${mybatis.mapper-locations}")
-	private String mybatisMapperLocations;
+
 
 	/**
 	 * 声明单数据库连接池
@@ -64,7 +56,6 @@ public class DataSourceConfig {
 	 * 声明动态数据库连接池(first)
 	 */
 	@ConditionalOnProperty(value = {"datasource.dynamic", "datasource.first.url"}, matchIfMissing = false)
-	@Primary
 	@Bean(name = "firstDataSource")
 	@ConfigurationProperties("datasource.first")
 	public DataSource firstDataSource() {
@@ -85,12 +76,12 @@ public class DataSourceConfig {
 		return new DruidDataSource();
 	}
 	
-	
 	/**
 	 * 声明动态数据库连接池
 	 */
 	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
 	@Bean(name = "dataSource")
+	@Primary
     public DynamicDataSource dynamicDataSource() {
 		log.info("Init Dynamic Druid DataSource...");
 		
@@ -104,23 +95,6 @@ public class DataSourceConfig {
         dataSource.setDefaultTargetDataSource(firstDataSource());
         
         return dataSource;
-    }
-	
-	/**
-	 * 配置mybatis SqlSessionFactory
-	 */
-	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
-    @Bean
-    public SqlSessionFactory sqlSessionFactory() throws Exception {
-		log.info("Init Mybatis Sql Session Factory...");
-		
-        SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
-        
-        sqlSessionFactory.setDataSource(dynamicDataSource());
-        sqlSessionFactory.setTypeAliasesPackage(mybatisTypeAliasesPackage);
-        sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(mybatisMapperLocations));
-
-        return sqlSessionFactory.getObject();
     }
 	
     /**
