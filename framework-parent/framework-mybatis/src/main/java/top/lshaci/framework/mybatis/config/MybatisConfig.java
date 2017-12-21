@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
 
 @Configuration
-@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
 @Slf4j
 public class MybatisConfig {
 	
@@ -26,10 +25,11 @@ public class MybatisConfig {
 	/**
 	 * 配置mybatis SqlSessionFactory
 	 */
+	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
     @Bean
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DynamicDataSource dataSource) throws Exception {
 		log.info("Init Mybatis Sql Session Factory...");
-		System.out.println(dataSource.getClass());
+		
         SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
         
         sqlSessionFactory.setDataSource(dataSource);
