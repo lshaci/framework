@@ -7,6 +7,9 @@
     <groupId>top.lshaci.framework</groupId>
     <artifactId>framework-parent</artifactId>
     <version>0.0.1</version>
+    
+    <packaging>pom</packaging>
+    
     <modules>
         <module>framework-core</module>
         <module>framework-mybatis</module>
@@ -16,7 +19,6 @@
         <module>framework-test</module>
     </modules>
 
-    <packaging>pom</packaging>
     <name>framework-parent</name>
     <description>framework parent</description>
 
