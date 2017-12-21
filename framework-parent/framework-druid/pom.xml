@@ -10,8 +10,8 @@
     <description>framework druid monitor</description>
 
     <parent>
+        <groupId>top.lshaci</groupId>
         <artifactId>framework-parent</artifactId>
-        <groupId>top.lshaci.framework</groupId>
         <version>0.0.1</version>
     </parent>
 

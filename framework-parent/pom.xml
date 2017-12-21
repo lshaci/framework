@@ -1,244 +1,245 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>top.lshaci.framework</groupId>
-    <artifactId>framework-parent</artifactId>
-    <version>0.0.1</version>
-    
-    <packaging>pom</packaging>
-    
-    <modules>
-        <module>framework-core</module>
-        <module>framework-mybatis</module>
-        <module>framework-druid</module>
-        <module>framework-service</module>
-        <module>framework-swagger</module>
-        <module>framework-test</module>
-    </modules>
+	<groupId>top.lshaci</groupId>
+	<artifactId>framework-parent</artifactId>
+	<version>0.0.1</version>
 
-    <name>framework-parent</name>
-    <description>framework parent</description>
+	<packaging>pom</packaging>
 
-    <developers>
-        <developer>
-            <id>lshaci</id>
-            <name>liangxu</name>
-            <email>lshaci@qq.com</email>
-        </developer>
-    </developers>
+	<modules>
+		<module>framework-core</module>
+		<module>framework-mybatis</module>
+		<module>framework-druid</module>
+		<module>framework-service</module>
+		<module>framework-swagger</module>
+		<module>framework-test</module>
+	</modules>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+	<name>framework-parent</name>
+	<description>framework parent</description>
 
-        <druid.version>1.0.25</druid.version>
-        <swagger.version>2.7.0</swagger.version>
-        <fastjson.version>1.2.42</fastjson.version>
-        <spring.boot.version>1.5.9.RELEASE</spring.boot.version>
-        <spring.cloud.version>Edgware.RELEASE</spring.cloud.version>
-        <tkmybatis.spring.boot.version>1.1.5</tkmybatis.spring.boot.version>
-        <pagehelper.spring.boot.version>1.2.3</pagehelper.spring.boot.version>
-    </properties>
+	<developers>
+		<developer>
+			<id>lshaci</id>
+			<name>liangxu</name>
+			<email>lshaci@qq.com</email>
+		</developer>
+	</developers>
 
-    <dependencies>
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- framework core module -->
-            <dependency>
-                <groupId>top.lshaci.framework</groupId>
-                <artifactId>framework-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!-- framework mybatis module -->
-            <dependency>
-                <groupId>top.lshaci.framework</groupId>
-                <artifactId>framework-mybatis</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!-- framework swagger module -->
-            <dependency>
-                <groupId>top.lshaci.framework</groupId>
-                <artifactId>framework-swagger</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!-- framework druid module -->
-            <dependency>
-                <groupId>top.lshaci.framework</groupId>
-                <artifactId>framework-druid</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!-- framework service module -->
-            <dependency>
-                <groupId>top.lshaci.framework</groupId>
-                <artifactId>framework-service</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!-- framework test module -->
-            <dependency>
-                <groupId>top.lshaci.framework</groupId>
-                <artifactId>framework-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!-- druid -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid</artifactId>
-                <version>${druid.version}</version>
-            </dependency>
-            <!-- fastjson -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
-            <!-- tk mybatis spring boot -->
-            <dependency>
-                <groupId>tk.mybatis</groupId>
-                <artifactId>mapper-spring-boot-starter</artifactId>
-                <version>${tkmybatis.spring.boot.version}</version>
-            </dependency>
-            <!-- pagehelper spring boot -->
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${pagehelper.spring.boot.version}</version>
-            </dependency>
-            <!-- springfox swagger2 -->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <!-- springfox swagger ui -->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <!-- spring boot dependencies -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!-- spring cloud dependencies -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring.cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+		<druid.version>1.0.25</druid.version>
+		<swagger.version>2.7.0</swagger.version>
+		<fastjson.version>1.2.42</fastjson.version>
+		<spring.boot.version>1.5.9.RELEASE</spring.boot.version>
+		<spring.cloud.version>Edgware.RELEASE</spring.cloud.version>
+		<tkmybatis.spring.boot.version>1.1.5</tkmybatis.spring.boot.version>
+		<pagehelper.spring.boot.version>1.2.3</pagehelper.spring.boot.version>
+	</properties>
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
+	<dependencies>
+		<!-- lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
-    <scm>
-        <connection>scm:git:git@github.com:lshaci/framework.git</connection>
-        <developerConnection>scm:git:git@github.com:lshaci/framework.git</developerConnection>
-        <url>git@github.com:lshaci/framework.git</url>
-    </scm>
+	<dependencyManagement>
+		<dependencies>
+			<!-- framework core module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework mybatis module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-mybatis</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework swagger module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-swagger</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework druid module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-druid</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework service module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework test module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-test</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- druid -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>${druid.version}</version>
+			</dependency>
+			<!-- fastjson -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson.version}</version>
+			</dependency>
+			<!-- tk mybatis spring boot -->
+			<dependency>
+				<groupId>tk.mybatis</groupId>
+				<artifactId>mapper-spring-boot-starter</artifactId>
+				<version>${tkmybatis.spring.boot.version}</version>
+			</dependency>
+			<!-- pagehelper spring boot -->
+			<dependency>
+				<groupId>com.github.pagehelper</groupId>
+				<artifactId>pagehelper-spring-boot-starter</artifactId>
+				<version>${pagehelper.spring.boot.version}</version>
+			</dependency>
+			<!-- springfox swagger2 -->
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<!-- springfox swagger ui -->
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<!-- spring boot dependencies -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring.boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- spring cloud dependencies -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring.cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.3</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>oss</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                    <!-- Source -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Javadoc -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- GPG -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- compiler -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <configuration>
-                            <source>${java.version}</source>
-                            <target>${java.version}</target>
-                            <encoding>${project.build.sourceEncoding}</encoding>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
-        </profile>
-    </profiles>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git@github.com:lshaci/framework.git</connection>
+		<developerConnection>scm:git:git@github.com:lshaci/framework.git</developerConnection>
+		<url>git@github.com:lshaci/framework.git</url>
+	</scm>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.sonatype.plugins</groupId>
+							<artifactId>nexus-staging-maven-plugin</artifactId>
+							<version>1.6.3</version>
+							<extensions>true</extensions>
+							<configuration>
+								<serverId>oss</serverId>
+								<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+								<autoReleaseAfterClose>true</autoReleaseAfterClose>
+							</configuration>
+						</plugin>
+						<!-- Source -->
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-source-plugin</artifactId>
+							<version>2.2.1</version>
+							<executions>
+								<execution>
+									<phase>package</phase>
+									<goals>
+										<goal>jar-no-fork</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+						<!-- Javadoc -->
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>2.9.1</version>
+							<executions>
+								<execution>
+									<phase>package</phase>
+									<goals>
+										<goal>jar</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+						<!-- GPG -->
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-gpg-plugin</artifactId>
+							<version>1.5</version>
+							<executions>
+								<execution>
+									<phase>verify</phase>
+									<goals>
+										<goal>sign</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+						<!-- compiler -->
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<configuration>
+								<source>${java.version}</source>
+								<target>${java.version}</target>
+								<encoding>${project.build.sourceEncoding}</encoding>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+				</snapshotRepository>
+				<repository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+	</profiles>
 </project>

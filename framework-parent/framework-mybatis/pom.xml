@@ -10,15 +10,15 @@
     <description>framework mybatis</description>
 
     <parent>
+        <groupId>top.lshaci</groupId>
         <artifactId>framework-parent</artifactId>
-        <groupId>top.lshaci.framework</groupId>
         <version>0.0.1</version>
     </parent>
 
     <dependencies>
         <!-- framework core -->
         <dependency>
-            <groupId>top.lshaci.framework</groupId>
+            <groupId>top.lshaci</groupId>
             <artifactId>framework-core</artifactId>
         </dependency>
         <!-- druid -->
