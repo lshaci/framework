@@ -41,7 +41,9 @@ public class DataSourceConfig {
 
 
 	/**
-	 * 声明单数据库连接池
+	 * Define single data source
+	 * 
+	 * @return single data source
 	 */
 	@ConditionalOnProperty(value = "datasource.single", matchIfMissing = false)
 	@Bean(name = "dataSource")
@@ -53,7 +55,9 @@ public class DataSourceConfig {
 	}
 	
 	/**
-	 * 声明动态数据库连接池(first)
+	 * Define dynamic data source(first)
+	 * 
+	 * @return dynamic data source first
 	 */
 	@ConditionalOnProperty(value = {"datasource.dynamic", "datasource.first.url"}, matchIfMissing = false)
 	@Bean(name = "firstDataSource")
@@ -65,7 +69,9 @@ public class DataSourceConfig {
 	}
 	
 	/**
-	 * 声明动态数据库连接池(second)
+	 * Define dynamic data source(second)
+	 * 
+	 * @return dynamic data source second
 	 */
 	@ConditionalOnProperty(value = {"datasource.dynamic", "datasource.second.url"}, matchIfMissing = false)
 	@Bean(name = "secondDataSource")
@@ -77,7 +83,9 @@ public class DataSourceConfig {
 	}
 	
 	/**
-	 * 声明动态数据库连接池
+	 * Define dynamic primary data source
+	 * 
+	 * @return dynamic primary data source
 	 */
 	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
 	@Bean(name = "dataSource")
@@ -97,12 +105,14 @@ public class DataSourceConfig {
         return dataSource;
     }
 	
-    /**
-     * 配置事务管理器
-     */
+	/**
+	 * Define transaction manager
+	 * 
+	 * @return transaction manager
+	 */
 	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
     @Bean
-    public DataSourceTransactionManager transactionManager() throws Exception {
+    public DataSourceTransactionManager transactionManager() {
 		log.info("Init Data Source Transaction Manager...");
 		
         return new DataSourceTransactionManager(dynamicDataSource());

@@ -19,7 +19,10 @@ import org.springframework.stereotype.Component;
 public class DynamicDataSourceAspect {
 
 	/**
-	 * 在方法开始前根据{@TargetDataSource}切换数据源
+	 * Before the method invoke change data source
+	 * 
+	 * @param point the point
+	 * @param targetDataSource the target data source annotation
 	 */
 	@Before("@annotation(targetDataSource)")
 	public void changeDataSource(JoinPoint point, TargetDataSource targetDataSource) {
@@ -28,7 +31,10 @@ public class DynamicDataSourceAspect {
 	}
 
 	/**
-	 * 方法执行完成后清除数据源类型
+	 * After method invoke clear data source type
+	 * 
+	 * @param point the point
+	 * @param targetDataSource the target data source annotation
 	 */
 	@After("@annotation(targetDataSource)")
     public void restoreDataSource(JoinPoint point, TargetDataSource targetDataSource) {

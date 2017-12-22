@@ -109,7 +109,7 @@ public class PageResult<T> implements Serializable {
 	/**
 	 * Get the data total
 	 *
-	 * @return
+	 * @return the data total
 	 */
 	public long getTotal() {
 		return total;

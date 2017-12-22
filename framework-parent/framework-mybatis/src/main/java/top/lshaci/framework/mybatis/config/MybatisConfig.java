@@ -23,7 +23,11 @@ public class MybatisConfig {
 	private String mybatisMapperLocations;
 	
 	/**
-	 * 配置mybatis SqlSessionFactory
+	 * Define mybatis sql session factory
+	 * 
+	 * @param dataSource the primary data source
+	 * @return mybatis sql session factory
+	 * @throws Exception if resolver mapper locations or get object has error
 	 */
 	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
     @Bean
