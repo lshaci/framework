@@ -40,7 +40,9 @@ public class DruidWebConfig {
 	private String resetEnable;	// 是否重置数据
 	
 	/**
-	 * 注册StatViewServlet
+	 * Register stat view servlet
+	 * 
+	 * @return the stat view servlet
 	 */
 	@Bean
 	public ServletRegistrationBean druidStatViewServlet() {
@@ -73,7 +75,9 @@ public class DruidWebConfig {
 	private String profileEnable;	// 监控单个url地址调用的sql列表信息
 	
 	/**
-	 * 注册filterRegistrationBean
+	 * Register web stat view filter
+	 * 
+	 * @return the web stat view filter
 	 */
 	@Bean
 	public FilterRegistrationBean druidWebStatFilter() {

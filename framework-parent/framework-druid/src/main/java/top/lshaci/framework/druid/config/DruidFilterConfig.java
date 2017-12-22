@@ -38,7 +38,9 @@ public class DruidFilterConfig {
 	private boolean logViolation;	// 对被认为是攻击的SQL进行LOG.error输出
 	
 	/**
-	 * wall filter的配置
+	 * Define wall filter config
+	 * 
+	 * @return the wall filter config
 	 */
 	@Bean(name = "wallConfig")
 	@ConfigurationProperties("druid.wallFilter.config")
@@ -49,7 +51,9 @@ public class DruidFilterConfig {
 	}
 	
 	/**
-	 * 定义wall filter
+	 * Define wall filter
+	 * 
+	 * @return the wall filter
 	 */
 	@Bean
 	public WallFilter wallFilter(WallConfig wallConfig) {
@@ -63,7 +67,9 @@ public class DruidFilterConfig {
 	}
 	
 	/**
-	 * 定义stat filter
+	 * Define stat filter
+	 * 
+	 * @return the stat filter
 	 */
 	@Bean
 	@ConfigurationProperties("druid.statFilter")
@@ -74,7 +80,9 @@ public class DruidFilterConfig {
 	}
 	
 	/**
-	 * 定义log filter
+	 * Define log filter
+	 * 
+	 * @return the log filter
 	 */
 	@Bean
 	@ConfigurationProperties("druid.logFilter")
@@ -97,7 +105,7 @@ public class DruidFilterConfig {
 	private DruidDataSource secondDataSource;
 	
 	/**
-	 * 设置DruidDataSource的filters
+	 * Init druid data source filter
 	 */
 	@PostConstruct
 	private void initDataSourceFilter() {
