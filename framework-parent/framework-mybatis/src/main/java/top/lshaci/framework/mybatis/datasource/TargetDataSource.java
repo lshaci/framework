@@ -7,7 +7,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 在方法上使用，用于指定使用哪个数据源
+ * The target data source annotation
+ * <br>
+ * Use in method to change data source with DynamicDataSourceType(FIRST, SECOND)
  * 
  * @author lshaci
  * @version 0.0.1
@@ -17,5 +19,10 @@ import java.lang.annotation.Target;
 @Documented
 public @interface TargetDataSource {
 
+	/**
+	 * Get the dynamic data source type
+	 * 
+	 * @return the dynamic data source type
+	 */
 	DynamicDataSourceType value();
 }

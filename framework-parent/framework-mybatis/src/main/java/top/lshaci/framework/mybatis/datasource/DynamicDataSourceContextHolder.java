@@ -13,7 +13,7 @@ public class DynamicDataSourceContextHolder {
 	/**
 	 * Set data source type
 	 * 
-	 * @param dataSourceType	the data source type {@DynamicDataSourceType}
+	 * @param dataSourceType	the data source type
 	 */
 	public static void setDataSourceType(DynamicDataSourceType dataSourceType) {
 		contextHolder.set(dataSourceType);
@@ -22,7 +22,7 @@ public class DynamicDataSourceContextHolder {
 	/**
 	 * Get data source type
 	 * 
-	 * @return the data source type {@DynamicDataSourceType}
+	 * @return the data source type
 	 */
 	public static DynamicDataSourceType getDataSourceType() {
 		return contextHolder.get();

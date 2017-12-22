@@ -23,7 +23,7 @@ public class FastJsonConverter {
     /**
      * Create fast json http message converter(date format is: <b>yyyy-MM-dd HH:mm:ss</b>)
      *
-     * @return
+     * @return the fast json http message converter
      */
     public static FastJsonHttpMessageConverter create() {
         return fastJsonHttpMessageConverter(Constants.LONG_DATE_FORMAT_STR);
@@ -33,7 +33,7 @@ public class FastJsonConverter {
      * Create fast json http message converter with date format
      *
      * @param dateFormat The date format string
-     * @return
+     * @return the fast json http message converter
      */
     public static FastJsonHttpMessageConverter create(String dateFormat) {
         if (StringUtils.isEmpty(dateFormat)) {
@@ -43,7 +43,10 @@ public class FastJsonConverter {
     }
 
     /**
-     * fastJson相关设置
+     * Create fast json http message converter with date format string
+     * 
+     * @param dateFormat the date format string
+     * @return the fast json http message converte
      */
     private static FastJsonHttpMessageConverter fastJsonHttpMessageConverter(String dateFormat) {
         log.info("Init fastJson HttpMessageConverter...");
@@ -61,7 +64,10 @@ public class FastJsonConverter {
     }
 
     /**
-     * fastJsonConfig相关配置
+     * Get fast json config with date format string 
+     * 
+     * @param dateFormat date format string 
+     * @return the fast json config
      */
     private static FastJsonConfig getFastJsonConfig(String dateFormat) {
         log.debug("Init fastJson config...");

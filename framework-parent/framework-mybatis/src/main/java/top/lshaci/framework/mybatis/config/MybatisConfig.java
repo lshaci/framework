@@ -12,6 +12,12 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
 
+/**
+ * Config mybatis
+ * 
+ * @author lshaci
+ * @version 0.0.1
+ */
 @Configuration
 @Slf4j
 public class MybatisConfig {

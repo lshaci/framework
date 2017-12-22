@@ -33,9 +33,9 @@ public class JsonResponse implements Serializable {
     }
 
     /**
-     * Create success response
+     * Constructs a success json response with data
      *
-     * @param data The response data
+     * @param data the response data
      */
     public JsonResponse(Object data) {
         if (data != null) {
@@ -45,10 +45,10 @@ public class JsonResponse implements Serializable {
     }
 
     /**
-     * Create a response
+     * Constructs a json response with status and data
      *
-     * @param status	The response status
-     * @param data	 	The response data
+     * @param status the response status
+     * @param data the response data
      */
     public JsonResponse(boolean status, Object data) {
         super();
@@ -57,10 +57,10 @@ public class JsonResponse implements Serializable {
     }
 
     /**
-     * Create a response
+     * Constructs a json response with status and message
      *
-     * @param status	The response status
-     * @param message	 The response message
+     * @param status the response status
+     * @param message the response message
      */
     public JsonResponse(boolean status, String message) {
         super();
@@ -69,33 +69,28 @@ public class JsonResponse implements Serializable {
     }
 
     /**
-     * Create a response
+     * Constructs a json response with status, message, data
      *
-     * @param status	The response status
-     * @param message	The response message
-     * @param data		The response data
+     * @param status the response status
+     * @param message the response message
+     * @param data the response data
      */
     public JsonResponse(boolean status, String message, Object data) {
-        super();
-        this.status = status;
-        this.message = message;
+        this(status, message);
         this.data = data;
     }
 
     /**
-     * Create a response
+     * Constructs a json response with status, code, message, data
      *
-     * @param status	The response status
-     * @param code      The response code
-     * @param message	The response message
-     * @param data		The response data
+     * @param status the response status
+     * @param code the response code
+     * @param message the response message
+     * @param data the response data
      */
     public JsonResponse(boolean status, int code, String message, Object data) {
-        super();
-        this.status = status;
+        this(status, message, data);
         this.code = code;
-        this.message = message;
-        this.data = data;
     }
 
     /**

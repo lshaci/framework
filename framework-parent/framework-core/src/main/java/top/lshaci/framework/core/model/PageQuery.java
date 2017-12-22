@@ -19,7 +19,7 @@ public abstract class PageQuery implements Serializable {
     private int pgCt = Constants.DEFAULT_PGCT;
     private int pgSz = Constants.DEFAULT_PGSZ;
 
-    private String keyword;    //关键字查询，快速搜索
+    private String keyword;    // the key word query condition
 
     /**
      * Set current page number
