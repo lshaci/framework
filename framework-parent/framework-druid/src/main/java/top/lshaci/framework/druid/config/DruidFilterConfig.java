@@ -53,6 +53,7 @@ public class DruidFilterConfig {
 	/**
 	 * Define wall filter
 	 * 
+	 * @param wallConfig the wall filter config
 	 * @return the wall filter
 	 */
 	@Bean
