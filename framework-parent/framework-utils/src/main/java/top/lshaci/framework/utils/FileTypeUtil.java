@@ -21,7 +21,7 @@ import top.lshaci.framework.utils.exception.UtilException;
 public abstract class FileTypeUtil {
 
 	/**
-	 * Get the file type{@FileType} with file
+	 * Get the file type with file
 	 * 
 	 * @param file the file
 	 * @return the file type
@@ -36,7 +36,7 @@ public abstract class FileTypeUtil {
 	}
 
 	/**
-	 * Get the file type {@FileType} with input stream
+	 * Get the file type with input stream
 	 * 
 	 * @param is the input stream
 	 * @return the file type

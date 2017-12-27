@@ -13,7 +13,7 @@ import top.lshaci.framework.utils.constants.Constants;
 public abstract class DateUtils {
 
 	/**
-	 * Format long date use {@Constants.LONG_DATE_FORMATTER} <b>yyyy-MM-dd HH:mm:ss</b>
+	 * Format long date use <b>yyyy-MM-dd HH:mm:ss</b>
 	 * 
 	 * @param date the date
 	 * @return the string type date
@@ -26,7 +26,7 @@ public abstract class DateUtils {
 	}
 	
 	/**
-	 * Format short date use {@Constants.SHORT_DATE_FORMATTER} <b>yyyy-MM-dd</b>
+	 * Format short date use <b>yyyy-MM-dd</b>
 	 * 
 	 * @param date the date
 	 * @return the string type date
