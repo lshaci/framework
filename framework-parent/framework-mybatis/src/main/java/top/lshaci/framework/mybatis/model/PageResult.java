@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.github.pagehelper.Page;
-import top.lshaci.framework.core.constants.Constants;
+
+import top.lshaci.framework.common.constants.Constants;
 
 /**
  * Page query result

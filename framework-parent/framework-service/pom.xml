@@ -16,11 +16,6 @@
     </parent>
 
     <dependencies>
-        <!-- framework core module -->
-        <dependency>
-            <groupId>top.lshaci</groupId>
-            <artifactId>framework-core</artifactId>
-        </dependency>
         <!-- framework mybatis module -->
         <dependency>
             <groupId>top.lshaci</groupId>

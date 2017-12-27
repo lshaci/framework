@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>framework-excel</artifactId>
+	<name>framework-excel</name>
+	<description>framework excel handler</description>
+
+	<parent>
+		<groupId>top.lshaci</groupId>
+		<artifactId>framework-parent</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
+	<dependencies>
+		<!-- framework utils module -->
+		<dependency>
+			<groupId>top.lshaci</groupId>
+			<artifactId>framework-utils</artifactId>
+		</dependency>
+		<!-- poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+		</dependency>
+		<!-- poi ooxml -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+		</dependency>
+	</dependencies>
+</project>

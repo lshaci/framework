@@ -16,6 +16,9 @@
 		<module>framework-service</module>
 		<module>framework-swagger</module>
 		<module>framework-test</module>
+		<module>framework-utils</module>
+		<module>framework-excel</module>
+		<module>framework-common</module>
 	</modules>
 
 	<name>framework-parent</name>
@@ -41,6 +44,7 @@
 		<commons.lang3.version>3.7</commons.lang3.version>
 		<spring.boot.version>1.5.9.RELEASE</spring.boot.version>
 		<spring.cloud.version>Edgware.RELEASE</spring.cloud.version>
+		<commons.collections4.version>4.0</commons.collections4.version>
 		<tkmybatis.spring.boot.version>1.1.5</tkmybatis.spring.boot.version>
 		<pagehelper.spring.boot.version>1.2.3</pagehelper.spring.boot.version>
 	</properties>
@@ -52,10 +56,25 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<!-- logback -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- framework common module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<!-- framework core module -->
 			<dependency>
 				<groupId>top.lshaci</groupId>
@@ -84,6 +103,18 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework utils module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-utils</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework excel module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-excel</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- framework test module -->
@@ -145,6 +176,12 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>${commons.lang3.version}</version>
+			</dependency>
+			<!-- apache commons collections4 -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-collections4</artifactId>
+				<version>${commons.collections4.version}</version>
 			</dependency>
 			<!-- spring boot dependencies -->
 			<dependency>

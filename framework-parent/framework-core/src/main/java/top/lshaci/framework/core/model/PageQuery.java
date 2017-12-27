@@ -1,9 +1,9 @@
 package top.lshaci.framework.core.model;
 
-import lombok.Getter;
-import top.lshaci.framework.core.constants.Constants;
-
 import java.io.Serializable;
+
+import lombok.Getter;
+import top.lshaci.framework.common.constants.Constants;
 
 /**
  * Page base query entity
