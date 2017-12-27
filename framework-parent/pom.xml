@@ -44,7 +44,7 @@
 		<commons.lang3.version>3.7</commons.lang3.version>
 		<spring.boot.version>1.5.9.RELEASE</spring.boot.version>
 		<spring.cloud.version>Edgware.RELEASE</spring.cloud.version>
-		<commons.collections4.version>4.0</commons.collections4.version>
+		<commons.collections4.version>4.1</commons.collections4.version>
 		<tkmybatis.spring.boot.version>1.1.5</tkmybatis.spring.boot.version>
 		<pagehelper.spring.boot.version>1.2.3</pagehelper.spring.boot.version>
 	</properties>
