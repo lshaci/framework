@@ -38,6 +38,7 @@
 		<druid.version>1.0.25</druid.version>
 		<swagger.version>2.7.0</swagger.version>
 		<fastjson.version>1.2.42</fastjson.version>
+		<commons.lang3.version>3.7</commons.lang3.version>
 		<spring.boot.version>1.5.9.RELEASE</spring.boot.version>
 		<spring.cloud.version>Edgware.RELEASE</spring.cloud.version>
 		<tkmybatis.spring.boot.version>1.1.5</tkmybatis.spring.boot.version>
@@ -138,6 +139,12 @@
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
 				<version>${poi.version}</version>
+			</dependency>
+			<!-- apache commons lang3 -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${commons.lang3.version}</version>
 			</dependency>
 			<!-- spring boot dependencies -->
 			<dependency>
