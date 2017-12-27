@@ -22,6 +22,7 @@
 	</modules>
 
 	<name>framework-parent</name>
+	<url>www.lshaci.top</url>
 	<description>framework parent</description>
 
 	<developers>
@@ -220,6 +221,18 @@
 			<id>release</id>
 			<build>
 				<plugins>
+					<!-- nexus staging -->
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.3</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>oss</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
 					<!-- Source -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
