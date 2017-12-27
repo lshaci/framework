@@ -35,7 +35,7 @@ import top.lshaci.framework.utils.StringConverterUtils;
 import top.lshaci.framework.utils.enums.FileType;
 
 /**
- * POI excel utils
+ * POI excel upload handler
  * 
  * @author lshaci
  * @version 0.0.1
@@ -97,7 +97,7 @@ public abstract class POIExcelUploadHandler {
 	 * @param lastRowNum the all row number
 	 * @param rowLength the row length
 	 * @param titles the excel title array
-	 * @param relation the key is excel title, the value is entity field name
+	 * @param relation the key is excel title, the value is entity field
 	 * @param entityClass the entity class
 	 * @return the entity list
 	 */
@@ -142,7 +142,7 @@ public abstract class POIExcelUploadHandler {
 	 * Set the entity field value
 	 * 
 	 * @param entity the entity
-	 * @param fieldName the field
+	 * @param field the field
 	 * @param cellValue the cell value
 	 */
 	private static <E> void setEntityFieldValue(E entity, Field field, String cellValue) {
@@ -287,6 +287,5 @@ public abstract class POIExcelUploadHandler {
 	private static <E> void checkParams(File excelFile, Class<E> entityClass) {
 		Objects.requireNonNull(excelFile, "The excel file is must not be null!");
 		Objects.requireNonNull(entityClass, "The entity class is must not be null!");
-		
 	}
 }
