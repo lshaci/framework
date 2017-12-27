@@ -130,6 +130,10 @@ public abstract class POIExcelUploadHandler {
 				String title = titles[columnIndex];
 				Field field = relation.get(title);
 				
+				if (field == null) {
+					continue;
+				}
+				
 				setEntityFieldValue(entity, field, cellValue);
 			}
 			rowDatas.add(entity);
