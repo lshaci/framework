@@ -1,4 +1,4 @@
-package top.lshaci.framework.core.model;
+package top.lshaci.framework.web.model;
 
 import java.io.Serializable;
 

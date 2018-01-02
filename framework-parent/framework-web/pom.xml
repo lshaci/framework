@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>framework-common</artifactId>
+	<artifactId>framework-web</artifactId>
 
-	<name>framework-common</name>
-	<description>framework common</description>
+	<name>framework-web</name>
+	<description>framework web common</description>
 
 	<parent>
 		<groupId>top.lshaci</groupId>
@@ -14,15 +14,20 @@
 	</parent>
 
 	<dependencies>
-		<!-- apache commons lang3 -->
+		<!-- framework common module -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
+			<groupId>top.lshaci</groupId>
+			<artifactId>framework-common</artifactId>
 		</dependency>
-		<!-- apache commons collections4 -->
+		<!-- spring boot web -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-collections4</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!-- fastjson -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -19,6 +19,7 @@
 		<module>framework-utils</module>
 		<module>framework-excel</module>
 		<module>framework-common</module>
+		<module>framework-web</module>
 	</modules>
 
 	<name>framework-parent</name>
@@ -104,6 +105,12 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework web module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-web</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- framework utils module -->

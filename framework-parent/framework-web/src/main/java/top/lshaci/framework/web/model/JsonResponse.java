@@ -1,4 +1,4 @@
-package top.lshaci.framework.core.model;
+package top.lshaci.framework.web.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -105,10 +105,10 @@ public class JsonResponse implements Serializable {
     }
 
     /**
-     * Add other data
+     * Add other data value
      *
-     * @param key	key of data
-     * @param value	data
+     * @param key	key of  other data
+     * @param value	value of  other data
      * @return this
      */
     public JsonResponse addParam(String key, Object value) {
@@ -117,9 +117,9 @@ public class JsonResponse implements Serializable {
     }
 
     /**
-     * Remove other data
+     * Remove other data value
      *
-     * @param key	key of data
+     * @param key	key of  other data
      * @return this
      */
     public JsonResponse removeParam(String key) {
