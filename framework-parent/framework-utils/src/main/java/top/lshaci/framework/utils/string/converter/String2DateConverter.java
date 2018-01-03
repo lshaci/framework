@@ -11,7 +11,7 @@ import top.lshaci.framework.utils.constants.Constants;
  * Convert the string to date
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Slf4j
 public class String2DateConverter implements StringConverter<Date> {

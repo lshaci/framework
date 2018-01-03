@@ -20,7 +20,7 @@ import top.lshaci.framework.utils.string.converter.StringConverter;
  * String converter factory
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Slf4j
 public class StringConverterFactory {

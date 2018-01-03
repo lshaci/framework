@@ -4,7 +4,7 @@ package top.lshaci.framework.common.exception;
  * Framework common base exception
  * 
  * @author lshaci
- * @version
+ * @since
  */
 public class BaseException extends RuntimeException {
 

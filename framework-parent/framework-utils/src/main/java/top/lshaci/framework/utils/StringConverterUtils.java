@@ -7,7 +7,7 @@ import top.lshaci.framework.utils.string.converter.StringConverter;
  * String converter util
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 public abstract class StringConverterUtils {
 

@@ -14,7 +14,7 @@ import top.lshaci.framework.common.constants.Constants;
  * 
  * @author lshaci
  * @param <T>	The result entity type
- * @version 0.0.1
+ * @since 0.0.1
  */
 public class PageResult<T> implements Serializable {
 	

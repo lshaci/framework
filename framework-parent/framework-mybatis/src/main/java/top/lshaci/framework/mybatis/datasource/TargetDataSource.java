@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * Use in method to change data source with DynamicDataSourceType(FIRST, SECOND)
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

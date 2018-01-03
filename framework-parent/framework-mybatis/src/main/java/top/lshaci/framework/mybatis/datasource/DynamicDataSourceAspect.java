@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * 切换数据源Advice
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Aspect
 @Order(-10) // 保证该AOP在@Transactional之前执行

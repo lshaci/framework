@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
  * Framework util Constants
  *
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 public interface Constants {
 

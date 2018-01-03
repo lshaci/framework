@@ -11,7 +11,7 @@ import java.util.Map;
  * Web controller json response
  *
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Getter
 @Setter

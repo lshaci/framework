@@ -20,7 +20,7 @@ import top.lshaci.framework.utils.exception.UtilException;
  * Class utils
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Slf4j
 public abstract class ClassUtils {

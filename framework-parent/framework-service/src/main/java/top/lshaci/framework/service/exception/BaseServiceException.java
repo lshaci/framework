@@ -6,7 +6,7 @@ import top.lshaci.framework.common.exception.BaseException;
  * Framework base service exception
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 public class BaseServiceException extends BaseException {
 

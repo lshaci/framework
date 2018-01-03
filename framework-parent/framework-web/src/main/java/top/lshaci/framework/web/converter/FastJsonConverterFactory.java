@@ -21,7 +21,7 @@ import top.lshaci.framework.common.constants.Constants;
  * FastJson HttpMessageConverter
  *
  * @author lshaci
- * @version 0.0.3
+ * @since 0.0.3
  */
 @Slf4j
 public class FastJsonConverterFactory {

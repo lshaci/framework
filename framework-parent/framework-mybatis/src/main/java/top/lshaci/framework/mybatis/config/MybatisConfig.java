@@ -16,7 +16,7 @@ import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
  * Config mybatis
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Configuration
 @Slf4j

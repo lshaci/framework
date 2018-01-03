@@ -8,7 +8,7 @@ import top.lshaci.framework.utils.constants.Constants;
  * Date utils
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 public abstract class DateUtils {
 

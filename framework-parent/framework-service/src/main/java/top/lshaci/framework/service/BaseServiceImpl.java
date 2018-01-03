@@ -21,7 +21,7 @@ import top.lshaci.framework.service.exception.BaseServiceException;
  * Base common service implement
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  *
  * @param <T>	The entity type
  * @param <P>	The primary key type

@@ -38,7 +38,7 @@ import top.lshaci.framework.utils.enums.FileType;
  * POI excel upload handler
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Slf4j
 public abstract class POIExcelUploadHandler {

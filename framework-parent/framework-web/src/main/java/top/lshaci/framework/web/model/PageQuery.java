@@ -9,7 +9,7 @@ import top.lshaci.framework.common.constants.Constants;
  * Page base query entity
  *
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Getter
 public abstract class PageQuery implements Serializable {

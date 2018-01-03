@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * The title name of the excel corresponding to the entity field
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -20,7 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * Swagger Config
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Configuration
 @EnableSwagger2

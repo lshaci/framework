@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * Druid Web Config
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Configuration
 //Load druid web config

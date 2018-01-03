@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  * Convert the string to big decimal
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Slf4j
 public class String2BigDecimalConverter implements StringConverter<BigDecimal> {

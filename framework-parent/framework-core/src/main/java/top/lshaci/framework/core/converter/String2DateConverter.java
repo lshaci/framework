@@ -12,7 +12,7 @@ import top.lshaci.framework.common.constants.Constants;
  * String to date converter
  *
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Slf4j
 public class String2DateConverter implements Converter<String, Date> {

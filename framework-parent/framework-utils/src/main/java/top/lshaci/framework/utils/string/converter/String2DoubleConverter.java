@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
  * Convert the string to double
  * 
  * @author lshaci
- * @version 0.0.1
+ * @since 0.0.1
  */
 @Slf4j
 public class String2DoubleConverter implements StringConverter<Double> {
