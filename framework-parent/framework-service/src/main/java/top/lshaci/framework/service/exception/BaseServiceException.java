@@ -10,9 +10,9 @@ import top.lshaci.framework.common.exception.BaseException;
  */
 public class BaseServiceException extends BaseException {
 
-    private static final long serialVersionUID = -6561904721408033517L;
+	private static final long serialVersionUID = -6561904721408033517L;
 
-     public BaseServiceException() {
+	public BaseServiceException() {
 	}
 
 	public BaseServiceException(String message) {
@@ -27,7 +27,8 @@ public class BaseServiceException extends BaseException {
 		super(message, cause);
 	}
 
-	public BaseServiceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public BaseServiceException(String message, Throwable cause, boolean enableSuppression,
+			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 }
