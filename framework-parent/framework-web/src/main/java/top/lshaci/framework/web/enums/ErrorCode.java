@@ -1,11 +1,14 @@
 package top.lshaci.framework.web.enums;
 
+import lombok.Getter;
+
 /**
  * Error code enum
  * 
  * @author lshaci
  * @since 0.0.3
  */
+@Getter
 public enum ErrorCode {
 	
 	/**
@@ -90,18 +93,6 @@ public enum ErrorCode {
 		this.code = code;
 		this.msg = msg;
 		this.exceptionClass = exceptionClass;
-	}
-
-	public int getCode() {
-		return code;
-	}
-
-	public String getMsg() {
-		return msg;
-	}
-
-	public String getExceptionClass() {
-		return exceptionClass;
 	}
 	
 	/**
