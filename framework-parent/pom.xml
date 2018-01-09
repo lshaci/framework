@@ -44,11 +44,11 @@
 		<druid.version>1.0.25</druid.version>
 		<swagger.version>2.7.0</swagger.version>
 		<mybatis.generator.version>1.3.6</mybatis.generator.version>
-		
+
 		<fastjson.version>1.2.42</fastjson.version>
 		<commons.lang3.version>3.7</commons.lang3.version>
 		<commons.collections4.version>4.1</commons.collections4.version>
-		
+
 		<spring.boot.version>1.5.9.RELEASE</spring.boot.version>
 		<spring.cloud.version>Edgware.RELEASE</spring.cloud.version>
 		<tkmybatis.spring.boot.version>1.1.5</tkmybatis.spring.boot.version>
@@ -314,6 +314,64 @@
 					<id>oss</id>
 					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 				</repository>
+			</distributionManagement>
+		</profile>
+		<profile>
+			<id>snapshots</id>
+			<build>
+				<plugins>
+					<!-- Source -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.0.1</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Javadoc -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9.1</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- compiler -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.7.0</version>
+						<configuration>
+							<source>${java.version}</source>
+							<target>${java.version}</target>
+							<encoding>${project.build.sourceEncoding}</encoding>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<distributionManagement>
+				<repository>
+					<id>releases</id>
+					<name>Nexus Release Repository</name>
+					<url>http://basic.xdbigdata.com/nexus/content/repositories/releases/</url>
+				</repository>
+				<snapshotRepository>
+					<id>snapshots</id>
+					<name>Nexus Snapshot Repository</name>
+					<url>http://basic.xdbigdata.com/nexus/content/repositories/snapshots/</url>
+				</snapshotRepository>
 			</distributionManagement>
 		</profile>
 	</profiles>

@@ -27,7 +27,7 @@ public class ServiceGeneratorUtils {
 	private static final String MAVEN_SRC_MAIN_JAVA = "src\\main\\java\\";
 	
 	/**
-	 * Generator target project domain, mapper interface&xml file, service interface&implement
+	 * Generator target project domain, mapper interface and xml file, service interface and implement
 	 * 
 	 * @param clazz the class that invoke this method
 	 * @param servicePackage the target project service package

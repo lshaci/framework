@@ -3,7 +3,7 @@ package top.lshaci.framework.service.model;
 import lombok.Data;
 
 /**
- * Service generator model --> freemarker
+ * Service generator model of freemarker
  * 
  * @author lshaci
  * @since 0.0.3
