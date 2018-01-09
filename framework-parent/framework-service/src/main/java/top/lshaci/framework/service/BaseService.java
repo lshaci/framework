@@ -2,6 +2,7 @@ package top.lshaci.framework.service;
 
 import java.util.List;
 
+import top.lshaci.framework.mybatis.mapper.TKMapper;
 import top.lshaci.framework.mybatis.model.PageResult;
 
 /**
@@ -11,9 +12,9 @@ import top.lshaci.framework.mybatis.model.PageResult;
  * @since 0.0.1
  *
  * @param <T>	The entity type
- * @param <P>	The primary key type
+ * @param <M>	The mapper type
  */
-public interface BaseService<T, P> {
+public interface BaseService<T, M extends TKMapper<T>> {
 	
 	/**
 	 * Insert one entity instance
@@ -45,7 +46,7 @@ public interface BaseService<T, P> {
 	 * @param primarykey the primary key
 	 * @return	Delete the number of data
 	 */
-	int delete(P primarykey);
+	int delete(Object primarykey);
 
 	/**
 	 * Delete many by primary keys
@@ -53,7 +54,7 @@ public interface BaseService<T, P> {
 	 * @param primarykeys the primary keys
 	 * @return	Delete the number of data
 	 */
-	int deleteByIds(List<P> primarykeys);
+	int deleteByIds(List<Object> primarykeys);
 
 	/**
 	 * Delete instance by condition
@@ -69,7 +70,7 @@ public interface BaseService<T, P> {
 	 * @param primarykey the primary key
 	 * @return
 	 */
-	T get(P primarykey);
+	T get(Object primarykey);
 	
 	/**
 	 * Get one by condition
@@ -85,7 +86,7 @@ public interface BaseService<T, P> {
 	 * @param primarykeys  the primary keys
 	 * @return
 	 */
-	List<T> listByIds(List<P> primarykeys);
+	List<T> listByIds(List<Object> primarykeys);
 
 	/**
 	 * Get all

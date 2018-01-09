@@ -24,13 +24,13 @@ import top.lshaci.framework.service.exception.BaseServiceException;
  * @since 0.0.1
  *
  * @param <T>	The entity type
- * @param <P>	The primary key type
+ * @param <M>	The mapper type
  */
 @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-public abstract class BaseServiceImpl<T, P> implements BaseService<T, P> {
+public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseService<T, M> {
 	
 	@Autowired
-	protected TKMapper<T> mapper;
+	protected M mapper;
 
 	@Override
 	public int insert(T entity) {
@@ -53,13 +53,13 @@ public abstract class BaseServiceImpl<T, P> implements BaseService<T, P> {
 	}
 
 	@Override
-	public int delete(P primarykey) {
+	public int delete(Object primarykey) {
 		Objects.requireNonNull(primarykey, "The primarykey must not be null!");
 		return mapper.deleteByPrimaryKey(primarykey);
 	}
 
 	@Override
-	public int deleteByIds(List<P> primarykeys) {
+	public int deleteByIds(List<Object> primarykeys) {
 		if (CollectionUtils.isEmpty(primarykeys)) {
 			throw new BaseServiceException("The primarykeys must not be empty!");
 		}
@@ -74,7 +74,7 @@ public abstract class BaseServiceImpl<T, P> implements BaseService<T, P> {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public T get(P primarykey) {
+	public T get(Object primarykey) {
 		Objects.requireNonNull(primarykey, "The primarykey must not be null!");
 		return mapper.selectByPrimaryKey(primarykey);
 	}
@@ -88,7 +88,7 @@ public abstract class BaseServiceImpl<T, P> implements BaseService<T, P> {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<T> listByIds(List<P> primarykeys) {
+	public List<T> listByIds(List<Object> primarykeys) {
 		if (CollectionUtils.isEmpty(primarykeys)) {
 			throw new BaseServiceException("The primarykeys must not be empty!");
 		}
@@ -141,9 +141,9 @@ public abstract class BaseServiceImpl<T, P> implements BaseService<T, P> {
 	 * @param primarykeys the primary keys
 	 * @return the string of the primary keys
 	 */
-	private String repalceList2String(List<P> primarykeys) {
+	private String repalceList2String(List<Object> primarykeys) {
         StringBuilder sb = new StringBuilder();
-        for (P primarykey : primarykeys) {
+        for (Object primarykey : primarykeys) {
 			sb.append("," + primarykey.toString());
 		}
         return sb.substring(1);

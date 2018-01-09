@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<properties resource="generatorConfig.properties" />
+
+	<context id="Mysql" targetRuntime="tk.mybatis.mapper.generator.TkMyBatis3Impl"
+		defaultModelType="flat">
+		<property name="beginningDelimiter" value="`" />
+		<property name="endingDelimiter" value="`" />
+
+		<plugin type="${generator.mapper.plugin}">
+			<property name="mappers" value="${generator.mapper.Mapper}" />
+		</plugin>
+
+		<plugin type="top.lshaci.framework.mybatis.plugins.DomainClassNamePlugin" />
+		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+		
+		<jdbcConnection driverClass="${generator.jdbc.driverClass}"
+			connectionURL="${generator.jdbc.url}" 
+			userId="${generator.jdbc.user}"
+			password="${generator.jdbc.password}">
+		</jdbcConnection>
+		
+		<javaModelGenerator targetPackage="${generator.targetModelPackage}"
+			targetProject="${generator.targetJavaProject}" />
+
+		<sqlMapGenerator targetPackage="${generator.targetXMLPackage}"
+			targetProject="${generator.targetResourcesProject}" />
+
+		<javaClientGenerator targetPackage="${generator.targetMapperPackage}"
+			targetProject="${generator.targetJavaProject}" type="XMLMAPPER" />
+
+		<table tableName="%" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+	</context>
+</generatorConfiguration>
