@@ -14,10 +14,10 @@
 	</properties>
 
 	<dependencies>
-		<!-- top lshaci framework mybatis module -->
+		<!-- top lshaci framework service module -->
 		<dependency>
 			<groupId>top.lshaci</groupId>
-			<artifactId>framework-mybatis</artifactId>
+			<artifactId>framework-service</artifactId>
 		</dependency>
 		<!-- top lshaci framework swagger module -->
 		<dependency>

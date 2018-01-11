@@ -15,10 +15,10 @@
 	</parent>
 
 	<dependencies>
-		<!-- framework common module -->
+		<!-- framework utils module -->
 		<dependency>
 			<groupId>top.lshaci</groupId>
-			<artifactId>framework-common</artifactId>
+			<artifactId>framework-utils</artifactId>
 		</dependency>
 		<!-- druid -->
 		<dependency>
@@ -44,6 +44,11 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<!--mybatis generator-->
+		<dependency>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-core</artifactId>
 		</dependency>
 	</dependencies>
 

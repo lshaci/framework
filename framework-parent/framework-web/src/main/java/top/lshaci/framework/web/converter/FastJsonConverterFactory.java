@@ -157,7 +157,7 @@ public class FastJsonConverterFactory {
 	/**
 	 * Add fast json http message converter supported media type
 	 * 
-	 * @param mediaType the media type list
+	 * @param mediaTypes the media type list
 	 * @return this
 	 */
 	public FastJsonConverterFactory addSupportedMediaType(List<MediaType> mediaTypes) {

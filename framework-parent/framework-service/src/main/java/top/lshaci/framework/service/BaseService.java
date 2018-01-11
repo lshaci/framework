@@ -2,6 +2,7 @@ package top.lshaci.framework.service;
 
 import java.util.List;
 
+import top.lshaci.framework.mybatis.mapper.TKMapper;
 import top.lshaci.framework.mybatis.model.PageResult;
 
 /**
@@ -11,9 +12,9 @@ import top.lshaci.framework.mybatis.model.PageResult;
  * @since 0.0.1
  *
  * @param <T>	The entity type
- * @param <P>	The primary key type
+ * @param <M>	The mapper type
  */
-public interface BaseService<T, P> {
+public interface BaseService<T, M extends TKMapper<T>> {
 	
 	/**
 	 * Insert one entity instance
@@ -45,7 +46,7 @@ public interface BaseService<T, P> {
 	 * @param primarykey the primary key
 	 * @return	Delete the number of data
 	 */
-	int delete(P primarykey);
+	int delete(Object primarykey);
 
 	/**
 	 * Delete many by primary keys
@@ -53,7 +54,7 @@ public interface BaseService<T, P> {
 	 * @param primarykeys the primary keys
 	 * @return	Delete the number of data
 	 */
-	int deleteByIds(List<P> primarykeys);
+	int deleteByIds(List<Object> primarykeys);
 
 	/**
 	 * Delete instance by condition
@@ -67,15 +68,15 @@ public interface BaseService<T, P> {
 	 * Get one by primary key
 	 * 
 	 * @param primarykey the primary key
-	 * @return
+	 * @return the instance of the primary key
 	 */
-	T get(P primarykey);
+	T get(Object primarykey);
 	
 	/**
 	 * Get one by condition
 	 * 
 	 * @param condition the condition
-	 * @return
+	 * @return the instance of the condition
 	 */
 	T getByCondition(T condition);
 	
@@ -83,14 +84,14 @@ public interface BaseService<T, P> {
 	 * Get many by primary keys
 	 * 
 	 * @param primarykeys  the primary keys
-	 * @return
+	 * @return the instance list of the primary keys
 	 */
-	List<T> listByIds(List<P> primarykeys);
+	List<T> listByIds(List<Object> primarykeys);
 
 	/**
 	 * Get all
 	 * 
-	 * @return
+	 * @return the all instance list
 	 */
 	List<T> listAll();
 
@@ -98,7 +99,7 @@ public interface BaseService<T, P> {
 	 * List by Condition
 	 * 
 	 * @param condition the condition
-	 * @return
+	 * @return the instance list of the condition
 	 */
 	List<T> listByCondition(T condition);
 
@@ -106,7 +107,7 @@ public interface BaseService<T, P> {
 	 * Count by condition
 	 * 
 	 * @param condition the condition
-	 * @return
+	 * @return the count of the condition
 	 */
 	int countByCondition(T condition);
 
@@ -115,7 +116,7 @@ public interface BaseService<T, P> {
 	 * 
 	 * @param pageNum page number
 	 * @param pageSize page size
-	 * @return
+	 * @return the page result
 	 */
 	PageResult<T> listPage(int pageNum, int pageSize);
 
@@ -125,7 +126,7 @@ public interface BaseService<T, P> {
 	 * @param pageNum page number
 	 * @param pageSize page size
 	 * @param condition the condition
-	 * @return
+	 * @return  the page result of teh condition
 	 */
 	PageResult<T> listPageWithCondition(int pageNum, int pageSize, T condition);
 }

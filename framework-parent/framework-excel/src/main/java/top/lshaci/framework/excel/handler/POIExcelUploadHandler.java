@@ -1,17 +1,18 @@
 package top.lshaci.framework.excel.handler;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -26,8 +27,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.excel.annotation.Convert;
 import top.lshaci.framework.excel.annotation.ExcelTitle;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
+import top.lshaci.framework.excel.model.ExcelRelationModel;
 import top.lshaci.framework.utils.DateUtils;
 import top.lshaci.framework.utils.FileTypeUtil;
 import top.lshaci.framework.utils.ReflectionUtils;
@@ -55,7 +58,7 @@ public abstract class POIExcelUploadHandler {
 		
 		FileType fileType = getFileType(excelFile);
 		
-		Map<String, Field> relation = getFieldMap(entityClass);
+		Map<String, ExcelRelationModel> relations = handlerRelations(entityClass);
 		
 		Workbook workBook = getWorkBook(excelFile, fileType);
 		// The number of sheet
@@ -78,7 +81,7 @@ public abstract class POIExcelUploadHandler {
 			}
 			
 			String[] titles = getTitles(sheet);
-			List<E> rowDatas = getRowDatas(sheet, lastRowNum, titles.length, titles, relation, entityClass);
+			List<E> rowDatas = getRowDatas(sheet, lastRowNum, titles.length, titles, entityClass, relations);
 			
 			if (CollectionUtils.isEmpty(rowDatas)) {
 				continue;
@@ -97,12 +100,12 @@ public abstract class POIExcelUploadHandler {
 	 * @param lastRowNum the all row number
 	 * @param rowLength the row length
 	 * @param titles the excel title array
-	 * @param relation the key is excel title, the value is entity field
 	 * @param entityClass the entity class
+	 * @param relations the excel relation model map, key is excel title, value is relation model
 	 * @return the entity list
 	 */
-	private static <E> List<E> getRowDatas(Sheet sheet, int lastRowNum, int rowLength, String[] titles, 
-			Map<String, Field> relation, Class<E> entityClass) {
+	private static <E> List<E> getRowDatas(Sheet sheet, int lastRowNum, int rowLength, 
+			String[] titles, Class<E> entityClass, Map<String, ExcelRelationModel> relations) {
 		List<E> rowDatas = new ArrayList<>();
 		// Loop the sheet get row
 		for (int i = 1; i <= lastRowNum; i++) {
@@ -128,11 +131,18 @@ public abstract class POIExcelUploadHandler {
 				}
 				
 				String title = titles[columnIndex];
-				Field field = relation.get(title);
+				ExcelRelationModel relationModel = relations.get(title);
+				if (relationModel == null ) {
+					continue;
+				}
+				
+				Field field = relationModel.getTargetField();
 				
 				if (field == null) {
 					continue;
 				}
+				
+				cellValue = getConvertValue(cellValue, relationModel);
 				
 				setEntityFieldValue(entity, field, cellValue);
 			}
@@ -140,6 +150,25 @@ public abstract class POIExcelUploadHandler {
 			
 		}
 		return rowDatas;
+	}
+	
+	/**
+	 * Get the convert value with cell value
+	 * 
+	 * @param cellValue the cell value
+	 * @param relationModel the excel relation model
+	 * @return the convert value
+	 */
+	private static String getConvertValue(String cellValue, ExcelRelationModel relationModel) {
+		Method method = relationModel.getConvertMethod();
+		
+		if (method != null) {
+			Object instance = relationModel.getConvertInstance();
+			Object value = ReflectionUtils.invokeMethod(instance, method, cellValue);
+			return value == null ? null : value.toString();
+		}
+		
+		return cellValue;
 	}
 
 	/**
@@ -198,7 +227,7 @@ public abstract class POIExcelUploadHandler {
 			if (cell == null) {
 				continue;
 			}
-			titles[i] = cell.getStringCellValue();
+			titles[i] = cell.getStringCellValue().trim();
 		}
 		
 		return titles;
@@ -255,17 +284,25 @@ public abstract class POIExcelUploadHandler {
 	}
 	
 	/**
-	 * Get the entity field map, key is excel title name, value is entity field
+	 * Handler the entity field relations
 	 * 
-	 * @param entityClass the entity class 
-	 * @return the entity field map
+	 * @param entityClass the entity class
+	 * @return the excel relation model map, key is excel title, value is relation model
 	 */
-	private static <E> Map<String, Field> getFieldMap(Class<E> entityClass) {
+	private static <E> Map<String, ExcelRelationModel> handlerRelations(Class<E> entityClass) {
 		Field[] fields = entityClass.getDeclaredFields();
+		
 		if (ArrayUtils.isEmpty(fields)) {
 			throw new ExcelHandlerException("The entity not has any field!");
 		}
-		return Arrays.stream(fields).collect(toMap(f -> getFieldTitleName(f), f -> f));
+		
+		Map<Class<?>, Object> convertClassCache = new HashMap<>();
+		
+		return Arrays.stream(fields).collect(Collectors.toMap(
+				f -> getFieldTitleName(f), 
+				f -> {
+					return createExcelRelationModel(f, convertClassCache);
+				}));
 	}
 	
 	/**
@@ -280,6 +317,74 @@ public abstract class POIExcelUploadHandler {
 			return excelTitle.value();
 		}
 		return field.getName();
+	}
+	
+	/**
+	 * Get the field convert instance
+	 * 
+	 * @param convertClassCache the convert class cache
+	 * @param convert the field convert annotation
+	 * @return the convert instance
+	 */
+	private static Object getConvertInstance(Map<Class<?>, Object> convertClassCache, Convert convert) {
+		Class<?> convertClass = convert.clazz();
+		
+		if (convertClass == null) {
+			throw new ExcelHandlerException("The convert class must not be null!");
+		}
+		
+		Object convertInstance = convertClassCache.get(convertClass);
+		if (convertInstance == null) {
+			convertInstance = ReflectionUtils.newInstance(convertClass);
+			convertClassCache.put(convertClass, convertInstance);
+		}
+		
+		return convertInstance;
+	}
+	
+	/**
+	 * Get the field convert method
+	 * 
+	 * @param convert the field convert annotation
+	 * @return the convert method
+	 */
+	private static Method getConvertMethod(Convert convert) {
+		String methodName = convert.method();
+		Class<?> convertClass = convert.clazz();
+		
+		if (StringUtils.isBlank(methodName)) {
+			throw new ExcelHandlerException("The convert method name must not be empty!");
+		}
+		
+		try {
+			return convertClass.getDeclaredMethod(methodName, String.class);
+		} catch (NoSuchMethodException | SecurityException e) {
+			String msg = "Get the convert method is error!";
+			log.error(msg, e);
+			throw new ExcelHandlerException(msg);
+		}
+	}
+	
+	/**
+	 * Create excel relation model by target field
+	 * 
+	 * @param field the target field
+	 * @param convertClassCache the convert class cache
+	 * @return the excel relation model
+	 */
+	private static ExcelRelationModel createExcelRelationModel(Field field, Map<Class<?>, Object> convertClassCache) {
+		ExcelRelationModel model = new ExcelRelationModel(field);
+		
+		Convert convert = field.getAnnotation(Convert.class);
+		
+		if (convert != null) {
+			Object convertInstance = getConvertInstance(convertClassCache, convert);
+			Method convertMethod = getConvertMethod(convert);
+			model.setConvertInstance(convertInstance);
+			model.setConvertMethod(convertMethod);
+		}
+		
+		return model;
 	}
 	
 	/**
