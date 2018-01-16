@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.DownloadConvert;
 import top.lshaci.framework.excel.annotation.DownloadExcelSheet;
 import top.lshaci.framework.excel.annotation.DownloadExcelTitle;
+import top.lshaci.framework.excel.annotation.DownloadIgnore;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.model.DownloadOrder;
 import top.lshaci.framework.excel.model.ExcelRelationModel;
@@ -263,11 +264,14 @@ public abstract class POIExcelDownloadHandler {
 		
 		Map<Class<?>, Object> convertClassCache = new HashMap<>();
 		
-		return Arrays.stream(fields).collect(Collectors.toMap(
-				f -> getFieldTitleName(f), 
-				f -> {
-					return createExcelRelationModel(f, convertClassCache);
-				}));
+		return Arrays.stream(fields)
+				.filter(f -> f.getAnnotation(DownloadIgnore.class) == null)
+				.collect(Collectors.toMap(
+					f -> getFieldTitleName(f), 
+					f -> {
+						return createExcelRelationModel(f, convertClassCache);
+					})
+				);
 	}
 	
 	/**
@@ -366,7 +370,7 @@ public abstract class POIExcelDownloadHandler {
 		}
 
 		return Arrays.stream(fields)
-				.filter(f -> f.getAnnotation(DownloadExcelTitle.class) != null)
+				.filter(f -> f.getAnnotation(DownloadIgnore.class) == null)
 				.map(f -> createDownloadOrder(f))
 				.sorted()
 				.collect(Collectors.toList());
@@ -397,16 +401,23 @@ public abstract class POIExcelDownloadHandler {
 	private static DownloadOrder createDownloadOrder(Field field) {
 		DownloadExcelTitle downloadExcelTitle = field.getAnnotation(DownloadExcelTitle.class);
 		
-		String title = downloadExcelTitle.title();
-		if (StringUtils.isEmpty(title)) {
-			title = field.getName();
-		}
-		int order = downloadExcelTitle.order();
-		
 		DownloadOrder downloadOrder = new DownloadOrder();
 		downloadOrder.setField(field);
-		downloadOrder.setTitle(title);
-		downloadOrder.setOrder(order);
+		
+		if (downloadExcelTitle == null) {
+			downloadOrder.setTitle(field.getName());
+			downloadOrder.setOrder(0);
+		} else {
+			String title = downloadExcelTitle.title();
+			if (StringUtils.isEmpty(title)) {
+				title = field.getName();
+			}
+			int order = downloadExcelTitle.order();
+			
+			downloadOrder.setTitle(title);
+			downloadOrder.setOrder(order);
+		}
+		
 		
 		return downloadOrder;
 	}
