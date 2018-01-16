@@ -83,8 +83,8 @@ public class StringConverterFactory {
 
 	/**
 	 * Get string converter of target type
-	 * @param <T>
 	 * 
+	 * @param <T> the string converter target type
 	 * @param targetClass the target type
 	 * @return the string converter of target type if exist
 	 */

@@ -21,8 +21,8 @@ public abstract class ReflectionUtils {
 
 	/**
 	 * Creates a new instance of the class represented by this Class object 
-	 * @param <E>
 	 * 
+	 * @param <E> the class type
 	 * @param clazz the class
 	 * @return this Class object or null
 	 */
@@ -93,7 +93,7 @@ public abstract class ReflectionUtils {
 	 * 
 	 * @param obj the object
 	 * @param field the field
-	 * @param value the need set value
+	 * @return the field value
 	 */
 	public static Object getFieldValue(Object obj, Field field) {
 		checkFieldOperationParams(obj, field);

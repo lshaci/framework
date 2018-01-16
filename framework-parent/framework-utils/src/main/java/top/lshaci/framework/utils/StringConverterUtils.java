@@ -19,6 +19,7 @@ public abstract class StringConverterUtils {
 	/**
 	 * Get target value
 	 * 
+	 * @param <T> the target value type
 	 * @param targetClass the target class type
 	 * @param source the string source
 	 * @return the target value
