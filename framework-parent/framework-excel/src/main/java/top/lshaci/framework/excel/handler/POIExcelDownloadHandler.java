@@ -2,7 +2,6 @@ package top.lshaci.framework.excel.handler;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public abstract class POIExcelDownloadHandler {
 	 * @param entities the entity list
 	 * @return the excel work book output stream
 	 */
-	public static <E> OutputStream entities2Excel(List<E> entities) {
+	public static <E> ByteArrayOutputStream entities2Excel(List<E> entities) {
 		checkParams(entities);
 		
 		Class<?> entityClass = entities.get(0).getClass();
@@ -227,13 +226,10 @@ public abstract class POIExcelDownloadHandler {
 				
 				Object value = ReflectionUtils.getFieldValue(entity, field);
 				
-				ExcelRelationModel excelRelationModel = handlerRelations.get(title);
+				ExcelRelationModel relationModel = handlerRelations.get(title);
 				
-				if (excelRelationModel != null) {
-					Method convertMethod = excelRelationModel.getConvertMethod();
-					Object convertInstance = excelRelationModel.getConvertInstance();
-					
-					value = ReflectionUtils.invokeMethod(convertInstance, convertMethod, value);
+				if (relationModel != null) {
+					value = getConvertValue(value, relationModel);
 				}
 				
 				if (value != null) {
@@ -246,6 +242,25 @@ public abstract class POIExcelDownloadHandler {
 			rows.add(row);
 		}
 		return rows;
+	}
+	
+	/**
+	 * Get the convert value with cell value
+	 * 
+	 * @param value the field value
+	 * @param relationModel the excel relation model
+	 * @return the convert value
+	 */
+	private static Object getConvertValue(Object value, ExcelRelationModel relationModel) {
+		Method method = relationModel.getConvertMethod();
+		
+		if (method != null) {
+			Object instance = relationModel.getConvertInstance();
+			Object convertValue = ReflectionUtils.invokeMethod(instance, method, value);
+			return convertValue == null ? "" : convertValue.toString();
+		}
+		
+		return value;
 	}
 	
 	/**
@@ -325,7 +340,7 @@ public abstract class POIExcelDownloadHandler {
 		}
 		
 		try {
-			return convertClass.getDeclaredMethod(methodName, String.class);
+			return convertClass.getDeclaredMethod(methodName, Object.class);
 		} catch (NoSuchMethodException | SecurityException e) {
 			String msg = "Get the convert method is error!";
 			log.error(msg, e);
