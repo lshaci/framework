@@ -48,6 +48,11 @@ public abstract class PageQuery implements Serializable {
         return (this.pgCt - 1) * this.pgSz;
     }
 
+    /**
+     * Set key word query condition
+     * 
+     * @param keyword the key word
+     */
     public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
