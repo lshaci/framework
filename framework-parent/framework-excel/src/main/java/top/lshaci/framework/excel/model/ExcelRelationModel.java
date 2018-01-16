@@ -26,7 +26,6 @@ public class ExcelRelationModel {
 	 * @param targetField the entity target field
 	 */
 	public ExcelRelationModel(Field targetField) {
-		super();
 		this.targetField = targetField;
 	}
 	

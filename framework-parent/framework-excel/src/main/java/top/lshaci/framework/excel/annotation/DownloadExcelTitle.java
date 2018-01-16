@@ -10,24 +10,24 @@ import java.lang.annotation.Target;
  * The title name of the excel corresponding to the entity field
  * 
  * @author lshaci
- * @since 0.0.1
+ * @since 0.0.3
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Convert {
+public @interface DownloadExcelTitle {
 
 	/**
-	 * Get the value(Convert class)
+	 * Get the excel title name
 	 * 
-	 * @return the convert class
+	 * @return the excel title name
 	 */
-	Class<?> clazz();
+	String title();
 	
 	/**
-	 * Get the convert method name
+	 * Get the title order(Small on the right, Big on the left)
 	 * 
-	 * @return the convert method name
+	 * @return the title order
 	 */
-	String method();
+	int order();
 }

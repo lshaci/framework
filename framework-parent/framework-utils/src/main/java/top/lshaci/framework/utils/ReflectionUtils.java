@@ -87,6 +87,26 @@ public abstract class ReflectionUtils {
 		}
 	}
 	
+	
+	/**
+	 * Get field value
+	 * 
+	 * @param obj the object
+	 * @param field the field
+	 * @param value the need set value
+	 */
+	public static Object getFieldValue(Object obj, Field field) {
+		checkFieldOperationParams(obj, field);
+		
+		try {
+			field.setAccessible(true);
+			return field.get(obj);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			log.error("Get field value is error!", e);
+			throw new UtilException("Get field value is error of field is : " + field.getName());
+		}
+	}
+	
 	/**
 	 * Set field value
 	 * 
@@ -95,8 +115,7 @@ public abstract class ReflectionUtils {
 	 * @param value the need set value
 	 */
 	public static void setFieldValue(Object obj, Field field, Object value) {
-		Objects.requireNonNull(obj, "The object is must not be null!");
-		Objects.requireNonNull(field, "The field is must not be null!");
+		checkFieldOperationParams(obj, field);
 		
 		try {
 			field.setAccessible(true);
@@ -105,6 +124,17 @@ public abstract class ReflectionUtils {
 			log.error("Set field value is error!", e);
 			throw new UtilException("Set field value is error of field is : " + field.getName());
 		}
+	}
+	
+	/**
+	 * Check the field operation params
+	 * 
+	 * @param obj the object
+	 * @param field the field
+	 */
+	private static void checkFieldOperationParams(Object obj, Field field) {
+		Objects.requireNonNull(obj, "The object is must not be null!");
+		Objects.requireNonNull(field, "The field is must not be null!");
 	}
 	
 	

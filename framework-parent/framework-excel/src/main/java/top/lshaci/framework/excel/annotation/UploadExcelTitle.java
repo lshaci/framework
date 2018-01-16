@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ExcelTitle {
+public @interface UploadExcelTitle {
 
 	/**
 	 * Get the value(excel title name)
