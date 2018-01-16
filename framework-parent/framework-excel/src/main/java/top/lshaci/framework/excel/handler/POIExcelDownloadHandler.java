@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -50,9 +51,9 @@ public abstract class POIExcelDownloadHandler {
 	 * Change excel file to entity list
 	 * 
 	 * @param entities the entity list
-	 * @return the entity list
+	 * @return the excel work book output stream
 	 */
-	public static <E> InputStream entities2Excel(List<E> entities) {
+	public static <E> OutputStream entities2Excel(List<E> entities) {
 		checkParams(entities);
 		
 		Class<?> entityClass = entities.get(0).getClass();
@@ -85,7 +86,7 @@ public abstract class POIExcelDownloadHandler {
 			setSheetRows(workbook, sheet, rowDatas);
 			
 			workbook.write(os);
-			return new ByteArrayInputStream(os.toByteArray());
+			return os;
 		} catch (Exception e) {
 			log.error("Parse entity list error", e);
 			throw new ExcelHandlerException("Convert entity list to excel file is error!", e);
