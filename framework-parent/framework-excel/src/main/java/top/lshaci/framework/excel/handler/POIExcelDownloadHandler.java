@@ -329,9 +329,10 @@ public abstract class POIExcelDownloadHandler {
 	 * Get the field convert method
 	 * 
 	 * @param convert the field convert annotation
+	 * @param clazz the field type
 	 * @return the convert method
 	 */
-	private static Method getConvertMethod(DownloadConvert convert) {
+	private static Method getConvertMethod(DownloadConvert convert, Class<?> clazz) {
 		String methodName = convert.method();
 		Class<?> convertClass = convert.clazz();
 		
@@ -340,7 +341,7 @@ public abstract class POIExcelDownloadHandler {
 		}
 		
 		try {
-			return convertClass.getDeclaredMethod(methodName, Object.class);
+			return convertClass.getDeclaredMethod(methodName, clazz);
 		} catch (NoSuchMethodException | SecurityException e) {
 			String msg = "Get the convert method is error!";
 			log.error(msg, e);
@@ -362,7 +363,7 @@ public abstract class POIExcelDownloadHandler {
 		
 		if (convert != null) {
 			Object convertInstance = getConvertInstance(convertClassCache, convert);
-			Method convertMethod = getConvertMethod(convert);
+			Method convertMethod = getConvertMethod(convert, field.getType());
 			model.setConvertInstance(convertInstance);
 			model.setConvertMethod(convertMethod);
 		}
