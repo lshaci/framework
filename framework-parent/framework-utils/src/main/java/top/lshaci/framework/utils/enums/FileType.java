@@ -96,7 +96,7 @@ public enum FileType {
 	/**
 	 * Visio
 	 */
-	VSD("d0cf11e0a1b11ae10000"),
+	VSD("D0CF11E0A1B11AE10000"),
 
 	/**
 	 * MS Access.
@@ -106,7 +106,12 @@ public enum FileType {
 	/**
 	 * WPS文字wps、表格et、演示dps都是一样的
 	 */
-	WPS("d0cf11e0a1b11ae10000"),
+	WPS("D0CF11E0A1B11AE10000"),
+	
+	/**
+	 * WPS文字wps、表格et、演示dps都是一样的
+	 */
+	WPSX("504B03040A0000000000874EE240"),
 
 	/**
 	 * torrent

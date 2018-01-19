@@ -47,6 +47,16 @@ import top.lshaci.framework.utils.enums.FileType;
 public abstract class POIExcelUploadHandler {
 	
 	/**
+	 * The allow excel file type list
+	 */
+	private final static List<FileType> ALLOW_FILE_TYPES = Arrays.asList(FileType.XLSX_DOCX, FileType.XLS_DOC, FileType.WPS, FileType.WPSX);
+	
+	/**
+	 * The allow excel file suffix list
+	 */
+	private final static List<String> ALLOW_FILE_SUFFIX = Arrays.asList("xls", "xlsx");
+	
+	/**
 	 * Change excel file to entity list
 	 * 
 	 * @param excelFile the excel file
@@ -250,10 +260,10 @@ public abstract class POIExcelUploadHandler {
 			/*
 			 *  Constructs a work book on the basis of file type
 			 */
-			if (FileType.XLSX_DOCX.equals(fileType)) {
+			if (FileType.XLSX_DOCX.equals(fileType) || FileType.WPSX.equals(fileType)) {
 				workbook = new XSSFWorkbook(is);
 			}
-			if (FileType.XLS_DOC.equals(fileType)) {
+			if (FileType.XLS_DOC.equals(fileType) || FileType.WPS.equals(fileType)) {
 				workbook = new HSSFWorkbook(is);
 			}
 		} catch (IOException e) {
@@ -265,21 +275,29 @@ public abstract class POIExcelUploadHandler {
 		
 		return workbook;
 	}
-
+	
 	/**
 	 * Get the file type and check the excel file
 	 * 
 	 * @param excelFile the excel file
-	 * @return the file type{@FileType}
+	 * @return the file type{@link FileType}
 	 */
 	private static FileType getFileType(File excelFile) {
 		Objects.requireNonNull(excelFile, "The excel file is must not be null!");
+		
+		String fileName = excelFile.getName();
+		String fileSuffix = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+		
+		if (!ALLOW_FILE_SUFFIX.contains(fileSuffix)) {
+			throw new ExcelHandlerException("The file suffix name is not excel!");
+		}
+		
 		try {
 			FileType fileType = FileTypeUtil.getType(excelFile);
-			if (FileType.XLSX_DOCX.equals(fileType) || FileType.XLS_DOC.equals(fileType)) {
+			if (ALLOW_FILE_TYPES.contains(fileType)) {
 				return fileType;
 			}
-			throw new ExcelHandlerException("The file is not excel!");
+			throw new ExcelHandlerException("The file type is not excel!");
 		} catch (IOException e) {
 			log.error("Get file header has error!", e);
 			throw new ExcelHandlerException("Get file header has error!");
