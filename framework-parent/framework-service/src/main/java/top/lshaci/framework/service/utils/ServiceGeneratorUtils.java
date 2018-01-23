@@ -55,8 +55,8 @@ public class ServiceGeneratorUtils {
 			if ("file".equals(protocol)) {
 				String path = resource.getPath().replaceAll("%20", " ");
 				String projectPath = path.substring(0, path.indexOf("target")) + MAVEN_SRC_MAIN_JAVA;
-				String domainPath = projectPath + domainPackage.replace(".", "/");
-				String servicePath = projectPath + servicePackage.replace(".", "/");
+				String domainPath = projectPath + domainPackage.replace(".", File.pathSeparator);
+				String servicePath = projectPath + servicePackage.replace(".", File.pathSeparator);
 				File[] domainfiles = new File(domainPath)
 						.listFiles(f -> (f.isFile() && f.getName().endsWith(JAVA_FILE_SUFFIX)));
 				for (File domainFile : domainfiles) {
@@ -66,7 +66,7 @@ public class ServiceGeneratorUtils {
 					model.setDomainName(domainName);
 					
 					File serviceFile = new File(servicePath, domainName + "Service.java");
-					File serviceImplFile = new File(servicePath + "\\impl", domainName + "ServiceImpl.java");
+					File serviceImplFile = new File(servicePath + File.pathSeparator + "impl", domainName + "ServiceImpl.java");
 					FreemarkerTemplateUtils.generateFileByTemplateName("ServiceTemplate", serviceFile, model);
 					FreemarkerTemplateUtils.generateFileByTemplateName("ServiceImplTemplate", serviceImplFile, model);
 				}

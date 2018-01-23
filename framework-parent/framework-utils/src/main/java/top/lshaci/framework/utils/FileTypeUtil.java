@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.utils.enums.FileType;
 import top.lshaci.framework.utils.exception.UtilException;
@@ -47,7 +50,7 @@ public abstract class FileTypeUtil {
 
 		String fileHead = getFileHeader(is);
 
-		if (fileHead == null || fileHead.length() == 0) {
+		if (StringUtils.isBlank(fileHead)) {
 			return null;
 		}
 
@@ -72,7 +75,7 @@ public abstract class FileTypeUtil {
 	 */
 	private static String bytesToHexString(byte[] src) {
 		StringBuilder stringBuilder = new StringBuilder();
-		if (src == null || src.length <= 0) {
+		if (ArrayUtils.isEmpty(src)) {
 			return null;
 		}
 		for (int i = 0; i < src.length; i++) {
