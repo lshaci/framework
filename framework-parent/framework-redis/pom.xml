@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>framework-web</artifactId>
+	<artifactId>framework-redis</artifactId>
 
-	<name>framework-web</name>
-	<description>framework web common</description>
+	<name>framework-redis</name>
+	<description>framework redis operation</description>
 
 	<parent>
 		<groupId>top.lshaci</groupId>
@@ -14,20 +14,19 @@
 	</parent>
 
 	<dependencies>
-		<!-- framework utils module -->
-		<dependency>
-			<groupId>top.lshaci</groupId>
-			<artifactId>framework-utils</artifactId>
-		</dependency>
-		<!-- spring boot web -->
+		<!-- spring boot data redis -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		<!-- fastjson -->
+		<!-- apache commons lang3 -->
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>top.lshaci</groupId>
+			<artifactId>framework-test</artifactId>
 		</dependency>
 	</dependencies>
 </project>

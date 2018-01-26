@@ -5,7 +5,7 @@
 
 	<groupId>top.lshaci</groupId>
 	<artifactId>framework-parent</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 
 	<packaging>pom</packaging>
 
@@ -21,6 +21,7 @@
 		<module>framework-common</module>
 		<module>framework-web</module>
 		<module>framework-archetype</module>
+		<module>framework-redis</module>
 	</modules>
 
 	<name>framework-parent</name>
@@ -85,6 +86,12 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework redis module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-redis</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- framework mybatis module -->
