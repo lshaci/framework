@@ -249,7 +249,7 @@ public class RedisDistributedLock {
 	private <R> void checkParameter(DistributedTask<R> task, String key, int retryCount, long delayTime, long expireTime) {
 		Assert.notNull(task, "The distributed task must not be null!");
 		Assert.isTrue(StringUtils.isNotBlank(key), "The resource key must not be blank!");
-		Assert.isTrue(retryCount > 0, "The retry count must be greater than zero!");
+		Assert.isTrue(retryCount > 0 || retryCount == -1, "The retry count must be greater than zero or equals -1!");
 		Assert.isTrue(delayTime > 0, "The delay time must be greater than zero!");
 		Assert.isTrue(expireTime > 0, "The expired time must be greater than zero!");
 	}
