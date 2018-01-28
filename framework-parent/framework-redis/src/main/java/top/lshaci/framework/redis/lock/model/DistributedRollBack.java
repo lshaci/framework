@@ -1,4 +1,4 @@
-package top.lshaci.framework.redis.lock;
+package top.lshaci.framework.redis.lock.model;
 
 /**
  * Distributed roll back interface
