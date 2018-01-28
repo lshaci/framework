@@ -65,11 +65,8 @@ public class DistributedTaskResult<D> {
 	 * @param e the exception of the task execute
 	 */
 	public DistributedTaskResult(String message, Exception e) {
-		this.status = false;
-		this.message = message;
+		this(message);
 		this.e = e;
 	}
-	
-
 
 }
