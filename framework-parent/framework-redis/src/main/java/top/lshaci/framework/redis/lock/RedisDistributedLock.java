@@ -246,7 +246,10 @@ public class RedisDistributedLock {
 				getLock = locker.tryLock(lockKey, expireTime);
 				if (getLock > 0) {
 					try {
+						log.debug("Distributed task execution begins. The source key is: " + key);
 						R data = task.run();
+						log.debug("Distributed task execution complete. The source key is: " + key);
+						
 						return new DistributedTaskResult<R>(data);
 					} catch (Exception ex) {
 						log.error("Failed to perform distributed task!", ex);
