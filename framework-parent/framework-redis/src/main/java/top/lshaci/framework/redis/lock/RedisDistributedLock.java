@@ -50,6 +50,14 @@ public class RedisDistributedLock {
 	 * Not fetch lock message
 	 */
 	private static final String NOT_FETCH_LOCK_MSG = "Not fetch lock for key={} retryCount={} delayTime(ms)={}.";
+	/**
+	 * Task begin message
+	 */
+	private static final String TASK_BEGIN_MSG = "Distributed task execution begins. The source key is: {}.";
+	/**
+	 * Task end message
+	 */
+	private static final String TASK_END_MSG = "Distributed task execution complete. The source key is: {}.";
 
 	/**
 	 * retry count of get lock
@@ -243,12 +251,12 @@ public class RedisDistributedLock {
 			long getLock = 0;
 			
 			while (getLock == 0 && (retryCount == -1 || retryCount-- > 0)) {
-				getLock = locker.tryLock(lockKey, expireTime);
+				getLock = getLock(lockKey, expireTime);
 				if (getLock > 0) {
 					try {
-						log.debug("Distributed task execution begins. The source key is: " + key);
+						log.debug(TASK_BEGIN_MSG, key);
 						R data = task.run();
-						log.debug("Distributed task execution complete. The source key is: " + key);
+						log.debug(TASK_END_MSG, key);
 						
 						return new DistributedTaskResult<R>(data);
 					} catch (Exception ex) {
@@ -269,6 +277,22 @@ public class RedisDistributedLock {
 			return new DistributedTaskResult<>(message, e);
 		}
 	}
+	
+	/**
+	 * Try to get lock
+	 * 
+	 * @param key the key of lock
+	 * @param expiredTime the expire time of lock
+	 * @return the exact moment when the lock expires
+	 */
+    private long getLock(final String key, long expiredTime) {
+        try {
+            return locker.tryLock(key, expiredTime);
+        } catch (Exception e) {
+            log.error("Try to get Lock Exception!", e);
+        }
+        return 0;
+    }
 
 	/**
 	 * Check the parameter
