@@ -90,6 +90,8 @@ public class RedisDistributedLock {
 	 * 
 	 * @param task the distributed task
 	 * @param key the resource key
+	 * @param <R> the task result data type
+	 * 
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -103,6 +105,8 @@ public class RedisDistributedLock {
 	 * @param task the distributed task
 	 * @param key the resource key
 	 * @param retryCount the retry count of get lock
+	 * @param <R> the task result data type
+	 * 
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -116,6 +120,8 @@ public class RedisDistributedLock {
 	 * @param task the distributed task
 	 * @param key the resource key
 	 * @param rollBack the distributed task roll back
+	 * @param <R> the task result data type
+	 *
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -130,6 +136,8 @@ public class RedisDistributedLock {
 	 * @param key the resource key
 	 * @param rollBack the distributed task roll back
 	 * @param isAsync whether or not asynchronous execution the roll back
+	 * @param <R> the task result data type
+	 *
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -144,6 +152,8 @@ public class RedisDistributedLock {
 	 * @param key the resource key
 	 * @param retryCount the retry count of get lock
 	 * @param expireTime the expired time of get lock
+	 * @param <R> the task result data type
+	 *
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -158,6 +168,8 @@ public class RedisDistributedLock {
 	 * @param key the resource key
 	 * @param retryCount the retry count of get lock
 	 * @param rollBack the distributed task roll back
+	 * @param <R> the task result data type
+	 *
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -173,6 +185,8 @@ public class RedisDistributedLock {
 	 * @param retryCount the retry count of get lock
 	 * @param rollBack the distributed task roll back
 	 * @param isAsync whether or not asynchronous execution the roll back
+	 * @param <R> the task result data type
+	 *
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -188,6 +202,8 @@ public class RedisDistributedLock {
 	 * @param retryCount the retry count of get lock
 	 * @param expireTime the expired time of get lock
 	 * @param rollBack the distributed task roll back
+	 * @param <R> the task result data type
+	 *
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -204,6 +220,8 @@ public class RedisDistributedLock {
 	 * @param expireTime the expired time of get lock
 	 * @param rollBack the distributed task roll back
 	 * @param isAsync whether or not asynchronous execution the roll back
+	 * @param <R> the task result data type
+	 *
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -221,6 +239,8 @@ public class RedisDistributedLock {
 	 * @param delayTime the delay time of get lock
 	 * @param expireTime the expired time of get lock
 	 * @param rollBack the distributed task roll back
+	 * @param <R> the task result data type
+	 *
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -239,6 +259,8 @@ public class RedisDistributedLock {
 	 * @param expireTime the expired time of get lock
 	 * @param rollBack the distributed task roll back
 	 * @param isAsync whether or not asynchronous execution the roll back
+	 * @param <R> the task result data type
+	 *
 	 * @return the distributed task result<br>
 	 * 	if distributed task execution success, the result status is <b>true</b>
 	 */
@@ -302,6 +324,7 @@ public class RedisDistributedLock {
 	 * @param retryCount the retry count of get lock
 	 * @param delayTime the delay time of get lock
 	 * @param expireTime the expired time of get lock
+	 * @param <R> the task result data type
 	 */
 	private <R> void checkParameter(DistributedTask<R> task, String key, int retryCount, long delayTime, long expireTime) {
 		Assert.notNull(task, "The distributed task must not be null!");
