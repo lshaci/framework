@@ -61,6 +61,7 @@ public class GlobalExceptionHandler {
         result.setStatus(false);
         result.setCode(errorCode.getCode());
         result.setMessage(errorCode.getMsg());
+        result.addParam("exceptionDetail", e.getMessage());
         
         return result;
     }

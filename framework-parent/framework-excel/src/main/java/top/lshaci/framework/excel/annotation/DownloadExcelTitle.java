@@ -36,5 +36,5 @@ public @interface DownloadExcelTitle {
 	 * 
 	 * @return the column width
 	 */
-	int columnWidth() default 3000;
+	int columnWidth() default 12 * 256;
 }
