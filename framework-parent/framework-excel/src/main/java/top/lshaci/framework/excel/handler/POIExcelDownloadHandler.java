@@ -75,6 +75,12 @@ public abstract class POIExcelDownloadHandler {
 			sheet.setDefaultColumnWidth(12);
 			// set first column width
 			sheet.setColumnWidth(0, 1500);
+			// set column width
+			for (int i = 0; i < titleOrder.size(); i++) {
+				DownloadOrder downloadOrder = titleOrder.get(i);
+				int columnWidth = downloadOrder.getColumnWidth();
+				sheet.setColumnWidth(i + 1, columnWidth == 0 ? 3000: columnWidth);
+			}
 			
 			// set column titles
 			setColumnTitles(workbook, sheet, titleOrder);
@@ -428,9 +434,11 @@ public abstract class POIExcelDownloadHandler {
 				title = field.getName();
 			}
 			int order = downloadExcelTitle.order();
+			int columnWidth = downloadExcelTitle.columnWidth();
 			
 			downloadOrder.setTitle(title);
 			downloadOrder.setOrder(order);
+			downloadOrder.setColumnWidth(columnWidth);
 		}
 		
 		

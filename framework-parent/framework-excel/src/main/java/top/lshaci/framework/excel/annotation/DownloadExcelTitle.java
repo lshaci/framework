@@ -30,4 +30,11 @@ public @interface DownloadExcelTitle {
 	 * @return the title order
 	 */
 	int order();
+	
+	/**
+	 * Get the column width(in units of 1/256th of a character width)
+	 * 
+	 * @return the column width
+	 */
+	int columnWidth() default 3000;
 }
