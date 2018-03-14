@@ -13,7 +13,7 @@ public class SessionUserUtils {
 	/**
 	 * The key of user in session
 	 */
-	private final static String USER_IN_SESSION = "top.lshaci.framework.web.utils.SessionUserUtils.userInSession";
+	private final static String USER_IN_SESSION = SessionUserUtils.class.getName() + ".userInSession";
 
 	/**
 	 * Set user in session
