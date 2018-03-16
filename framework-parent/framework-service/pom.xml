@@ -20,7 +20,7 @@
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-mybatis</artifactId>
 		</dependency>
-		<!--  -->
+		<!-- spring boot freemarker -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-freemarker</artifactId>
