@@ -23,10 +23,11 @@ public class ItextPdfUtils {
 
 	/**
 	 * Export PDF with html string <br>
+	 * Add two font files<b>(arialuni.ttf, simsun.ttc)</b>  to the classpath.<b>(Do not modify the file name.)</b> <br>
 	 * The html freemarker template need set body style,<br>
 	 * 				For example: <b>&ltbody style = "font-family: SimSun;"&gt</b> <br>
 	 * 				<b>The sample code: </b><br><br>
-	 * 				Map<String, Object> data = new HashMap<>();<br>
+	 * 				Map&ltString, Object&gt data = new HashMap&lt&gt();<br>
 	 * 				String htmlStr = FreemarkerUtils.build(Test.class, "/pdf").setTemplate("test.ftl").generate(data);<br>
 	 * 				ByteArrayOutputStream pdfOs = ItextPdfUtils.export(htmlStr);<br><br>
 	 * 				resp.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("测试", "UTF-8") + ".pdf");<br>
@@ -34,9 +35,10 @@ public class ItextPdfUtils {
 	 * 				ServletOutputStream outputStream = resp.getOutputStream();<br>
 	 * 				outputStream.write(pdfOs.toByteArray());<br>
 	 * @param htmlStr html string
+	 * @param fontPath the font path(Relative to the classpath)
 	 * @return the pdf ByteArrayOutputStream
 	 */
-	public static ByteArrayOutputStream export(String htmlStr) {
+	public static ByteArrayOutputStream export(String htmlStr, String fontPath) {
 		try (
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 		) {
@@ -47,7 +49,8 @@ public class ItextPdfUtils {
 			ITextFontResolver fontResolver = renderer.getFontResolver();
 			URL resource = Thread.currentThread().getContextClassLoader().getResource(".");
 			String path = resource.getPath().replaceAll("%20", " ");
-			String pdfPath = path + "pdf";
+			String pdfPath = path + fontPath;
+			
 			fontResolver.addFont(pdfPath + File.separator + "arialuni.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 			fontResolver.addFont(pdfPath + File.separator + "simsun.ttc", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 

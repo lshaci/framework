@@ -62,7 +62,7 @@ public class FreemarkerUtils {
 	 * @return the freemarker util instance
 	 */
 	public static <T> FreemarkerUtils build(Class<T> sourceClass, String templatePath) {
-		log.info("The template path is: ", templatePath);
+		log.info("The template path is: {}", templatePath);
 		return new FreemarkerUtils(sourceClass, templatePath);
 	}
 	
