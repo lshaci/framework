@@ -45,7 +45,7 @@ public class FreemarkerUtils {
 	 * @param sourceClass the class that uses this util
 	 * @param templatePath the template path
 	 */
-	private <T> FreemarkerUtils(Class<T> sourceClass, String templatePath) {
+	private FreemarkerUtils(Class<?> sourceClass, String templatePath) {
 		this.configuration = new Configuration(Configuration.VERSION_2_3_22);
 		
 		configuration.setTemplateLoader(new ClassTemplateLoader(sourceClass, templatePath));
@@ -61,7 +61,7 @@ public class FreemarkerUtils {
 	 * @param templatePath the template path
 	 * @return the freemarker util instance
 	 */
-	public static <T> FreemarkerUtils build(Class<T> sourceClass, String templatePath) {
+	public static FreemarkerUtils build(Class<?> sourceClass, String templatePath) {
 		log.info("The template path is: {}", templatePath);
 		return new FreemarkerUtils(sourceClass, templatePath);
 	}

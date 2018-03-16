@@ -25,9 +25,9 @@ public class ItextPdfUtils {
 	 * Export PDF with html string <br>
 	 * Add two font files<b>(arialuni.ttf, simsun.ttc)</b>  to the classpath.<b>(Do not modify the file name.)</b> <br>
 	 * The html freemarker template need set body style,<br>
-	 * 				For example: <b>&ltbody style = "font-family: SimSun;"&gt</b> <br>
+	 * 				For example: <b>&lt;body style = "font-family: SimSun;"&gt;</b> <br>
 	 * 				<b>The sample code: </b><br><br>
-	 * 				Map&ltString, Object&gt data = new HashMap&lt&gt();<br>
+	 * 				Map&lt;String, Object&gt; data = new HashMap&lt;&gt;();<br>
 	 * 				String htmlStr = FreemarkerUtils.build(Test.class, "/pdf").setTemplate("test.ftl").generate(data);<br>
 	 * 				ByteArrayOutputStream pdfOs = ItextPdfUtils.export(htmlStr);<br><br>
 	 * 				resp.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("测试", "UTF-8") + ".pdf");<br>
