@@ -22,6 +22,7 @@
 		<module>framework-web</module>
 		<module>framework-archetype</module>
 		<module>framework-redis</module>
+		<module>framework-pdfUtils</module>
 	</modules>
 
 	<name>framework-parent</name>
@@ -54,6 +55,7 @@
 		<spring.cloud.version>Edgware.RELEASE</spring.cloud.version>
 		<tkmybatis.spring.boot.version>1.1.5</tkmybatis.spring.boot.version>
 		<pagehelper.spring.boot.version>1.2.3</pagehelper.spring.boot.version>
+		<flying.saucer.pdf.itext5.version>9.0.6</flying.saucer.pdf.itext5.version>
 	</properties>
 
 	<dependencies>
@@ -128,6 +130,12 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-utils</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- framework pdf utils module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-pdfUtils</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- framework excel module -->
@@ -207,6 +215,12 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-collections4</artifactId>
 				<version>${commons.collections4.version}</version>
+			</dependency>
+			<!-- flying saucer pdf itext5 -->
+			<dependency>
+				<groupId>org.xhtmlrenderer</groupId>
+				<artifactId>flying-saucer-pdf-itext5</artifactId>
+				<version>${flying.saucer.pdf.itext5.version}</version>
 			</dependency>
 			<!-- spring boot dependencies -->
 			<dependency>
