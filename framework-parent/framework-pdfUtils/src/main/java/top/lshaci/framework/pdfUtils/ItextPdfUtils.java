@@ -87,11 +87,10 @@ public class ItextPdfUtils {
 		if (!fontFile.exists()) {
 			log.info("Simsun font not exist. Create it.");
 			String simsunPath = FONT_PATH + SIMSUN_NAME;
-			log.error(simsunPath);
+			log.info("The simsun font path is: " + simsunPath);
 			try (
 				InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(simsunPath);
 			) {
-				ItextPdfUtils.class.getResourceAsStream(simsunPath);
 				fontFile.getParentFile().mkdirs();
 				OutputStream fontFileOs = new FileOutputStream(fontFile);
 				byte[] buffer = new byte[4096];
