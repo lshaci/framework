@@ -12,6 +12,10 @@ import lombok.Getter;
 public enum ErrorCode {
 	
 	/**
+	 * top.lshaci.framework.web.exception.NotLoginException
+	 */
+	NOT_LOGIN_EXCEPTION(40001, "登录失效，请重新登录", "top.lshaci.framework.web.exception.NotLoginException"),
+	/**
 	 * top.lshaci.framework.common.exception.BaseException
 	 */
 	INTERNAL_PROGRAM_ERROR(50000, "程序内部错误，操作失败", "top.lshaci.framework.common.exception.BaseException"),

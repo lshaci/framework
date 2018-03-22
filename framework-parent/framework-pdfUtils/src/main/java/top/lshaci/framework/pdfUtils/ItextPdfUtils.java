@@ -2,7 +2,9 @@ package top.lshaci.framework.pdfUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.net.URL;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -20,10 +22,19 @@ import top.lshaci.framework.common.exception.BaseException;
  */
 @Slf4j
 public class ItextPdfUtils {
+	
+	/**
+	 * simsun font name
+	 */
+	private final static String SIMSUN_NAME = "simsun.ttc";
+	
+	/**
+	 * font package
+	 */
+	private final static String FONT_PACKAGE = "com.xdbigdata.framework.pdfUtils.fonts";
 
 	/**
 	 * Export PDF with html string <br>
-	 * Add two font files<b>(arialuni.ttf, simsun.ttc)</b>  to the classpath.<b>(Do not modify the file name.)</b> <br>
 	 * The html freemarker template need set body style,<br>
 	 * 				For example: <b>&lt;body style = "font-family: SimSun;"&gt;</b> <br>
 	 * 				<b>The sample code: </b><br><br>
@@ -35,7 +46,7 @@ public class ItextPdfUtils {
 	 * 				ServletOutputStream outputStream = resp.getOutputStream();<br>
 	 * 				outputStream.write(pdfOs.toByteArray());<br>
 	 * @param htmlStr html string
-	 * @param fontPath the font path(Relative to the classpath)
+	 * @param fontPath Save the file path for the font.
 	 * @return the pdf ByteArrayOutputStream
 	 */
 	public static ByteArrayOutputStream export(String htmlStr, String fontPath) {
@@ -47,13 +58,13 @@ public class ItextPdfUtils {
 
 			// Solve the problem of Chinese support.
 			ITextFontResolver fontResolver = renderer.getFontResolver();
-			URL resource = Thread.currentThread().getContextClassLoader().getResource(".");
-			String path = resource.getPath().replaceAll("%20", " ");
-			String pdfPath = path + fontPath;
+			String sysPath = createSimsunFont(fontPath);
+	        if("linux".equals(getCurrentOperatingSystem())){  
+	            fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);    
+	        }else{  
+	            fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);  
+	        } 
 			
-			fontResolver.addFont(pdfPath + File.separator + "arialuni.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-			fontResolver.addFont(pdfPath + File.separator + "simsun.ttc", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
 			renderer.layout();
 			renderer.createPDF(os, true);
 			return os;
@@ -62,4 +73,46 @@ public class ItextPdfUtils {
 			throw new BaseException("Error exporting PDF!", e);
 		}
 	}
+
+	/**
+	 * Create simsun font
+	 * 
+	 * @param fontPath Save the file path for the font.
+	 * @return simsun font file path
+	 */
+	private static String createSimsunFont(String fontPath) {
+		String sysPath = fontPath + File.separator + SIMSUN_NAME;
+		File fontFile = new File(sysPath);
+		
+		if (!fontFile.exists()) {
+			log.info("Simsun font not exist. Create it.");
+			String simsunPath = FONT_PACKAGE.replace(".", File.separator) + File.separator + SIMSUN_NAME;
+			try (
+				InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(simsunPath);
+			) {
+				fontFile.getParentFile().mkdirs();
+				OutputStream fontFileOs = new FileOutputStream(fontFile);
+				byte[] buffer = new byte[4096];
+				int ch;
+				while ((ch = stream.read(buffer)) != -1) {
+					fontFileOs.write(buffer, 0, ch);
+				}
+				fontFileOs.flush();
+				fontFileOs.close();
+			}catch (Exception e) {
+				log.error("Create font failure.", e);
+				throw new BaseException("Create font failure.", e);
+			}
+		}
+		return sysPath;
+	}
+	
+	/**
+	 * Get current operating system
+	 * 
+	 * @return operating system name
+	 */
+	private static String getCurrentOperatingSystem(){  
+    	return System.getProperty("os.name").toLowerCase();  
+    }
 }
