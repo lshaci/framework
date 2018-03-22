@@ -29,9 +29,9 @@ public class ItextPdfUtils {
 	private final static String SIMSUN_NAME = "simsun.ttc";
 	
 	/**
-	 * font package
+	 * font path
 	 */
-	private final static String FONT_PACKAGE = "com.xdbigdata.framework.pdfUtils.fonts";
+	private final static String FONT_PATH = "fonts/";
 
 	/**
 	 * Export PDF with html string <br>
@@ -86,10 +86,12 @@ public class ItextPdfUtils {
 		
 		if (!fontFile.exists()) {
 			log.info("Simsun font not exist. Create it.");
-			String simsunPath = FONT_PACKAGE.replace(".", File.separator) + File.separator + SIMSUN_NAME;
+			String simsunPath = FONT_PATH + SIMSUN_NAME;
+			log.error(simsunPath);
 			try (
 				InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(simsunPath);
 			) {
+				ItextPdfUtils.class.getResourceAsStream(simsunPath);
 				fontFile.getParentFile().mkdirs();
 				OutputStream fontFileOs = new FileOutputStream(fontFile);
 				byte[] buffer = new byte[4096];
@@ -115,4 +117,5 @@ public class ItextPdfUtils {
 	private static String getCurrentOperatingSystem(){  
     	return System.getProperty("os.name").toLowerCase();  
     }
+	
 }
