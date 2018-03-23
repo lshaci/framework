@@ -87,6 +87,10 @@ public enum ErrorCode {
      * java.util.concurrent.CancellationException
      */
     PARSE_EXCEPTION(50019, "日期格式错误", "java.text.ParseException"),
+    /**
+     * com.mysql.jdbc.MysqlDataTruncation
+     */
+    MYSQL_DATA_TRUNCATION_EXCEPTION(50020, "服务器不能接收所有数据", "com.mysql.jdbc.MysqlDataTruncation"),
     ;
 	
 	private int code;
