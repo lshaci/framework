@@ -7,28 +7,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The sheet name of the excel corresponding to the entity
+ * The first title name of the excel corresponding to the entity
  * 
  * @author lshaci
- * @since 0.0.1
- * @version 0.0.4
+ * @since 0.0.4
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DownloadExcelSheet {
+public @interface DownloadExcelFirstTitle {
 
 	/**
-	 * Get the excel sheet name
+	 * Get the excel first title name
 	 * 
-	 * @return the excel sheet name
+	 * @return the excel first title name
 	 */
-	String sheetName();
+	String name();
 	
 	/**
-	 * Get the excel font name
+	 * Get the excel first title height(Set the height in "twips" or 1/20th of a point.)
 	 * 
-	 * @return the excel font name
+	 * @return the excel first title height
 	 */
-	String fontName() default "宋体";
+	short height() default 50 * 20;
 }

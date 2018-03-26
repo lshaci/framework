@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -27,6 +29,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.DownloadConvert;
+import top.lshaci.framework.excel.annotation.DownloadExcelFirstTitle;
 import top.lshaci.framework.excel.annotation.DownloadExcelSheet;
 import top.lshaci.framework.excel.annotation.DownloadExcelTitle;
 import top.lshaci.framework.excel.annotation.DownloadIgnore;
@@ -40,9 +43,25 @@ import top.lshaci.framework.utils.ReflectionUtils;
  * 
  * @author lshaci
  * @since 0.0.3
+ * @version 0.0.4
  */
 @Slf4j
 public abstract class POIExcelDownloadHandler {
+	
+	/**
+	 * The current row number of write data
+	 */
+	private final static ThreadLocal<Integer> CURRENT_ROW_NUMBER = new ThreadLocal<>();
+	
+	/**
+	 * The excel font name
+	 */
+	private final static ThreadLocal<String> FONT_NAME = new ThreadLocal<>();
+	
+	/**
+	 * The default font name
+	 */
+	private final static String DEFAULT_FONT_NAME = "宋体";
 
 	/**
 	 * Change excel file to entity list
@@ -57,6 +76,11 @@ public abstract class POIExcelDownloadHandler {
 		
 		List<DownloadOrder> titleOrder = getTitleOrder(entityClass);
 		List<String[]> rowDatas = entities2StringArrays(entities, titleOrder, entityClass);
+		
+		if (CollectionUtils.isEmpty(titleOrder)) {
+			log.error("The excel title is empty!");
+			throw new ExcelHandlerException("The excel title must not be empty!");
+		}
 		
 		if (CollectionUtils.isEmpty(rowDatas)) {
 			log.error("The content is empty!");
@@ -82,6 +106,12 @@ public abstract class POIExcelDownloadHandler {
 				sheet.setColumnWidth(i + 1, columnWidth == 0 ? 3000: columnWidth);
 			}
 			
+			// set current row number
+			CURRENT_ROW_NUMBER.set(0);
+			
+			// set first title
+			setFirstTitle(workbook, sheet, entityClass, titleOrder.size());
+			
 			// set column titles
 			setColumnTitles(workbook, sheet, titleOrder);
 			
@@ -104,9 +134,10 @@ public abstract class POIExcelDownloadHandler {
 	 * @param rowDatas the row datas
 	 */
 	private static void setSheetRows(XSSFWorkbook workbook, XSSFSheet sheet, List<String[]> rowDatas) {
+		int currentRowNumber = CURRENT_ROW_NUMBER.get();
 		XSSFCellStyle contentStyle = createContentStyle(workbook);
 		for (int i = 0; i < rowDatas.size(); i++) {
-			XSSFRow row = sheet.createRow(1 + i);
+			XSSFRow row = sheet.createRow(currentRowNumber++);
 			row.setHeight((short) 320);
 			String[] rowData = rowDatas.get(i);
 			for (int j = 0; j <= rowData.length; j++) {
@@ -115,6 +146,7 @@ public abstract class POIExcelDownloadHandler {
 				cell.setCellValue(value);
 				cell.setCellStyle(contentStyle);
 			}
+			CURRENT_ROW_NUMBER.set(currentRowNumber);
 		}
 	}
 	
@@ -138,10 +170,83 @@ public abstract class POIExcelDownloadHandler {
 		XSSFFont font = workbook.createFont();
 		font.setColor(new XSSFColor(Color.BLACK));
 		font.setFontHeightInPoints((short) 10);
-		font.setFontName("宋体");
+		font.setFontName(FONT_NAME.get());
 		// set font
 		style.setFont(font);
 
+		return style;
+	}
+	
+	/**
+	 * Set excel first title
+	 * 
+	 * @param workbook the excel work book
+	 * @param sheet the excel sheet of the work book
+	 * @param entityClass the entity class
+	 * @param size the column title size
+	 */
+	private static void setFirstTitle(XSSFWorkbook workbook, XSSFSheet sheet, Class<?> entityClass, int size) {
+		DownloadExcelFirstTitle firstTitle = entityClass.getAnnotation(DownloadExcelFirstTitle.class);
+		if (firstTitle != null) {
+			String firstTitleName = firstTitle.name();
+			if (StringUtils.isNoneBlank(firstTitleName)) {
+				int currentRowNumber = CURRENT_ROW_NUMBER.get();
+				XSSFRow row = sheet.createRow(currentRowNumber++);
+				row.setHeight(firstTitle.height());
+				CellRangeAddress region = new CellRangeAddress(0, 0, 0, size);
+				sheet.addMergedRegion(region);
+				XSSFCell cell = row.createCell(0);
+				cell.setCellValue(firstTitleName);
+				cell.setCellStyle(createFirstTitleStyle(workbook));
+				
+				// set merge cell border
+				setMergeCellBorder(region, sheet);
+				CURRENT_ROW_NUMBER.set(currentRowNumber );
+			}
+		}
+	}
+	
+	/**
+	 * Set merge cell border
+	 * 
+	 * @param region the merger cell region
+	 * @param sheet the excel sheet of the work book
+	 */
+	private static void setMergeCellBorder(CellRangeAddress region, XSSFSheet sheet) {
+		RegionUtil.setBorderTop(BorderStyle.THIN, region, sheet);
+		RegionUtil.setBorderRight(BorderStyle.THIN, region, sheet);
+		RegionUtil.setBorderBottom(BorderStyle.THIN, region, sheet);
+		RegionUtil.setBorderLeft(BorderStyle.THIN, region, sheet);
+	}
+	
+	/**
+	 * Create first title style
+	 * 
+	 * @param workbook the excel work book
+	 * @return the row content style
+	 */
+	private static XSSFCellStyle createFirstTitleStyle(XSSFWorkbook workbook) {
+		XSSFCellStyle style = workbook.createCellStyle();
+		
+		// 使用 \n 换行设置为true
+		style.setWrapText(true);
+		
+		// set fill fore ground color
+		style.setFillForegroundColor(new XSSFColor(Color.WHITE));
+		// set cell border
+		setBorder(style);
+		// set the horizontal and vertical center.
+		style.setAlignment(HorizontalAlignment.CENTER);
+		style.setVerticalAlignment(VerticalAlignment.CENTER);
+		// create a font 
+		XSSFFont font = workbook.createFont();
+		font.setColor(new XSSFColor(Color.BLACK));
+		font.setFontHeightInPoints((short) 20);
+		font.setBold(true);
+		font.setFontName(FONT_NAME.get());
+		// set font
+		style.setFont(font);
+		
 		return style;
 	}
 	
@@ -153,7 +258,8 @@ public abstract class POIExcelDownloadHandler {
 	 * @param titleOrder the titles
 	 */
 	private static void setColumnTitles(XSSFWorkbook workbook, XSSFSheet sheet, List<DownloadOrder> titleOrder) {
-		XSSFRow row = sheet.createRow(0);
+		int currentRowNumber = CURRENT_ROW_NUMBER.get();
+		XSSFRow row = sheet.createRow(currentRowNumber++);
 		row.setHeight((short) 360);
 		XSSFCellStyle columnTitleStyle = createColumnTitleStyle(workbook);
 		for (int i = 0; i <= titleOrder.size(); i++) {
@@ -162,6 +268,7 @@ public abstract class POIExcelDownloadHandler {
 			cell.setCellValue(value);
 			cell.setCellStyle(columnTitleStyle);
 		}
+		CURRENT_ROW_NUMBER.set(currentRowNumber);
 	}
 	
 	/**
@@ -184,7 +291,7 @@ public abstract class POIExcelDownloadHandler {
 		font.setColor(new XSSFColor(Color.BLACK));
 		font.setFontHeightInPoints((short) 10);
 		font.setBold(true);
-		font.setFontName("宋体");
+		font.setFontName(FONT_NAME.get());
 		// set font
 		style.setFont(font);
 		
@@ -201,6 +308,26 @@ public abstract class POIExcelDownloadHandler {
 		style.setBorderLeft(BorderStyle.THIN);
 		style.setBorderRight(BorderStyle.THIN);
 		style.setBorderTop(BorderStyle.THIN);
+	}
+	
+	/**
+	 * Get excel sheet name of the entity class
+	 * 
+	 * @param entityClass the entity class
+	 * @return the excel sheet name
+	 */
+	private static String getSheetName(Class<?> entityClass) {
+		DownloadExcelSheet downloadExcelSheet = entityClass.getAnnotation(DownloadExcelSheet.class);
+		String sheetName = entityClass.getSimpleName();
+		if (downloadExcelSheet != null) {
+			sheetName = downloadExcelSheet.sheetName();
+			String fontName = downloadExcelSheet.fontName();
+			fontName = StringUtils.isNotBlank(fontName) ? fontName.trim() : DEFAULT_FONT_NAME;
+			FONT_NAME.set(fontName);
+			
+			sheetName = StringUtils.isNotBlank(sheetName) ? sheetName.trim() : entityClass.getSimpleName();
+		}
+		return sheetName;
 	}
 	
 	/**
@@ -309,6 +436,28 @@ public abstract class POIExcelDownloadHandler {
 	}
 	
 	/**
+	 * Create excel relation model by target field
+	 * 
+	 * @param field the target field
+	 * @param convertClassCache the convert class cache
+	 * @return the excel relation model
+	 */
+	private static ExcelRelationModel createExcelRelationModel(Field field, Map<Class<?>, Object> convertClassCache) {
+		ExcelRelationModel model = new ExcelRelationModel(field);
+		
+		DownloadConvert convert = field.getAnnotation(DownloadConvert.class);
+		
+		if (convert != null) {
+			Object convertInstance = getConvertInstance(convertClassCache, convert);
+			Method convertMethod = getConvertMethod(convert, field.getType());
+			model.setConvertInstance(convertInstance);
+			model.setConvertMethod(convertMethod);
+		}
+		
+		return model;
+	}
+	
+	/**
 	 * Get the field convert instance
 	 * 
 	 * @param convertClassCache the convert class cache
@@ -356,28 +505,6 @@ public abstract class POIExcelDownloadHandler {
 	}
 	
 	/**
-	 * Create excel relation model by target field
-	 * 
-	 * @param field the target field
-	 * @param convertClassCache the convert class cache
-	 * @return the excel relation model
-	 */
-	private static ExcelRelationModel createExcelRelationModel(Field field, Map<Class<?>, Object> convertClassCache) {
-		ExcelRelationModel model = new ExcelRelationModel(field);
-		
-		DownloadConvert convert = field.getAnnotation(DownloadConvert.class);
-		
-		if (convert != null) {
-			Object convertInstance = getConvertInstance(convertClassCache, convert);
-			Method convertMethod = getConvertMethod(convert, field.getType());
-			model.setConvertInstance(convertInstance);
-			model.setConvertMethod(convertMethod);
-		}
-		
-		return model;
-	}
-
-	/**
 	 * Get excel order list of the entity class
 	 * 
 	 * @param entityClass the entity class
@@ -395,22 +522,6 @@ public abstract class POIExcelDownloadHandler {
 				.map(f -> createDownloadOrder(f))
 				.sorted()
 				.collect(Collectors.toList());
-	}
-	
-	/**
-	 * Get excel sheet name of the entity class
-	 * 
-	 * @param entityClass the entity class
-	 * @return the excel sheet name
-	 */
-	private static String getSheetName(Class<?> entityClass) {
-		DownloadExcelSheet downloadExcelSheet = entityClass.getAnnotation(DownloadExcelSheet.class);
-		if (downloadExcelSheet == null || StringUtils.isEmpty(downloadExcelSheet.value())) {
-			return entityClass.getSimpleName();
-		} else {
-			return downloadExcelSheet.value();
-		}
-		
 	}
 	
 	/**
