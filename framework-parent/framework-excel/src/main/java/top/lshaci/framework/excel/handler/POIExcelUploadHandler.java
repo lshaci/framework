@@ -67,9 +67,38 @@ public abstract class POIExcelUploadHandler {
 		checkParams(excelFile, entityClass);
 		
 		FileType fileType = getFileType(excelFile);
+		Workbook workBook = getWorkBook(excelFile, fileType);
 		
+		return workBook2Entities(workBook, entityClass);
+	}
+	
+	/**
+	 * Change excel file to entity list
+	 * 
+	 * @param is the excel file input stream
+	 * @param entityClass the entity class
+	 * @return the entity list
+	 */
+	public static <E> List<E> excel2Entities(InputStream is, Class<E> entityClass) {
+		checkParams(is, entityClass);
+		
+		FileType fileType = getFileType(is);
+		Workbook workBook = getWorkBook(is, fileType);
+		
+		return workBook2Entities(workBook, entityClass);
+	}
+	
+	/**
+	 * Change excel work book to entity list
+	 * 
+	 * @param is the excel file input stream
+	 * @param entityClass the entity class
+	 * @return the entity list
+	 */
+	private static <E> List<E> workBook2Entities(Workbook workBook, Class<E> entityClass) {
 		Map<String, ExcelRelationModel> relations = handlerRelations(entityClass);
-		try (Workbook workBook = getWorkBook(excelFile, fileType);) {
+		
+		try {
 			// The number of sheet
 			int sheets = workBook.getNumberOfSheets();
 			
@@ -254,9 +283,26 @@ public abstract class POIExcelUploadHandler {
 	 * @return the excel work book
 	 */
 	private static Workbook getWorkBook(File excelFile, FileType fileType) {
+		try (
+			InputStream is = new FileInputStream(excelFile);
+		) {
+			return getWorkBook(is, fileType);
+		} catch (Exception e) {
+			log.error("Create excle work book is error!", e);
+			throw new ExcelHandlerException("Create excle work book is error!");
+		}
+	}
+	
+	/**
+	 * Get the excel work book on the basis of file type
+	 * 
+	 * @param is the excel file input stream
+	 * @param fileType the excel file type
+	 * @return the excel work book
+	 */
+	private static  Workbook getWorkBook(InputStream is, FileType fileType) {
 		Workbook workbook = null;
 		try {
-			InputStream is = new FileInputStream(excelFile);
 			/*
 			 *  Constructs a work book on the basis of file type
 			 */
@@ -269,11 +315,34 @@ public abstract class POIExcelUploadHandler {
 		} catch (IOException e) {
 			log.error("Create excle work book is error!", e);
 			throw new ExcelHandlerException("Create excle work book is error!");
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				log.warn("Close excel file input stream error, ignore this exception!");
+			}
 		}
 		
 		Objects.requireNonNull(workbook, "The excle work book is must not be null!");
 		
 		return workbook;
+	}
+
+	/**
+	 * Get the file type and check the excel file
+	 * 
+	 * @param is the excel file input stream
+	 * @return the file type{@link FileType}
+	 */
+	private static FileType getFileType(InputStream is) {
+		Objects.requireNonNull(is, "The excel file input stream must not be null!");
+		
+		
+		FileType fileType = FileTypeUtil.getType(is);
+		if (ALLOW_FILE_TYPES.contains(fileType)) {
+			return fileType;
+		}
+		throw new ExcelHandlerException("The file type is not excel!");
 	}
 	
 	/**
@@ -321,9 +390,8 @@ public abstract class POIExcelUploadHandler {
 		
 		return Arrays.stream(fields).collect(Collectors.toMap(
 				f -> getFieldTitleName(f), 
-				f -> {
-					return createExcelRelationModel(f, convertClassCache);
-				}));
+				f -> createExcelRelationModel(f, convertClassCache)
+			));
 	}
 	
 	/**
@@ -416,6 +484,17 @@ public abstract class POIExcelUploadHandler {
 	 */
 	private static <E> void checkParams(File excelFile, Class<E> entityClass) {
 		Objects.requireNonNull(excelFile, "The excel file must not be null!");
+		Objects.requireNonNull(entityClass, "The entity class must not be null!");
+	}
+	
+	/**
+	 * Check the parameter
+	 * 
+	 * @param is the excel file input stream
+	 * @param entityClass the entity class
+	 */
+	private static <E> void checkParams(InputStream is, Class<E> entityClass) {
+		Objects.requireNonNull(is, "The excel file input stream must not be null!");
 		Objects.requireNonNull(entityClass, "The entity class must not be null!");
 	}
 }
