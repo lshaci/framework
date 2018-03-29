@@ -2,7 +2,6 @@ package top.lshaci.framework.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -29,13 +28,18 @@ public abstract class FileTypeUtil {
 	 * @param file the file
 	 * @return the file type
 	 * 
-	 * @throws FileNotFoundException  if the file not found throw this exception
-	 * @throws IOException if read the file has exception throw this
+	 * @throws UtilException if read the file has exception throw this
 	 */
-	public static FileType getType(File file) throws FileNotFoundException, IOException {
+	public static FileType getType(File file) throws UtilException {
 		Objects.requireNonNull(file, "The file must not be null");
-
-		return getType(new FileInputStream(file));
+		try (
+			InputStream is = new FileInputStream(file);
+		) {
+			return getType(is);
+		} catch (Exception e) {
+			log.error("Read file has error!", e);
+			throw new UtilException("Read file has error!", e);
+		}
 	}
 
 	/**

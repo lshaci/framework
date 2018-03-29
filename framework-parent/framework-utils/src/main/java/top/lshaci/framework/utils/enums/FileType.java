@@ -91,7 +91,7 @@ public enum FileType {
 	/**
 	 * MS Word/Excel 2007.
 	 */
-	XLSX_DOCX("504B030414000600080000002100"),
+	XLSX_DOCX("504B03041400"),
 
 	/**
 	 * Visio

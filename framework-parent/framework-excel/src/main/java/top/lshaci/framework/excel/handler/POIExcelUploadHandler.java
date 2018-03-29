@@ -1,5 +1,7 @@
 package top.lshaci.framework.excel.handler;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import top.lshaci.framework.excel.model.ExcelRelationModel;
 import top.lshaci.framework.utils.DateUtils;
 import top.lshaci.framework.utils.FileTypeUtil;
 import top.lshaci.framework.utils.ReflectionUtils;
+import top.lshaci.framework.utils.StreamUtils;
 import top.lshaci.framework.utils.StringConverterUtils;
 import top.lshaci.framework.utils.enums.FileType;
 
@@ -82,9 +85,10 @@ public abstract class POIExcelUploadHandler {
 	 */
 	public static <E> List<E> excel2Entities(InputStream is, Class<E> entityClass) {
 		checkParams(is, entityClass);
+		ByteArrayOutputStream buffer = StreamUtils.copyInputStream(is);
 		
-		FileType fileType = getFileType(is);
-		Workbook workBook = getWorkBook(is, fileType);
+		FileType fileType = getFileType(new ByteArrayInputStream(buffer.toByteArray()));
+		Workbook workBook = getWorkBook(new ByteArrayInputStream(buffer.toByteArray()), fileType);
 		
 		return workBook2Entities(workBook, entityClass);
 	}
@@ -362,16 +366,11 @@ public abstract class POIExcelUploadHandler {
 			throw new ExcelHandlerException("The file suffix name is not excel!");
 		}
 		
-		try {
-			FileType fileType = FileTypeUtil.getType(excelFile);
-			if (ALLOW_FILE_TYPES.contains(fileType)) {
-				return fileType;
-			}
-			throw new ExcelHandlerException("The file type is not excel!");
-		} catch (IOException e) {
-			log.error("Get file header has error!", e);
-			throw new ExcelHandlerException("Get file header has error!");
+		FileType fileType = FileTypeUtil.getType(excelFile);
+		if (ALLOW_FILE_TYPES.contains(fileType)) {
+			return fileType;
 		}
+		throw new ExcelHandlerException("The file type is not excel!");
 	}
 	
 	/**
