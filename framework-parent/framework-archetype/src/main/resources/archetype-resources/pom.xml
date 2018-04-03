@@ -19,6 +19,11 @@
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-service</artifactId>
 		</dependency>
+		<!-- top lshaci framework web module -->
+		<dependency>
+			<groupId>top.lshaci</groupId>
+			<artifactId>framework-web</artifactId>
+		</dependency>
 		<!-- top lshaci framework swagger module -->
 		<dependency>
 			<groupId>top.lshaci</groupId>

@@ -20,8 +20,11 @@ import top.lshaci.framework.web.utils.SessionUserUtils;
  * @since 0.0.4
  */
 @Slf4j
-public class LoginInterceptor implements HandlerInterceptor {
+public abstract class LoginInterceptor implements HandlerInterceptor {
 	
+	/**
+	 * login invalid, redirect url.
+	 */
 	private String redirectUrl;
 
 	@Override
@@ -39,8 +42,13 @@ public class LoginInterceptor implements HandlerInterceptor {
 			log.warn("Not login.");
 			if (isAjaxRequest(request)) {
 				log.debug("This request is an ajax request.");
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json; charset=utf-8");
+				
 				JsonResponse jsonResponse = new JsonResponse(false, ErrorCode.NOT_LOGIN_EXCEPTION.getMsg());
 				jsonResponse.setCode(ErrorCode.NOT_LOGIN_EXCEPTION.getCode());
+				jsonResponse.addParam("redirectUrl", redirectUrl);
+				
 				log.warn("No login, response json.");
 				response.getWriter().write(JSON.toJSONString(jsonResponse));
 			} else {
@@ -80,12 +88,14 @@ public class LoginInterceptor implements HandlerInterceptor {
 	/**
 	 * Determine whether an ajax request is made.
 	 * 
-	 * @param request the http servlet request
+	 * @param request the http servlet request<br><br>
+	 * <i><b>For example:</b></i><br>
+	 * <code>
+	 * 		request.getHeader("x-requested-with") != null && 
+	 * 		request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest")
+	 * </code>
 	 * @return if true means this request is ajax request
 	 */
-	private boolean isAjaxRequest(HttpServletRequest request) {
-		// If it is an ajax request, the request header has (x-requested-with)
-		return request.getHeader("x-requested-with") != null && 
-				request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest");
-	}
+	protected abstract boolean isAjaxRequest(HttpServletRequest request);
+	
 }
