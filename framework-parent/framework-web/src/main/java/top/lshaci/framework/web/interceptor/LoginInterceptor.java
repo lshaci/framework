@@ -41,7 +41,7 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 		if (loginUser == null) {
 			log.warn("Not login.");
 			if (isAjaxRequest(request)) {
-				log.debug("This request is an ajax request.");
+				log.info("This request is an ajax request.");
 				response.setCharacterEncoding("UTF-8");
 				response.setContentType("application/json; charset=utf-8");
 				
