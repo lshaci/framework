@@ -9,6 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.web.enums.ContentType;
+import top.lshaci.framework.web.enums.Encoding;
 import top.lshaci.framework.web.enums.ErrorCode;
 import top.lshaci.framework.web.model.JsonResponse;
 import top.lshaci.framework.web.utils.SessionUserUtils;
@@ -42,8 +44,9 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 			log.warn("Not login.");
 			if (isAjaxRequest(request)) {
 				log.info("This request is an ajax request.");
-				response.setCharacterEncoding("UTF-8");
-				response.setContentType("application/json; charset=utf-8");
+				
+				response.setCharacterEncoding(Encoding.UTF_8.getName());
+				response.setContentType(ContentType.JSON_UTF_8.getName());
 				
 				JsonResponse jsonResponse = new JsonResponse(false, ErrorCode.NOT_LOGIN_EXCEPTION.getMsg());
 				jsonResponse.setCode(ErrorCode.NOT_LOGIN_EXCEPTION.getCode());

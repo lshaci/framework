@@ -2,6 +2,8 @@ package top.lshaci.framework.web.model;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import top.lshaci.framework.common.constants.Constants;
 
@@ -54,6 +56,8 @@ public abstract class PageQuery implements Serializable {
      * @param keyword the key word
      */
     public void setKeyword(String keyword) {
-        this.keyword = keyword;
+    	if (StringUtils.isNotBlank(keyword)) {
+    		this.keyword = keyword;
+		}
     }
 }
