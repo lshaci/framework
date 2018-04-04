@@ -94,7 +94,7 @@ public abstract class AbstractLoginInterceptor implements HandlerInterceptor {
 	 * @param request the http servlet request<br><br>
 	 * <i><b>For example:</b></i><br>
 	 * <code>
-	 * 		request.getHeader("x-requested-with") != null && 
+	 * 		request.getHeader("x-requested-with") != null &amp;&amp; 
 	 * 		request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest")
 	 * </code>
 	 * @return if true means this request is ajax request
