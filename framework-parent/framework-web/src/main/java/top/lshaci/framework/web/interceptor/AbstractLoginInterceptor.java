@@ -22,7 +22,7 @@ import top.lshaci.framework.web.utils.SessionUserUtils;
  * @since 0.0.4
  */
 @Slf4j
-public abstract class LoginInterceptor implements HandlerInterceptor {
+public abstract class AbstractLoginInterceptor implements HandlerInterceptor {
 	
 	/**
 	 * login invalid, redirect url.
@@ -83,7 +83,7 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 	 * @param redirectUrl the redirect url
 	 * @return this
 	 */
-	public LoginInterceptor setRedirectUrl(String redirectUrl) {
+	public AbstractLoginInterceptor setRedirectUrl(String redirectUrl) {
 		this.redirectUrl = redirectUrl;
 		return this;
 	}
