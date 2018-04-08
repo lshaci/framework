@@ -11,10 +11,10 @@
 	</parent>
 	
 	<dependencies>
-		<!-- framework common module -->
+		<!-- framework utils module -->
 		<dependency>
 			<groupId>top.lshaci</groupId>
-			<artifactId>framework-common</artifactId>
+			<artifactId>framework-utils</artifactId>
 		</dependency>
 		<!-- freemarker -->
 		<dependency>

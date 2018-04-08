@@ -7,12 +7,14 @@ import java.util.Objects;
 import top.lshaci.framework.mybatis.utils.MybatisGeneratorUtils;
 import top.lshaci.framework.service.model.ServiceGeneratorModel;
 import top.lshaci.framework.utils.ClassUtils;
+import top.lshaci.framework.utils.FreemarkerUtils;
 
 /**
  * Framework service generator util
  * 
  * @author lshaci
  * @since 0.0.3
+ * @version 0.0.4
  */
 public class ServiceGeneratorUtils {
 	
@@ -59,6 +61,8 @@ public class ServiceGeneratorUtils {
 				String servicePath = projectPath + servicePackage.replace(".", File.pathSeparator);
 				File[] domainfiles = new File(domainPath)
 						.listFiles(f -> (f.isFile() && f.getName().endsWith(JAVA_FILE_SUFFIX)));
+				
+				FreemarkerUtils freemarkerUtils = FreemarkerUtils.build(ServiceGeneratorUtils.class, "/templates");
 				for (File domainFile : domainfiles) {
 					String domainFileName = domainFile.getName();
 					String domainName = domainFileName.substring(0, domainFileName.lastIndexOf(JAVA_FILE_SUFFIX));
@@ -67,8 +71,8 @@ public class ServiceGeneratorUtils {
 					
 					File serviceFile = new File(servicePath, domainName + "Service.java");
 					File serviceImplFile = new File(servicePath + File.pathSeparator + "impl", domainName + "ServiceImpl.java");
-					FreemarkerTemplateUtils.generateFileByTemplateName("ServiceTemplate", serviceFile, model);
-					FreemarkerTemplateUtils.generateFileByTemplateName("ServiceImplTemplate", serviceImplFile, model);
+					freemarkerUtils.setTemplate("ServiceTemplate").generate(model, serviceFile);
+					freemarkerUtils.setTemplate("ServiceImplTemplate").generate(model, serviceImplFile);
 				}
 			}
 		}

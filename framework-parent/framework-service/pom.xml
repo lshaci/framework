@@ -20,10 +20,10 @@
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-mybatis</artifactId>
 		</dependency>
-		<!-- spring boot freemarker -->
+		<!-- framework utils module -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-freemarker</artifactId>
+			<groupId>top.lshaci</groupId>
+			<artifactId>framework-utils</artifactId>
 		</dependency>
 	</dependencies>
 </project>

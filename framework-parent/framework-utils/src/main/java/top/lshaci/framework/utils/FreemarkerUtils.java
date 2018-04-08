@@ -1,7 +1,11 @@
-package top.lshaci.framework.pdfUtils;
+package top.lshaci.framework.utils;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,17 +26,22 @@ import top.lshaci.framework.common.exception.BaseException;
  * @since 0.0.4
  */
 @Slf4j
-public class FreemarkerUtils {
+public   class FreemarkerUtils {
 	
 	/**
 	 * template configuration
 	 */
 	private Configuration configuration;
+		
+	/**
+	 * the key prefix for the cached template
+	 */
+	private String prefix;
 	
 	/**
-	 * template
+	 * the current template in thread local
 	 */
-	private Template template;
+	private ThreadLocal<Template> currentTemplate = new ThreadLocal<>();
 	
 	/**
 	 * template cache; the key is template name, the value is template
@@ -47,6 +56,7 @@ public class FreemarkerUtils {
 	 */
 	private FreemarkerUtils(Class<?> sourceClass, String templatePath) {
 		this.configuration = new Configuration(Configuration.VERSION_2_3_22);
+		this.prefix = sourceClass.getName() + ":";
 		
 		configuration.setTemplateLoader(new ClassTemplateLoader(sourceClass, templatePath));
 		configuration.setDefaultEncoding("UTF-8");
@@ -62,7 +72,7 @@ public class FreemarkerUtils {
 	 * @return the freemarker util instance
 	 */
 	public static FreemarkerUtils build(Class<?> sourceClass, String templatePath) {
-		log.info("The template path is: {}", templatePath);
+		log.debug("The template path is: {}", templatePath);
 		return new FreemarkerUtils(sourceClass, templatePath);
 	}
 	
@@ -74,12 +84,13 @@ public class FreemarkerUtils {
 	 */
 	public FreemarkerUtils setTemplate(String templateName) {
 		try {
-			Template template = TEMPLATE_CACHE.get(templateName);
+			String cacheKey = prefix + templateName;
+			Template template = TEMPLATE_CACHE.get(cacheKey);
 			if (template == null) {
 				template = configuration.getTemplate(templateName);
-				TEMPLATE_CACHE.put(templateName, template);
+				TEMPLATE_CACHE.put(cacheKey, template);
 			}
-			this.template = template;
+			currentTemplate.set(template);
 			return this;
 		} catch (IOException e) {
 			log.error("Get template has error! The template name is : " + templateName, e);
@@ -88,7 +99,7 @@ public class FreemarkerUtils {
 	}
 	
 	/**
-	 * Generate html string(invoke this method must after setTemplate)
+	 * Generate to string(invoke this method must after setTemplate)
 	 * 
 	 * @param model the holder of the variables visible from the template (name-value pairs); usually a
      *            {@code Map<String, Object>} or a JavaBean (where the JavaBean properties will be the variables)
@@ -99,9 +110,65 @@ public class FreemarkerUtils {
 			StringWriter stringWriter = new StringWriter();
 			BufferedWriter writer = new BufferedWriter(stringWriter);
 		) {
-			this.template.process(model, writer);
-			writer.flush();
+			generate(model, writer);
 			return stringWriter.toString();
+		} catch (IOException e) {
+			log.error("Template rendering exception!", e);
+			throw new BaseException("Template rendering exception!", e);
+		}
+	}
+	
+	/**
+	 * Generate to file(invoke this method must after setTemplate)
+	 * 
+	 * @param model the holder of the variables visible from the template (name-value pairs); usually a
+     *            {@code Map<String, Object>} or a JavaBean (where the JavaBean properties will be the variables)
+	 * @param file the target file
+	 */
+	public void generate(Object model, File file) {
+		try (
+			FileOutputStream fos = new FileOutputStream(file);	
+		) {
+			generate(model, fos);
+		} catch (IOException e) {
+			log.error("Create a file output stream exception!", e);
+			throw new BaseException("Create a file output stream exception!", e);
+		}
+	}
+	
+	/**
+	 * Generate to output stream(invoke this method must after setTemplate)
+	 * 
+	 * @param model the holder of the variables visible from the template (name-value pairs); usually a
+     *            {@code Map<String, Object>} or a JavaBean (where the JavaBean properties will be the variables)
+	 * @param outputStream the target output stream
+	 */
+	public void generate(Object model, OutputStream outputStream) {
+		try (
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"), 10240);	
+		) {
+			generate(model, writer);
+		} catch (IOException e) {
+			log.error("Create a buffered writer exception!", e);
+			throw new BaseException("Create a buffered writer exception!", e);
+		}
+	}
+	
+	/**
+	 * Generate to buffered writer(invoke this method must after setTemplate)
+	 * 
+	 * @param model the holder of the variables visible from the template (name-value pairs); usually a
+     *            {@code Map<String, Object>} or a JavaBean (where the JavaBean properties will be the variables)
+	 * @param outputStream the target output stream
+	 */
+	public void generate(Object model, BufferedWriter writer) {
+		try {
+			Template current = currentTemplate.get();
+			if (current == null) {
+				throw new BaseException("Current Template is null!");
+			}
+			current.process(model, writer);
+			writer.flush();
 		} catch (TemplateException | IOException e) {
 			log.error("Template rendering exception!", e);
 			throw new BaseException("Template rendering exception!", e);
