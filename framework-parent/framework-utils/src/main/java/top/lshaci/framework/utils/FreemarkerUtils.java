@@ -159,7 +159,7 @@ public   class FreemarkerUtils {
 	 * 
 	 * @param model the holder of the variables visible from the template (name-value pairs); usually a
      *            {@code Map<String, Object>} or a JavaBean (where the JavaBean properties will be the variables)
-	 * @param outputStream the target output stream
+	 * @param writer the target buffered writer
 	 */
 	public void generate(Object model, BufferedWriter writer) {
 		try {
