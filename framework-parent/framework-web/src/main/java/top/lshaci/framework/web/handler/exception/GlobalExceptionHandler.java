@@ -35,13 +35,9 @@ public class GlobalExceptionHandler {
     public JsonResponse baseExceptionHandler(HttpServletRequest req, Exception e) {
     	log.error("System be happend exception!", e);
     	
-        JsonResponse result = new JsonResponse();
-        
-        result.setStatus(false);
-        result.setCode(ErrorCode.INTERNAL_PROGRAM_ERROR.getCode());
-        result.setMessage(e.getMessage());
-        
-        return result;
+    	return JsonResponse
+        		.failure(e.getMessage())
+        		.setCode(ErrorCode.INTERNAL_PROGRAM_ERROR.getCode());
     }
 
 	/**
@@ -57,12 +53,9 @@ public class GlobalExceptionHandler {
     	
     	ErrorCode errorCode = ErrorCode.getByException(e);
     	
-    	JsonResponse result = new JsonResponse();
-        result.setStatus(false);
-        result.setCode(errorCode.getCode());
-        result.setMessage(errorCode.getMsg());
-        result.addParam("exceptionDetail", e.getMessage());
-        
-        return result;
+    	return JsonResponse
+    			.failure(errorCode.getMsg())
+    			.setCode(errorCode.getCode())
+    			.addParam("detail", e.getMessage());
     }
 }

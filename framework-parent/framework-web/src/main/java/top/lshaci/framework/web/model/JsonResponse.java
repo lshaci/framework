@@ -12,6 +12,7 @@ import java.util.Map;
  *
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  */
 @Getter
 @Setter
@@ -29,68 +30,50 @@ public class JsonResponse implements Serializable {
 
     private Map<String, Object> params = new HashMap<>();
 
-    public JsonResponse() {
-    }
-
     /**
-     * Constructs a success json response with data
-     *
-     * @param data the response data
+     * Privatized constructor
      */
-    public JsonResponse(Object data) {
-        if (data != null) {
-            this.status = true;
-            this.data = data;
+    private JsonResponse() {
+    }
+    
+    /**
+     * Build a success json response with data
+     *
+     * @param data the success response data
+     * @return success json response
+     */
+    public static JsonResponse build() {
+    	return new JsonResponse();
+    }
+    
+    /**
+     * Build a success json response with data
+     *
+     * @param data the success response data
+     * @return success json response
+     */
+    public static JsonResponse success(Object data) {
+    	JsonResponse response = build();
+    	if (data != null) {
+    		response.status = true;
+    		response.data = data;
+        } else {
+        	response.status = false;
         }
+    	return response;
     }
-
+    
     /**
-     * Constructs a json response with status and data
+     * Build a failure json response with data
      *
-     * @param status the response status
-     * @param data the response data
+     * @param message the failure response message
+     * @return failure json response
      */
-    public JsonResponse(boolean status, Object data) {
-        super();
-        this.status = status;
-        this.data = data;
-    }
-
-    /**
-     * Constructs a json response with status and message
-     *
-     * @param status the response status
-     * @param message the response message
-     */
-    public JsonResponse(boolean status, String message) {
-        super();
-        this.status = status;
-        this.message = message;
-    }
-
-    /**
-     * Constructs a json response with status, message, data
-     *
-     * @param status the response status
-     * @param message the response message
-     * @param data the response data
-     */
-    public JsonResponse(boolean status, String message, Object data) {
-        this(status, message);
-        this.data = data;
-    }
-
-    /**
-     * Constructs a json response with status, code, message, data
-     *
-     * @param status the response status
-     * @param code the response code
-     * @param message the response message
-     * @param data the response data
-     */
-    public JsonResponse(boolean status, int code, String message, Object data) {
-        this(status, message, data);
-        this.code = code;
+    public static JsonResponse failure(String message) {
+    	JsonResponse response = build();
+		response.status = false;
+		response.message = message;
+    	return response;
     }
 
     /**
@@ -126,5 +109,49 @@ public class JsonResponse implements Serializable {
         this.params.remove(key);
         return this;
     }
+
+	/**
+	 * Set response status
+	 *
+	 * @param status json response status
+	 * @return this
+	 */
+	public JsonResponse setStatus(boolean status) {
+		this.status = status;
+		return this;
+	}
+
+	/**
+	 * Set response code
+	 *
+	 * @param code json response code
+	 * @return this
+	 */
+	public JsonResponse setCode(int code) {
+		this.code = code;
+		return this;
+	}
+
+	/**
+	 * Set response message
+	 *
+	 * @param message json response message
+	 * @return this
+	 */
+	public JsonResponse setMessage(String message) {
+		this.message = message;
+		return this;
+	}
+
+	/**
+	 * Set response data
+	 *
+	 * @param data json response data
+	 * @return this
+	 */
+	public JsonResponse setData(Object data) {
+		this.data = data;
+		return this;
+	}
 
 }

@@ -48,9 +48,10 @@ public abstract class AbstractLoginInterceptor implements HandlerInterceptor {
 				response.setCharacterEncoding(Encoding.UTF_8.getName());
 				response.setContentType(ContentType.JSON_UTF_8.getName());
 				
-				JsonResponse jsonResponse = new JsonResponse(false, ErrorCode.NOT_LOGIN_EXCEPTION.getMsg());
-				jsonResponse.setCode(ErrorCode.NOT_LOGIN_EXCEPTION.getCode());
-				jsonResponse.addParam("redirectUrl", redirectUrl);
+				JsonResponse jsonResponse = JsonResponse
+						.failure(ErrorCode.NOT_LOGIN_EXCEPTION.getMsg())
+						.setCode(ErrorCode.NOT_LOGIN_EXCEPTION.getCode())
+						.addParam("redirectUrl", redirectUrl);
 				
 				log.warn("No login, response json.");
 				response.getWriter().write(JSON.toJSONString(jsonResponse));
