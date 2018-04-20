@@ -11,9 +11,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -166,6 +168,8 @@ public abstract class POIExcelUploadHandler {
 				throw new ExcelHandlerException(msg);
 			}
 			
+			Set<Object> targetValues = new HashSet<>();
+			
 			for (Cell cell : row) {
 				if (cell == null) {
 					continue;
@@ -191,9 +195,16 @@ public abstract class POIExcelUploadHandler {
 				
 				cellValue = getConvertValue(cellValue, relationModel);
 				
-				setEntityFieldValue(entity, field, cellValue);
+				// set field value and get the target value
+				Object targetValue = setEntityFieldValue(entity, field, cellValue);
+				targetValues.add(targetValue);
 			}
-			rowDatas.add(entity);
+			
+			// all field value is not null, add the new entity to row datas
+			targetValues = targetValues.stream().filter(v -> v != null).collect(Collectors.toSet());
+			if (CollectionUtils.isNotEmpty(targetValues)) {
+				rowDatas.add(entity);
+			}
 			
 		}
 		return rowDatas;
@@ -224,14 +235,17 @@ public abstract class POIExcelUploadHandler {
 	 * @param entity the entity
 	 * @param field the field
 	 * @param cellValue the cell value
+	 * @return the target value
 	 */
-	private static <E> void setEntityFieldValue(E entity, Field field, String cellValue) {
+	private static <E> Object setEntityFieldValue(E entity, Field field, String cellValue) {
+		Object targetValue = null;
 		try {
-			Object targetValue = StringConverterUtils.getTargetValue(field.getType(), cellValue);
+			targetValue = StringConverterUtils.getTargetValue(field.getType(), cellValue);
 			ReflectionUtils.setFieldValue(entity, field, targetValue);
 		} catch (SecurityException e) {
 			log.warn("The field(" + field.getName() + ") is not has security!", e);
 		}
+		return targetValue;
 	}
 
 	/**
