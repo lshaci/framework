@@ -37,10 +37,9 @@ public class JsonResponse implements Serializable {
     }
     
     /**
-     * Build a success json response with data
+     * Build a success json response
      *
-     * @param data the success response data
-     * @return success json response
+     * @return json response
      */
     public static JsonResponse build() {
     	return new JsonResponse();

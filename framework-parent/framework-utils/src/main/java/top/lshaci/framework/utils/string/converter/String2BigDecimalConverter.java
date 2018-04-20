@@ -20,7 +20,7 @@ public class String2BigDecimalConverter implements StringConverter<BigDecimal> {
 	public BigDecimal convert(String source) {
 		log.debug("The string is : " + source);
 
-        if (StringUtils.isEmpty(source)) {
+        if (StringUtils.isBlank(source)) {
             return null;
         }
         source = trimSource(source);

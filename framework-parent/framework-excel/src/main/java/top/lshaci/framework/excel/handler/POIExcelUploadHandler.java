@@ -159,7 +159,11 @@ public abstract class POIExcelUploadHandler {
 		// Loop the sheet get row
 		for (int i = 1; i <= lastRowNum; i++) {
 			Row row = sheet.getRow(i);
-			// Loop the row get cell
+			
+			// If the row is null, continue loop
+			if (row == null) {
+				continue;
+			}
 			E entity = ReflectionUtils.newInstance(entityClass);
 			
 			if (entity == null) {
@@ -170,6 +174,7 @@ public abstract class POIExcelUploadHandler {
 			
 			Set<Object> targetValues = new HashSet<>();
 			
+			// Loop the row get cell
 			for (Cell cell : row) {
 				if (cell == null) {
 					continue;

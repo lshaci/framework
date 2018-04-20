@@ -17,7 +17,7 @@ public class String2LongConverter implements StringConverter<Long> {
 	public Long convert(String source) {
 		log.debug("The string is : " + source);
 
-        if (StringUtils.isEmpty(source)) {
+        if (StringUtils.isBlank(source)) {
             return null;
         }
         source = trimSource(source);
