@@ -7,9 +7,10 @@ import org.springframework.context.annotation.Import;
 
 import top.lshaci.framework.mybatis.MybatisApplication;
 import top.lshaci.framework.swagger.SwaggerApplication;
+import top.lshaci.framework.web.WebApplication;
 
 @SpringBootApplication
-@Import({MybatisApplication.class, SwaggerApplication.class})
+@Import({MybatisApplication.class, SwaggerApplication.class, WebApplication.class})
 @MapperScan("${groupId}.${artifactId}.mapper")
 public class Application {
 
