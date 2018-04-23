@@ -7,7 +7,7 @@ import org.springframework.web.context.request.RequestContextListener;
 
 /**
  * Spring web mvc config<br><br>
- * version 0.0.4: Add {@PropertySource}
+ * version 0.0.4: Add {@link PropertySource}
  * 
  * @author lshaci
  * @since 0.0.3
@@ -15,7 +15,7 @@ import org.springframework.web.context.request.RequestContextListener;
  */
 @PropertySource("classpath:web.properties")
 @Configuration
-public class WebMvcConfig {
+public class MvcConfig {
 
 	/**
 	 * Config request context listener

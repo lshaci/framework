@@ -19,7 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Swagger Config<br><br>
- * version 0.0.4: Add {@ConditionalOnProperty}
+ * version 0.0.4: Add {@link ConditionalOnProperty}
  * 
  * @author lshaci
  * @since 0.0.1
