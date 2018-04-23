@@ -46,6 +46,24 @@
 		</encoder>
 	</appender>
 
+	<!-- 时间滚动输出 level为 WARN 日志 -->
+	<appender name="file-warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY </onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>./logs/warn.%d{yyyy-MM-dd}.log</FileNamePattern>
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>
+				[%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{50} [%line] - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
 	<!-- 时间滚动输出 level为ERROR 日志 -->
 	<appender name="file-error" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -73,6 +91,7 @@
 		<appender-ref ref="console" />
 		<appender-ref ref="file-debug" />
 		<appender-ref ref="file-info" />
+		<appender-ref ref="file-warn" />
 		<appender-ref ref="file-error" />
 	</root>
 </configuration>
