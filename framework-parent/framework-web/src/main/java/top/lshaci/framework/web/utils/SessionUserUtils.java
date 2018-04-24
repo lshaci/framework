@@ -13,7 +13,7 @@ public class SessionUserUtils {
 	/**
 	 * The key of user in session
 	 */
-	private final static String USER_IN_SESSION = SessionUserUtils.class.getName() + ".userInSession";
+	public final static String USER_IN_SESSION = SessionUserUtils.class.getName() + ".userInSession";
 
 	/**
 	 * Set user in session
