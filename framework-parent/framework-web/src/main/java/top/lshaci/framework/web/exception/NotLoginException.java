@@ -6,7 +6,7 @@ package top.lshaci.framework.web.exception;
  * @author lshaci
  * @since 0.0.4
  */
-public class NotLoginException extends RuntimeException {
+public class NotLoginException extends WebBaseException {
 
 	private static final long serialVersionUID = 1L;
 

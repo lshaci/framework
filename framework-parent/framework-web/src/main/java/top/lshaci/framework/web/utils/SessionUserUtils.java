@@ -2,12 +2,16 @@ package top.lshaci.framework.web.utils;
 
 import java.util.Objects;
 
+import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.web.exception.WebBaseException;
+
 /**
  * Session User Utils
  * 
  * @author lshaci
  * @since 0.0.4
  */
+@Slf4j
 public class SessionUserUtils {
 	
 	/**
@@ -32,5 +36,23 @@ public class SessionUserUtils {
 	 */
 	public static Object getUserInSession() {
 		return HttpRequestUtils.getSessionAttribute(USER_IN_SESSION);
+	}
+	
+	/**
+	 * Get user in session
+	 * 
+	 * @param <T> the user class type
+	 * 
+	 * @return the user in session
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T getUserInSession(Class<T> userType) {
+		Object userInSession = getUserInSession();
+		try {
+			return (T) userInSession;
+		} catch (Exception e) {
+			log.error("The user type error!", e);
+			throw new WebBaseException("The user type error!", e);
+		}
 	}
 }
