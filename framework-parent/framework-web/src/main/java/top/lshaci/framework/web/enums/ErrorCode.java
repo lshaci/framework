@@ -30,15 +30,15 @@ public enum ErrorCode {
     /**
      * org.springframework.dao.DataIntegrityViolationException
      */
-    DATA_INTEGRITY_VIOLATION_EXCEPTION(50003, "对象已经存在，请勿重复操作", "org.springframework.dao.DataIntegrityViolationException"),
+    DATA_INTEGRITY_VIOLATION_EXCEPTION(50003, "数据异常, 操作失败", "org.springframework.dao.DataIntegrityViolationException"),
     /**
      * com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
      */
-    MYSQL_INTEGRITY_CONSTRAINT_VIOLATION_EXCEPTION(50004, "对象已经存在，请勿重复操作", "com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException"),
+    MYSQL_INTEGRITY_CONSTRAINT_VIOLATION_EXCEPTION(50004, "数据异常, 操作失败", "com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException"),
     /**
      * java.lang.NullPointerException
      */
-    NULL_POINTER_EXCEPTION(50005, "调用了未经初始化的对象或者是不存在的对象", "java.lang.NullPointerException"),
+    NULL_POINTER_EXCEPTION(50005, "对象未经初始化或不存在", "java.lang.NullPointerException"),
     /**
      * java.io.IOException
      */
