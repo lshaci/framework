@@ -4,6 +4,7 @@ package top.lshaci.framework.redis.lock.model;
  * Distributed task interface
  * 
  * @author lshaci
+ * @since 0.0.4
  *
  * @param <R> The result type
  */
