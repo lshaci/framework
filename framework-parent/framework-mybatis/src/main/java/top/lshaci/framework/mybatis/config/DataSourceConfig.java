@@ -38,8 +38,6 @@ import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
 @Slf4j
 public class DataSourceConfig {
 	
-
-
 	/**
 	 * Define single data source
 	 * 

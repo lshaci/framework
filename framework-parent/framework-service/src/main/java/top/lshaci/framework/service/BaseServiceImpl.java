@@ -141,7 +141,7 @@ public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseS
 	 * @param primarykeys the primary keys
 	 * @return the string of the primary keys
 	 */
-	private String repalceList2String(List<Object> primarykeys) {
+	private String repalceList2String(List<? extends Object> primarykeys) {
         StringBuilder sb = new StringBuilder();
         for (Object primarykey : primarykeys) {
 			sb.append("," + primarykey.toString());
