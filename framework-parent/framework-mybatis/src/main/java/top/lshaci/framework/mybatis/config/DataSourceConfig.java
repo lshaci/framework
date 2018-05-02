@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
@@ -27,6 +28,7 @@ import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
  * 
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  */
 @Configuration
 // Load datasource config
@@ -85,9 +87,10 @@ public class DataSourceConfig {
 	 * 
 	 * @return dynamic primary data source
 	 */
-	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
-	@Bean(name = "dataSource")
 	@Primary
+	@Bean(name = "dataSource")
+	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
+	@DependsOn({"firstDataSource", "secondDataSource"})
     public DynamicDataSource dynamicDataSource() {
 		log.info("Init Dynamic Druid DataSource...");
 		
