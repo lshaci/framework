@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Web controller json response
+ * Web controller json response<br><br>
+ * 
+ * <b>0.0.4:</b> Add method -> successMessage and message
  *
  * @author lshaci
  * @since 0.0.1
@@ -63,16 +65,37 @@ public class JsonResponse implements Serializable {
     }
     
     /**
-     * Build a failure json response with data
+     * Build a success json response with message
+     *
+     * @param message the success response message
+     * @return success json response
+     */
+    public static JsonResponse successMessage(String message) {
+    	return message(true, message);
+    }
+    
+    /**
+     * Build a message json response with status and message
+     *
+     * @param status the response status
+     * @param message the response message
+     * @return message json response
+     */
+    public static JsonResponse message(boolean status, String message) {
+    	JsonResponse response = build();
+    	response.status = false;
+    	response.message = message;
+    	return response;
+    }
+    
+    /**
+     * Build a failure json response with message
      *
      * @param message the failure response message
      * @return failure json response
      */
     public static JsonResponse failure(String message) {
-    	JsonResponse response = build();
-		response.status = false;
-		response.message = message;
-    	return response;
+    	return message(false, message);
     }
 
     /**

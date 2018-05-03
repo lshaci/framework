@@ -8,13 +8,16 @@ import lombok.Getter;
 import top.lshaci.framework.common.constants.Constants;
 
 /**
- * Page base query entity
+ * Page base query entity<br><br>
+ * 
+ * <b>0.0.4:</b> Delete the abstract definition of class.
  *
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  */
 @Getter
-public abstract class PageQuery implements Serializable {
+public class PageQuery implements Serializable {
 
     private static final long serialVersionUID = 2987113271659158089L;
 

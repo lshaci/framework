@@ -11,7 +11,7 @@ import top.lshaci.framework.utils.constants.Constants;
 /**
  * Date utils<br><br>
  * 
- * version 0.0.4: add method formateDate
+ * <b>0.0.4:</b> Add method formateDate
  * 
  * @author lshaci
  * @since 0.0.1

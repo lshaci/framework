@@ -7,7 +7,7 @@ import org.springframework.web.context.request.RequestContextListener;
 
 /**
  * Spring web mvc config<br><br>
- * version 0.0.4: Add {@link PropertySource}
+ * <b>0.0.4:</b> Add {@link PropertySource}
  * 
  * @author lshaci
  * @since 0.0.3
