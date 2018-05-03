@@ -5,7 +5,7 @@
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder charset="UTF-8">	<!-- encoder 可以指定字符集，对于中文输出有意义 -->
 			<pattern>
-				[%-5level] [%date{yyyy-MM-dd HH:mm:ss}] %logger{36} [%line] - %msg%n
+				[%-5level] [%date{yyyy-MM-dd HH:mm:ss}] [%thread] %logger{36} [%line] - %msg%n
 			</pattern>
 		</encoder>
 	</appender>
@@ -23,7 +23,7 @@
 		</rollingPolicy>
 		<encoder>
 			<pattern>
-				[%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{50} [%line] - %msg%n
+				[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{50} [%line] - %msg%n
 			</pattern>
 		</encoder>
 	</appender>
@@ -41,7 +41,7 @@
 		</rollingPolicy>
 		<encoder>
 			<pattern>
-				[%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{50} [%line] - %msg%n
+				[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{50} [%line] - %msg%n
 			</pattern>
 		</encoder>
 	</appender>
@@ -59,7 +59,7 @@
 		</rollingPolicy>
 		<encoder>
 			<pattern>
-				[%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{50} [%line] - %msg%n
+				[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{50} [%line] - %msg%n
 			</pattern>
 		</encoder>
 	</appender>
@@ -77,7 +77,7 @@
 		</rollingPolicy>
 		<encoder>
 			<pattern>
-				[%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{50} [%line] - %msg%n
+				[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{50} [%line] - %msg%n
 			</pattern>
 		</encoder>
 	</appender>
