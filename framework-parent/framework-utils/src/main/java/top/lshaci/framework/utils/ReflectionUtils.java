@@ -11,10 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.utils.exception.UtilException;
 
 /**
- * Reflection utils
+ * Reflection utils<br><br>
+ * <b>0.0.4: </b> Add method to get super class generic type
  * 
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  */
 @Slf4j
 public abstract class ReflectionUtils {
@@ -34,6 +36,35 @@ public abstract class ReflectionUtils {
 			log.error("Use reflection new instance is error!", e);
 			throw new UtilException("Create instance is error of class is : " + clazz.getName());
 		}
+	}
+	
+	/**
+	 * Get the class extends super class first generic type
+	 * 
+	 * @param clazz the class
+	 * @return the generic type
+	 */
+	public static Class<?> getSuperClassGenericType(Class<?> clazz) {
+		return getSuperClassGenericType(clazz, 0);
+	}
+	
+	/**
+	 * Get the class generic type
+	 * 
+	 * @param clazz the class
+	 * @param genericTypeIndex the index of the generic type
+	 * @return the generic type
+	 */
+	public static Class<?> getSuperClassGenericType(Class<?> clazz, int genericTypeIndex) {
+		Objects.requireNonNull(clazz, "The class is must not be null!");
+		
+		Type superclass = clazz.getGenericSuperclass();
+		
+		ParameterizedType type = (ParameterizedType) superclass;
+		
+		Type genericType = type.getActualTypeArguments()[genericTypeIndex];
+		
+		return (Class<?>) genericType;
 	}
 	
 	/**
@@ -87,7 +118,6 @@ public abstract class ReflectionUtils {
 		}
 	}
 	
-	
 	/**
 	 * Get field value
 	 * 
@@ -136,6 +166,5 @@ public abstract class ReflectionUtils {
 		Objects.requireNonNull(obj, "The object is must not be null!");
 		Objects.requireNonNull(field, "The field is must not be null!");
 	}
-	
 	
 }
