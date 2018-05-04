@@ -75,7 +75,7 @@ public class StringConverterFactory {
 				.filter(c -> !c.isInterface())
 				.filter(c -> StringConverter.class.isAssignableFrom(c))
 				.collect(toMap(
-					c -> ReflectionUtils.getInterfaceGenericType(c).getSimpleName().toLowerCase(), 
+					c -> ClassUtils.getInterfaceGenericType(c).getSimpleName().toLowerCase(), 
 					c -> (StringConverter<?>) ReflectionUtils.newInstance(c))
 				);
 		

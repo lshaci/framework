@@ -3,8 +3,6 @@ package top.lshaci.framework.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +10,7 @@ import top.lshaci.framework.utils.exception.UtilException;
 
 /**
  * Reflection utils<br><br>
- * <b>0.0.4: </b> Add method to get super class generic type
+ * <b>0.0.4: </b> Move method (get super class and interfaces generic type) to {@code ClassUtils}
  * 
  * @author lshaci
  * @since 0.0.1
@@ -36,65 +34,6 @@ public abstract class ReflectionUtils {
 			log.error("Use reflection new instance is error!", e);
 			throw new UtilException("Create instance is error of class is : " + clazz.getName());
 		}
-	}
-	
-	/**
-	 * Get the class extends super class first generic type
-	 * 
-	 * @param clazz the class
-	 * @return the generic type
-	 */
-	public static Class<?> getSuperClassGenericType(Class<?> clazz) {
-		return getSuperClassGenericType(clazz, 0);
-	}
-	
-	/**
-	 * Get the class generic type
-	 * 
-	 * @param clazz the class
-	 * @param genericTypeIndex the index of the generic type
-	 * @return the generic type
-	 */
-	public static Class<?> getSuperClassGenericType(Class<?> clazz, int genericTypeIndex) {
-		Objects.requireNonNull(clazz, "The class is must not be null!");
-		
-		Type superclass = clazz.getGenericSuperclass();
-		
-		ParameterizedType type = (ParameterizedType) superclass;
-		
-		Type genericType = type.getActualTypeArguments()[genericTypeIndex];
-		
-		return (Class<?>) genericType;
-	}
-	
-	/**
-	 * Get the class implements interfaces generic type(first interface and first generic type)
-	 * 
-	 * @param clazz the class
-	 * @return the generic type
-	 */
-	public static Class<?> getInterfaceGenericType(Class<?> clazz) {
-		return getInterfaceGenericType(clazz, 0, 0);
-	}
-	
-	/**
-	 * Get the class generic type
-	 * 
-	 * @param clazz the class
-	 * @param interfaceIndex the index of implements the interface
-	 * @param genericTypeIndex the index of the generic type
-	 * @return the generic type
-	 */
-	public static Class<?> getInterfaceGenericType(Class<?> clazz, int interfaceIndex, int genericTypeIndex) {
-		Objects.requireNonNull(clazz, "The class is must not be null!");
-		
-		Type[] interfaces = clazz.getGenericInterfaces();
-		
-		ParameterizedType type = (ParameterizedType) interfaces[interfaceIndex];
-		
-		Type genericType = type.getActualTypeArguments()[genericTypeIndex];
-		
-		return (Class<?>) genericType;
 	}
 	
 	/**

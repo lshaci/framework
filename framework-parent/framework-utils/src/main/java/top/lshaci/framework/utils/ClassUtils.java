@@ -2,11 +2,14 @@ package top.lshaci.framework.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -17,10 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.utils.exception.UtilException;
 
 /**
- * Class utils
+ * Class utils<br><br>
+ * 
+ * <b>0.0.4: </b> Add method to get super class and interfaces generic type
  * 
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  */
 @Slf4j
 public abstract class ClassUtils {
@@ -50,6 +56,66 @@ public abstract class ClassUtils {
 			throw new UtilException(msg);
 		}
 	}
+	
+	/**
+	 * Get the class extends super class first generic type
+	 * 
+	 * @param clazz the class
+	 * @return the generic type
+	 */
+	public static Class<?> getSuperClassGenericType(Class<?> clazz) {
+		return getSuperClassGenericType(clazz, 0);
+	}
+	
+	/**
+	 * Get the class generic type
+	 * 
+	 * @param clazz the class
+	 * @param genericTypeIndex the index of the generic type
+	 * @return the generic type
+	 */
+	public static Class<?> getSuperClassGenericType(Class<?> clazz, int genericTypeIndex) {
+		Objects.requireNonNull(clazz, "The class is must not be null!");
+		
+		Type superclass = clazz.getGenericSuperclass();
+		
+		ParameterizedType type = (ParameterizedType) superclass;
+		
+		Type genericType = type.getActualTypeArguments()[genericTypeIndex];
+		
+		return (Class<?>) genericType;
+	}
+	
+	/**
+	 * Get the class implements interfaces generic type(first interface and first generic type)
+	 * 
+	 * @param clazz the class
+	 * @return the generic type
+	 */
+	public static Class<?> getInterfaceGenericType(Class<?> clazz) {
+		return getInterfaceGenericType(clazz, 0, 0);
+	}
+	
+	/**
+	 * Get the class generic type
+	 * 
+	 * @param clazz the class
+	 * @param interfaceIndex the index of implements the interface
+	 * @param genericTypeIndex the index of the generic type
+	 * @return the generic type
+	 */
+	public static Class<?> getInterfaceGenericType(Class<?> clazz, int interfaceIndex, int genericTypeIndex) {
+		Objects.requireNonNull(clazz, "The class is must not be null!");
+		
+		Type[] interfaces = clazz.getGenericInterfaces();
+		
+		ParameterizedType type = (ParameterizedType) interfaces[interfaceIndex];
+		
+		Type genericType = type.getActualTypeArguments()[genericTypeIndex];
+		
+		return (Class<?>) genericType;
+	}
+	
 	
 	/**
 	 * Get class set of the package name
