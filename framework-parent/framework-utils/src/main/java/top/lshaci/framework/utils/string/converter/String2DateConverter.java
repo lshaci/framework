@@ -8,10 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.utils.constants.Constants;
 
 /**
- * Convert the string to date
+ * Convert the string to date<br><br>
+ * <b>0.0.4</b>: Add millisecond conversion
  * 
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  */
 @Slf4j
 public class String2DateConverter implements StringConverter<Date> {
@@ -27,6 +29,9 @@ public class String2DateConverter implements StringConverter<Date> {
         try {
             if (source.contains("-")) {
                 if (source.contains(":")) {
+                	if (source.contains(".")) {
+                		return Constants.MSEC_DATE_FORMATTER.parse(source);
+					}
                     return Constants.LONG_DATE_FORMATTER.parse(source);
                 } else {
                     return Constants.SHORT_DATE_FORMATTER.parse(source);

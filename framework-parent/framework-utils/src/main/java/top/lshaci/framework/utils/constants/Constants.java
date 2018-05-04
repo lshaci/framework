@@ -3,13 +3,20 @@ package top.lshaci.framework.utils.constants;
 import java.text.SimpleDateFormat;
 
 /**
- * Framework util Constants
+ * Framework util Constants<br><br>
+ * <b>0.0.4</b>: Add {@code MSEC_DATE_FORMAT_STR} and {@code MSEC_DATE_FORMATTER}
  *
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  */
 public interface Constants {
 
+	/**
+	 * Millisecond date format string
+	 */
+	String MSEC_DATE_FORMAT_STR = "yyyy-MM-dd HH:mm:ss.SSS";
+	
     /**
      * Long date format string
      */
@@ -20,6 +27,11 @@ public interface Constants {
      */
     String SHORT_DATE_FORMAT_STR = "yyyy-MM-dd";
 
+    /**
+     * Millisecond date formatter(yyyy-MM-dd HH:mm:ss.SSS)
+     */
+    SimpleDateFormat MSEC_DATE_FORMATTER = new SimpleDateFormat(MSEC_DATE_FORMAT_STR);
+    
     /**
      * Long date formatter(yyyy-MM-dd HH:mm:ss)
      */

@@ -17,10 +17,12 @@ import top.lshaci.framework.utils.exception.UtilException;
 import top.lshaci.framework.utils.string.converter.StringConverter;
 
 /**
- * String converter factory
+ * String converter factory<br><br>
+ * <b>0.0.4</b>: Add string converters type judgment
  * 
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  */
 @Slf4j
 public class StringConverterFactory {
@@ -71,6 +73,7 @@ public class StringConverterFactory {
 		
 		Map<String, StringConverter<?>> stringConverters = classSet.stream()
 				.filter(c -> !c.isInterface())
+				.filter(c -> StringConverter.class.isAssignableFrom(c))
 				.collect(toMap(
 					c -> ReflectionUtils.getInterfaceGenericType(c).getSimpleName().toLowerCase(), 
 					c -> (StringConverter<?>) ReflectionUtils.newInstance(c))
