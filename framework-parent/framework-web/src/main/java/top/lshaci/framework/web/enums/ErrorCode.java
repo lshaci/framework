@@ -3,22 +3,24 @@ package top.lshaci.framework.web.enums;
 import lombok.Getter;
 
 /**
- * Error code enum
+ * Error code enum<br><br>
+ * <b>0.0.4: </b>Add org.springframework.http.converter.HttpMessageNotReadableException
  * 
  * @author lshaci
  * @since 0.0.3
+ * @version 0.0.4
  */
 @Getter
 public enum ErrorCode {
 	
 	/**
-	 * top.lshaci.framework.web.exception.NotLoginException
+	 * com.xdbigdata.framework.web.exception.NotLoginException
 	 */
-	NOT_LOGIN_EXCEPTION(40001, "登录失效，请重新登录", "top.lshaci.framework.web.exception.NotLoginException"),
+	NOT_LOGIN_EXCEPTION(40001, "登录失效，请重新登录", "com.xdbigdata.framework.web.exception.NotLoginException"),
 	/**
-	 * top.lshaci.framework.common.exception.BaseException
+	 * com.xdbigdata.framework.common.exception.BaseException
 	 */
-	INTERNAL_PROGRAM_ERROR(50000, "程序内部错误，操作失败", "top.lshaci.framework.common.exception.BaseException"),
+	INTERNAL_PROGRAM_ERROR(50000, "程序内部错误，操作失败", "com.xdbigdata.framework.common.exception.BaseException"),
 	/**
 	 * org.springframework.dao.DataAccessException
 	 */
@@ -91,6 +93,10 @@ public enum ErrorCode {
      * com.mysql.jdbc.MysqlDataTruncation
      */
     MYSQL_DATA_TRUNCATION_EXCEPTION(50020, "服务器不能接收所有数据", "com.mysql.jdbc.MysqlDataTruncation"),
+    /**
+     * org.springframework.http.converter.HttpMessageNotReadableException
+     */
+    HTTP_MESSAGE_NOT_READABLE_EXCEPTION(50021, "参数转换异常", "org.springframework.http.converter.HttpMessageNotReadableException"),
     ;
 	
 	private int code;
@@ -120,5 +126,4 @@ public enum ErrorCode {
 		}
 		return INTERNAL_PROGRAM_ERROR;
 	}
-	
 }
