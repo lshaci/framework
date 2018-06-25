@@ -22,5 +22,5 @@ public @interface UploadExcelTitle {
 	 * 
 	 * @return the excel title name
 	 */
-	String value();
+	String[] value();
 }
