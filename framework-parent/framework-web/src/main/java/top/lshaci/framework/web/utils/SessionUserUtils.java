@@ -42,6 +42,7 @@ public class SessionUserUtils {
 	 * Get user in session
 	 * 
 	 * @param <T> the user class type
+	 * @param userType the user class type
 	 * 
 	 * @return the user in session
 	 */

@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
 	 * @return json response
 	 */
     @ExceptionHandler(value = { BindException.class, MethodArgumentNotValidException.class })
-    public JsonResponse argumentExceptionHandler(HttpServletRequest request, Exception e) {
+    public JsonResponse argumentExceptionHandler(HttpServletRequest req, Exception e) {
     	log.error("System be happend exception!", e);
     	
         StringBuilder message = new StringBuilder(ARGUMENT_EXCEPTION);

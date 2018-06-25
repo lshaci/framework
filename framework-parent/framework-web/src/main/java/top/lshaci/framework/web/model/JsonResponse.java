@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Web controller json response<br><br>
  * 
- * <b>0.0.4:</b> Add method -> successMessage and message
+ * <b>0.0.4:</b> Add method: successMessage and message
  *
  * @author lshaci
  * @since 0.0.1
