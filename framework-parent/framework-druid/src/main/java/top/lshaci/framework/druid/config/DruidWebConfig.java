@@ -45,11 +45,11 @@ public class DruidWebConfig {
 	 * @return the stat view servlet
 	 */
 	@Bean
-	public ServletRegistrationBean druidStatViewServlet() {
+	public ServletRegistrationBean<StatViewServlet> druidStatViewServlet() {
 		log.info("Init Druid Web Stat View Servlet...");
 		
 		// org.springframework.boot.context.embedded.ServletRegistrationBean提供类的进行注册.
-		ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
+		ServletRegistrationBean<StatViewServlet> servletRegistrationBean = new ServletRegistrationBean<>(new StatViewServlet(), "/druid/*");
 		// 添加初始化参数：initParams
 		// 白名单：
 		servletRegistrationBean.addInitParameter("allow", allowIp);
@@ -80,10 +80,10 @@ public class DruidWebConfig {
 	 * @return the web stat view filter
 	 */
 	@Bean
-	public FilterRegistrationBean druidWebStatFilter() {
+	public FilterRegistrationBean<WebStatFilter> druidWebStatFilter() {
 		log.info("Init Druid Web Stat Filter...");
 		
-		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new WebStatFilter());
+		FilterRegistrationBean<WebStatFilter> filterRegistrationBean = new FilterRegistrationBean<>(new WebStatFilter());
 		// 添加过滤规则.
 		filterRegistrationBean.addUrlPatterns("/*");
 		// 添加不需要忽略的格式信息.

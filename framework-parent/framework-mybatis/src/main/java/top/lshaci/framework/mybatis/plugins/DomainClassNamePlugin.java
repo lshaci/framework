@@ -30,9 +30,9 @@ public class DomainClassNamePlugin extends PluginAdapter {
 		}
 		
 		String mapperName = table.getMyBatis3JavaMapperType();
-		table.setMyBatis3JavaMapperType(mapperName.replaceFirst("T", ""));
+		table.setMyBatis3JavaMapperType(mapperName.replace(".T", "."));
 		
 		String mapperXmlName = table.getMyBatis3XmlMapperFileName();
-		table.setMyBatis3XmlMapperFileName(mapperXmlName.replaceFirst("T", ""));
+		table.setMyBatis3XmlMapperFileName(mapperXmlName.replace(".T", "."));
 	}
 }
