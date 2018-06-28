@@ -4,7 +4,8 @@ import lombok.Getter;
 
 /**
  * Error code enum<br><br>
- * <b>0.0.4: </b>Add org.springframework.http.converter.HttpMessageNotReadableException
+ * <b>0.0.4: </b>Add org.springframework.http.converter.HttpMessageNotReadableException<br>
+ * org.springframework.web.HttpRequestMethodNotSupportedException
  * 
  * @author lshaci
  * @since 0.0.3
@@ -97,6 +98,10 @@ public enum ErrorCode {
      * org.springframework.http.converter.HttpMessageNotReadableException
      */
     HTTP_MESSAGE_NOT_READABLE_EXCEPTION(50021, "参数转换异常", "org.springframework.http.converter.HttpMessageNotReadableException"),
+    /**
+     * org.springframework.web.HttpRequestMethodNotSupportedException
+     */
+    HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(50022, "请求方法不支持", "org.springframework.web.HttpRequestMethodNotSupportedException"),
     ;
 	
 	private int code;
