@@ -27,12 +27,12 @@ public class DomainClassNamePlugin extends PluginAdapter {
 		if (temp.startsWith(".T")) {
 			String finalName = domainName.replace(".T", ".");
 			table.setBaseRecordType(finalName);
+			
+			String mapperName = table.getMyBatis3JavaMapperType();
+			table.setMyBatis3JavaMapperType(mapperName.replace(".T", "."));
+			
+			String mapperXmlName = table.getMyBatis3XmlMapperFileName();
+			table.setMyBatis3XmlMapperFileName(mapperXmlName.replace(".T", "."));
 		}
-		
-		String mapperName = table.getMyBatis3JavaMapperType();
-		table.setMyBatis3JavaMapperType(mapperName.replace(".T", "."));
-		
-		String mapperXmlName = table.getMyBatis3XmlMapperFileName();
-		table.setMyBatis3XmlMapperFileName(mapperXmlName.replace(".T", "."));
 	}
 }
