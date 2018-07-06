@@ -24,10 +24,10 @@ import top.lshaci.framework.web.model.JsonResponse;
  * @since 0.0.3
  * @version 0.0.4
  */
-@ConditionalOnProperty(value = "globalExceptionHandler.enabled", havingValue = "true", matchIfMissing = false)
+@Slf4j
 @RestController
 @ControllerAdvice
-@Slf4j
+@ConditionalOnProperty(value = "globalExceptionHandler.enabled", havingValue = "true", matchIfMissing = false)
 public class GlobalExceptionHandler {
 	
 	private final static String ARGUMENT_EXCEPTION = "参数异常: ";

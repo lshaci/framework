@@ -1,12 +1,14 @@
 package top.lshaci.framework.web.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.context.request.RequestContextListener;
 
-import top.lshaci.framework.web.aspect.WebLogAspect;
+import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.web.utils.DownloadUtils;
 
 /**
  * Spring web mvc config<br>
@@ -17,9 +19,12 @@ import top.lshaci.framework.web.aspect.WebLogAspect;
  * @since 0.0.3
  * @version 0.0.4
  */
-@PropertySource("classpath:web.properties")
+@Slf4j
 @Configuration
 public class MvcConfig {
+    
+    @Value("${dowanload.cacheSize}")
+    private int downloadCacheSize;
 
     /**
      * Config request context listener
@@ -28,17 +33,22 @@ public class MvcConfig {
      */
     @Bean
     public RequestContextListener requestContextListener() {
+        log.debug("Config request context listener...");
         return new RequestContextListener();
     }
+    
+
 
     /**
-     * Config web log aspect
-     * 
-     * @return this web log aspect bean
+     * Set download utils cache size
      */
-    @Bean
-    @ConditionalOnProperty(value = "webLogAspect.enabled", havingValue = "true", matchIfMissing = false)
-    public WebLogAspect webLogAspect() {
-        return new WebLogAspect();
+    @Autowired
+    public void setDownloadCacheSize() {
+        if (this.downloadCacheSize <= 0) {
+            this.downloadCacheSize = 2048;
+        }
+        log.debug("Set DownloadUtils cacheSize: {} bytes", this.downloadCacheSize);
+        DownloadUtils.cacheSize = this.downloadCacheSize;
     }
+    
 }
