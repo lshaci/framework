@@ -38,7 +38,6 @@ public class MvcConfig {
     }
     
 
-
     /**
      * Set download utils cache size
      */
