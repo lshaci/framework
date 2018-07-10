@@ -83,7 +83,7 @@ public class JsonResponse implements Serializable {
      */
     public static JsonResponse message(boolean status, String message) {
     	JsonResponse response = build();
-    	response.status = false;
+    	response.status = status;
     	response.message = message;
     	return response;
     }
