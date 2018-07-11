@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +24,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @since 0.0.1
  * @version 0.0.4
  */
+@Slf4j
 @Configuration
 @EnableSwagger2
-@PropertySource("classpath:swagger.properties")
 @ConditionalOnProperty(value = "swagger.enabled", havingValue = "true", matchIfMissing = false)
-@Slf4j
 public class SwaggerConfig {
 	
 	@Value("${swagger.basePackage}")
@@ -37,7 +35,7 @@ public class SwaggerConfig {
 	
 	@Bean
     public Docket createRestApi() throws Exception {
-		log.info("Init Swagger UI Config...");
+		log.debug("Init Swagger UI Config...");
 		
 		if (StringUtils.isEmpty(basePackage)) {
 			throw new Exception("The controller base package must not be null!");
