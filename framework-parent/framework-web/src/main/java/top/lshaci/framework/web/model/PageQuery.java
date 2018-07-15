@@ -21,8 +21,8 @@ public class PageQuery implements Serializable {
 
     private static final long serialVersionUID = 2987113271659158089L;
 
-    private int pgCt = Constants.DEFAULT_PGCT;
-    private int pgSz = Constants.DEFAULT_PGSZ;
+    private Integer pgCt = Constants.DEFAULT_PGCT;
+    private Integer pgSz = Constants.DEFAULT_PGSZ;
 
     private String keyword;    // the key word query condition
 
@@ -31,8 +31,8 @@ public class PageQuery implements Serializable {
      *
      * @param pgCt the current page number
      */
-    public void setPgCt(int pgCt) {
-        this.pgCt = pgCt > 0 ? pgCt : Constants.DEFAULT_PGCT;
+    public void setPgCt(Integer pgCt) {
+        this.pgCt = pgCt == null || pgCt < 0 ? Constants.DEFAULT_PGCT : pgCt;
     }
 
     /**
@@ -40,8 +40,8 @@ public class PageQuery implements Serializable {
      *
      * @param pgSz the page size
      */
-    public void setPgSz(int pgSz) {
-        this.pgSz = pgSz > 0 ? pgSz : Constants.DEFAULT_PGSZ;
+    public void setPgSz(Integer pgSz) {
+        this.pgSz = pgSz == null || pgSz < 0 ? Constants.DEFAULT_PGSZ : pgSz;
     }
 
     /**
@@ -49,7 +49,7 @@ public class PageQuery implements Serializable {
      *
      * @return the start row
      */
-    public int getStart() {
+    public Integer getStart() {
         return (this.pgCt - 1) * this.pgSz;
     }
 
