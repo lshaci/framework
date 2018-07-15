@@ -35,7 +35,7 @@ public class DownloadUtils {
 	/**
      * Download excel file
      * 
-     * @param fileName the download file name
+     * @param fileName the download file name<b>(Must include suffixes)</b>
      * @param outputStream the byte array output stream of the file
      * @param response the http servlet response
      */
@@ -58,7 +58,7 @@ public class DownloadUtils {
     /**
      * Download excel file
      * 
-     * @param fileName the download file name
+     * @param fileName the download file name<b>(Must include suffixes)</b>
      * @param fileInputStream the file input stream
      * @param response the http servlet response
      */
@@ -86,7 +86,7 @@ public class DownloadUtils {
     /**
      * Download excel file
      * 
-     * @param fileName the download file name
+     * @param fileName the download file name<b>(Must include suffixes)</b>
      * @param filePath the path of the file
      * @param response the http servlet response
      */
@@ -107,12 +107,12 @@ public class DownloadUtils {
     }
     
     /**
-     * Write out excel file
+     * Write out file
      * 
-     * @param fileName the excel file name
+     * @param fileName the file name
      * @param contentType the http servlet response content type
      * @param response the http servlet response
-     * @param fileInputStream the input stream of the excel file
+     * @param fileInputStream the input stream of the file
      * @param os the servlet output stream
      * @throws IOException
      */
