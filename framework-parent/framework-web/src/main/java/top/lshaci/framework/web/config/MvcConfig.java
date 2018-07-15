@@ -4,16 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.context.request.RequestContextListener;
 
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.web.utils.DownloadUtils;
 
 /**
- * Spring web mvc config<br>
- * <br>
- * <b>0.0.4:</b> Add {@link PropertySource}
+ * Spring web mvc config<br><br>
+ * 
+ * <b>0.0.4:</b> Add setDownloadCacheSize method
  * 
  * @author lshaci
  * @since 0.0.3

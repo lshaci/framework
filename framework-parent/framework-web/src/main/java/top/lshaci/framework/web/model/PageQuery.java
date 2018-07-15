@@ -10,7 +10,7 @@ import top.lshaci.framework.common.constants.Constants;
 /**
  * Page base query entity<br><br>
  * 
- * <b>0.0.4:</b> Delete the abstract definition of class.
+ * <b>0.0.4:</b> Change to non-abstract
  *
  * @author lshaci
  * @since 0.0.1

@@ -64,7 +64,7 @@ public class WebLogAspect {
 	@Order(1)
 	@AfterReturning(returning = "ret", pointcut = "webLog()")
 	public void doAfterReturning(Object ret) throws Throwable {
-		log.warn("***OUT********RESPONSE: {}", ret);
+		log.warn("***OUT********RESPONSE: {}", JSON.toJSONString(ret));
 		log.warn("***OUT********SPEND TIME: {}", (System.currentTimeMillis() - START_TIME.get()));
 	}
 }
