@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import javax.servlet.ServletOutputStream;
@@ -115,11 +114,10 @@ public class DownloadUtils {
      * @param response the http servlet response
      * @param fileInputStream the input stream of the excel file
      * @param os the servlet output stream
-     * @throws UnsupportedEncodingException
      * @throws IOException
      */
     private static void writeExcelFile(String fileName, String contentType, HttpServletResponse response, 
-            InputStream fileInputStream, ServletOutputStream os) throws UnsupportedEncodingException, IOException {
+            InputStream fileInputStream, ServletOutputStream os) throws IOException {
         response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
         response.setContentType(contentType);
 
