@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.common.exception.BaseException;
+import top.lshaci.framework.web.constant.WebCommonConstant;
 import top.lshaci.framework.web.exception.WebBaseException;
 
 /**
@@ -48,7 +49,7 @@ public class DownloadUtils {
                 InputStream fileInputStream = new ByteArrayInputStream(outputStream.toByteArray());
                 ServletOutputStream os = response.getOutputStream();
         ) {
-            writeExcelFile(fileName, response, fileInputStream, os);
+            writeExcelFile(fileName, WebCommonConstant.EXCEL_CONTENT_TYPE, response, fileInputStream, os);
         } catch (Exception e) {
             log.error("导出[" + fileName + "]失败", e);
             throw new WebBaseException("导出[" + fileName + "]失败", e);
@@ -70,7 +71,7 @@ public class DownloadUtils {
         try (
                 ServletOutputStream os = response.getOutputStream();
         ) {
-            writeExcelFile(fileName, response, fileInputStream, os);
+            writeExcelFile(fileName, WebCommonConstant.EXCEL_CONTENT_TYPE, response, fileInputStream, os);
         } catch (Exception e) {
             log.error("导出[" + fileName + "]失败", e);
             throw new WebBaseException("导出[" + fileName + "]失败", e);
@@ -99,7 +100,7 @@ public class DownloadUtils {
                 InputStream fileInputStream = new FileInputStream(filePath);
                 ServletOutputStream os = response.getOutputStream();
         ) {
-            writeExcelFile(fileName, response, fileInputStream, os);
+            writeExcelFile(fileName, WebCommonConstant.EXCEL_CONTENT_TYPE, response, fileInputStream, os);
         } catch (Exception e) {
             log.error("导出[" + fileName + "]失败", e);
             throw new WebBaseException("导出[" + fileName + "]失败", e);
@@ -110,16 +111,17 @@ public class DownloadUtils {
      * Write out excel file
      * 
      * @param fileName the excel file name
+     * @param contentType the http servlet response content type
      * @param response the http servlet response
      * @param fileInputStream the input stream of the excel file
      * @param os the servlet output stream
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    private static void writeExcelFile(String fileName, HttpServletResponse response, InputStream fileInputStream,
-            ServletOutputStream os) throws UnsupportedEncodingException, IOException {
+    private static void writeExcelFile(String fileName, String contentType, HttpServletResponse response, 
+            InputStream fileInputStream, ServletOutputStream os) throws UnsupportedEncodingException, IOException {
         response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
-        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setContentType(contentType);
 
         byte[] b = new byte[cacheSize];
         int length;
