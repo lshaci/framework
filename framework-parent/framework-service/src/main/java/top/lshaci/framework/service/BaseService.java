@@ -2,8 +2,8 @@ package top.lshaci.framework.service;
 
 import java.util.List;
 
+import top.lshaci.framework.common.model.PageResult;
 import top.lshaci.framework.mybatis.mapper.TKMapper;
-import top.lshaci.framework.mybatis.model.PageResult;
 
 /**
  * Base common service interface

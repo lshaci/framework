@@ -1,12 +1,10 @@
-package top.lshaci.framework.mybatis.model;
+package top.lshaci.framework.common.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import com.github.pagehelper.Page;
-
+import lombok.Data;
 import top.lshaci.framework.common.constants.Constants;
 
 /**
@@ -16,6 +14,7 @@ import top.lshaci.framework.common.constants.Constants;
  * @param <T>	The result entity type
  * @since 0.0.1
  */
+@Data
 public class PageResult<T> implements Serializable {
 	
 	private static final long serialVersionUID = 2696109518770817050L;
@@ -64,73 +63,4 @@ public class PageResult<T> implements Serializable {
 		this.datas = datas;
 	}
 
-	/**
-	 * Constructs a new page result with the page helper result
-	 * 
-	 * @param page the page helper result
-	 */
-	public PageResult(Page<T> page) {
-		Objects.requireNonNull(page, "Page result must not be null!");
-		
-		this.pgCt = page.getPageNum();
-		this.pgSz = page.getPageSize();
-		this.total = (int) page.getTotal();
-		this.datas = page.getResult();
-		this.end = page.getPages();
-	}
-
-
-	/**
-	 * Get the current page number
-	 *
-	 * @return the current page number
-	 */
-	public int getPgCt() {
-		return pgCt;
-	}
-
-	/**
-	 * Get the page size
-	 *
-	 * @return the page size
-	 */
-	public int getPgSz() {
-		return pgSz;
-	}
-
-	/**
-	 * Get the total pages
-	 *
-	 * @return the total pages
-	 */
-	public int getEnd() {
-		return end;
-	}
-
-	/**
-	 * Get the data total
-	 *
-	 * @return the data total
-	 */
-	public long getTotal() {
-		return total;
-	}
-
-	/**
-	 * Get the datas
-	 *
-	 * @return the datas
-	 */
-	public List<T> getDatas() {
-		return datas;
-	}
-
-	/**
-	 * Set the datas
-	 *
-	 * @param datas the data list
-	 */
-	public void setDatas(List<T> datas) {
-		this.datas = datas;
-	}
 }
