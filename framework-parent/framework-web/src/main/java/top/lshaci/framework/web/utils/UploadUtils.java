@@ -2,6 +2,7 @@ package top.lshaci.framework.web.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,7 @@ public class UploadUtils {
 	 * @param file the upload file
 	 */
 	public static void save(String filePath, String saveFileName, MultipartFile file) {
+	    Objects.requireNonNull(file, "The file must not be null!");
 		if (StringUtils.isBlank(filePath) || StringUtils.isBlank(saveFileName)) {
 			throw new WebBaseException("The file path or save file name is empty!");
 		}

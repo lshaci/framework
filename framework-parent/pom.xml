@@ -20,6 +20,7 @@
 		<module>framework-excel</module>
 		<module>framework-common</module>
 		<module>framework-web</module>
+		<module>framework-websocket</module>
 		<module>framework-archetype</module>
 		<module>framework-redis</module>
 		<module>framework-pdfUtils</module>
@@ -126,6 +127,12 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-web</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework web socket module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-websocket</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework utils module -->
