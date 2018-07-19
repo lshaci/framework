@@ -44,9 +44,9 @@ public class DataSourceConfig {
 	 * 
 	 * @return dynamic data source first
 	 */
-	@ConditionalOnProperty(value = {"datasource.dynamic", "datasource.first.url"}, matchIfMissing = false)
+	@ConditionalOnProperty(value = {"datasource.dynamic", "spring.datasource.druid.first.url"}, matchIfMissing = false)
 	@Bean(name = "firstDataSource")
-	@ConfigurationProperties("datasource.first")
+	@ConfigurationProperties("spring.datasource.druid.first")
 	public DataSource firstDataSource() {
 		log.info("Init First Druid DataSource...");
 		
@@ -58,9 +58,9 @@ public class DataSourceConfig {
 	 * 
 	 * @return dynamic data source second
 	 */
-	@ConditionalOnProperty(value = {"datasource.dynamic", "datasource.second.url"}, matchIfMissing = false)
+	@ConditionalOnProperty(value = {"datasource.dynamic", "spring.datasource.druid.second.url"}, matchIfMissing = false)
 	@Bean(name = "secondDataSource")
-	@ConfigurationProperties("datasource.second")
+	@ConfigurationProperties("spring.datasource.druid.second")
 	public DataSource secondDataSource() {
 		log.info("Init Second Druid DataSource...");
 		
