@@ -12,7 +12,6 @@
 	<modules>
 		<module>framework-core</module>
 		<module>framework-mybatis</module>
-		<module>framework-druid</module>
 		<module>framework-service</module>
 		<module>framework-swagger</module>
 		<module>framework-test</module>
@@ -44,7 +43,6 @@
 		<java.version>1.8</java.version>
 
 		<poi.version>3.17</poi.version>
-		<druid.version>1.1.10</druid.version>
 		<swagger.version>2.7.0</swagger.version>
 		<mybatis.generator.version>1.3.6</mybatis.generator.version>
 
@@ -55,6 +53,7 @@
 
 		<spring.boot.version>2.0.1.RELEASE</spring.boot.version>
 		<spring.cloud.version>Finchley.RELEASE</spring.cloud.version>
+		<druid.spring.boot.version>1.1.10</druid.spring.boot.version>
 		<tk.mybatis.generator.version>1.0.4</tk.mybatis.generator.version>
 		<tkmybatis.spring.boot.version>2.0.3</tkmybatis.spring.boot.version>
 		<pagehelper.spring.boot.version>1.2.5</pagehelper.spring.boot.version>
@@ -111,12 +110,6 @@
 				<artifactId>framework-swagger</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
-			<!-- framework druid module -->
-			<dependency>
-				<groupId>top.lshaci</groupId>
-				<artifactId>framework-druid</artifactId>
-				<version>${framework.version}</version>
-			</dependency>
 			<!-- framework service module -->
 			<dependency>
 				<groupId>top.lshaci</groupId>
@@ -159,17 +152,17 @@
 				<artifactId>framework-test</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
-			<!-- druid -->
-			<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>druid</artifactId>
-				<version>${druid.version}</version>
-			</dependency>
 			<!-- fastjson -->
 			<dependency>
 				<groupId>com.alibaba</groupId>
 				<artifactId>fastjson</artifactId>
 				<version>${fastjson.version}</version>
+			</dependency>
+			<!-- spring boot druid -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid-spring-boot-starter</artifactId>
+				<version>${druid.spring.boot.version}</version>
 			</dependency>
 			<!-- tk mybatis spring boot -->
 			<dependency>

@@ -20,10 +20,10 @@
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-utils</artifactId>
 		</dependency>
-		<!-- druid -->
+		<!-- spring boot druid -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
+			<artifactId>druid-spring-boot-starter</artifactId>
 		</dependency>
 		<!-- tk mybatis spring boot -->
 		<dependency>
@@ -34,6 +34,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<!-- spring boot web -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<!-- pagehelper spring boot -->
 		<dependency>
@@ -54,7 +60,6 @@
 		<dependency>
 			<groupId>tk.mybatis</groupId>
 			<artifactId>mapper-generator</artifactId>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

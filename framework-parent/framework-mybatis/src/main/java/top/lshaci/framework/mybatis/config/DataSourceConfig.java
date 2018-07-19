@@ -33,26 +33,11 @@ import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
 @Configuration
 // Load datasource config
 @PropertySources({
-	@PropertySource("classpath:datasource_single.properties"),
 	@PropertySource("classpath:datasource_first.properties"),
 	@PropertySource("classpath:datasource_second.properties")
 })
 @Slf4j
 public class DataSourceConfig {
-	
-	/**
-	 * Define single data source
-	 * 
-	 * @return single data source
-	 */
-	@ConditionalOnProperty(value = "datasource.single", matchIfMissing = false)
-	@Bean(name = "dataSource")
-	@ConfigurationProperties("datasource")
-	public DataSource singleDataSource() {
-		log.info("Init Single Druid DataSource...");
-
-		return new DruidDataSource();
-	}
 	
 	/**
 	 * Define dynamic data source(first)
