@@ -31,6 +31,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.common.exception.BaseException;
 import top.lshaci.framework.excel.annotation.UploadConvert;
 import top.lshaci.framework.excel.annotation.UploadExcelTitle;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
@@ -82,7 +83,7 @@ public abstract class POIExcelUploadHandler {
      * @return the entity list
      */
     public static <E> List<E> excel2Entities(File excelFile, int titleRow, Class<E> entityClass) {
-        checkParams(excelFile, entityClass);
+        checkParams(titleRow, excelFile, entityClass);
         
         FileType fileType = getFileType(excelFile);
         Workbook workBook = getWorkBook(excelFile, fileType);
@@ -110,7 +111,7 @@ public abstract class POIExcelUploadHandler {
      * @return the entity list
      */
     public static <E> List<E> excel2Entities(InputStream is, int titleRow, Class<E> entityClass) {
-        checkParams(is, entityClass);
+        checkParams(titleRow, is, entityClass);
         ByteArrayOutputStream buffer = StreamUtils.copyInputStream(is);
         
         FileType fileType = getFileType(new ByteArrayInputStream(buffer.toByteArray()));
@@ -536,22 +537,39 @@ public abstract class POIExcelUploadHandler {
     /**
      * Check the parameter
      * 
+     * @param titleRow the title row number
      * @param excelFile the excel file
      * @param entityClass the entity class
      */
-    private static <E> void checkParams(File excelFile, Class<E> entityClass) {
+    private static <E> void checkParams(int titleRow, File excelFile, Class<E> entityClass) {
+        checkParams(titleRow, entityClass);
         Objects.requireNonNull(excelFile, "The excel file must not be null!");
-        Objects.requireNonNull(entityClass, "The entity class must not be null!");
     }
     
     /**
      * Check the parameter
      * 
+     * @param titleRow the title row number
      * @param is the excel file input stream
      * @param entityClass the entity class
      */
-    private static <E> void checkParams(InputStream is, Class<E> entityClass) {
+    private static <E> void checkParams(int titleRow, InputStream is, Class<E> entityClass) {
+        checkParams(titleRow, entityClass);
         Objects.requireNonNull(is, "The excel file input stream must not be null!");
+    }
+    
+    /**
+     * Check the parameter
+     * @param <E>
+     * 
+     * @param titleRow the title row number
+     * @param is the excel file input stream
+     * @param entityClass the entity class
+     */
+    private static <E> void checkParams(int titleRow, Class<E> entityClass) {
+        if (titleRow < 0) {
+            throw new BaseException("The number of rows must be greater than or equal to 0!");
+        }
         Objects.requireNonNull(entityClass, "The entity class must not be null!");
     }
 }
