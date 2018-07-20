@@ -70,12 +70,7 @@ public abstract class POIExcelUploadHandler {
      * @return the entity list
      */
     public static <E> List<E> excel2Entities(File excelFile, Class<E> entityClass) {
-        checkParams(excelFile, entityClass);
-        
-        FileType fileType = getFileType(excelFile);
-        Workbook workBook = getWorkBook(excelFile, fileType);
-        
-        return workBook2Entities(workBook, 0, entityClass);
+        return excel2Entities(excelFile, 0, entityClass);
     }
     
     /**
@@ -103,13 +98,7 @@ public abstract class POIExcelUploadHandler {
      * @return the entity list
      */
     public static <E> List<E> excel2Entities(InputStream is, Class<E> entityClass) {
-        checkParams(is, entityClass);
-        ByteArrayOutputStream buffer = StreamUtils.copyInputStream(is);
-        
-        FileType fileType = getFileType(new ByteArrayInputStream(buffer.toByteArray()));
-        Workbook workBook = getWorkBook(new ByteArrayInputStream(buffer.toByteArray()), fileType);
-        
-        return workBook2Entities(workBook, 0, entityClass);
+        return excel2Entities(is, 0, entityClass);
     }
     
     /**
