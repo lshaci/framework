@@ -13,7 +13,6 @@
 		<module>framework-core</module>
 		<module>framework-mybatis</module>
 		<module>framework-service</module>
-		<module>framework-swagger</module>
 		<module>framework-test</module>
 		<module>framework-utils</module>
 		<module>framework-excel</module>
@@ -23,6 +22,7 @@
 		<module>framework-archetype</module>
 		<module>framework-redis</module>
 		<module>framework-pdfUtils</module>
+		<module>swagger-spring-boot-starter</module>
 	</modules>
 
 	<name>framework-parent</name>
@@ -107,7 +107,7 @@
 			<!-- framework swagger module -->
 			<dependency>
 				<groupId>top.lshaci</groupId>
-				<artifactId>framework-swagger</artifactId>
+				<artifactId>swagger-spring-boot-starter</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework service module -->

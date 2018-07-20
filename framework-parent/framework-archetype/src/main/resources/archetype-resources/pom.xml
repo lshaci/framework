@@ -27,7 +27,7 @@
 		<!-- top lshaci framework swagger module -->
 		<dependency>
 			<groupId>top.lshaci</groupId>
-			<artifactId>framework-swagger</artifactId>
+			<artifactId>swagger-spring-boot-starter</artifactId>
 		</dependency>
 		<!-- top lshaci framework test module -->
 		<dependency>

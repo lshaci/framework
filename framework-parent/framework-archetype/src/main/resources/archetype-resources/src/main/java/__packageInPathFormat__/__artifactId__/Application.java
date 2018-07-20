@@ -6,11 +6,10 @@ import org.springframework.context.annotation.Import;
 
 import tk.mybatis.spring.annotation.MapperScan;
 import top.lshaci.framework.mybatis.MybatisApplication;
-import top.lshaci.framework.swagger.SwaggerApplication;
 import top.lshaci.framework.web.WebApplication;
 
 @SpringBootApplication
-@Import({MybatisApplication.class, SwaggerApplication.class, WebApplication.class})
+@Import({MybatisApplication.class, WebApplication.class})
 @MapperScan("${groupId}.${artifactId}.mapper")
 public class Application {
 
