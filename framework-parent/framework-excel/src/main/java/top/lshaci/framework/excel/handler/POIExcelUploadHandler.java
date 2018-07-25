@@ -226,9 +226,12 @@ public abstract class POIExcelUploadHandler {
             relations.forEach((titleArray, relationModel) -> {
                 Object[] cellValues = Arrays.stream(titleArray)
                         .map(t -> cellValueMap.get(t))
+//                      .filter(v -> v != null)
                         .collect(Collectors.toList())
                         .toArray(new Object[titleArray.length]);
+                
                 Object targetValue = getTargetValue(relationModel, cellValues);
+                
                 if (targetValue != null) {
                     targetValues.add(targetValue);
                     // set field value and get the target value
@@ -261,7 +264,17 @@ public abstract class POIExcelUploadHandler {
             return getConvertValue(relationModel, cellValues);
         }
         
-        return StringConverterUtils.getTargetValue(relationModel.getTargetField().getType(), cellValues[0].toString());
+        Object value = cellValues[0];
+        if (value == null) {
+            return null;
+        }
+        
+        try {
+            return StringConverterUtils.getTargetValue(relationModel.getTargetField().getType(), value.toString());
+        } catch (Exception e) {
+            log.warn("StringConverterUtils converter value is error!", e);
+            return null;
+        }
     }
     
     /**
@@ -436,6 +449,7 @@ public abstract class POIExcelUploadHandler {
         Map<Class<?>, Object> convertClassCache = new HashMap<>();
         
         return Arrays.stream(fields)
+                .filter(f -> f.getAnnotation(UploadExcelTitle.class) != null)
                 .collect(Collectors.toMap(
                     f -> getFieldTitleName(f), 
                     f -> createExcelRelationModel(f, convertClassCache)
@@ -453,7 +467,7 @@ public abstract class POIExcelUploadHandler {
         if (excelTitle != null) {
             return excelTitle.value();
         }
-        return new String [] {field.getName()};
+        throw new ExcelHandlerException("This field" + field.getName() + " does not contain @UploadExcelTitle annotation!");
     }
     
     /**
