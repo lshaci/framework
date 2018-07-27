@@ -24,19 +24,22 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
 
 /**
- * Config datasource with druid
+ * Config datasource with druid<br><br>
+ * 
+ * <b>0.0.4: </b>Change to auto configuration
  * 
  * @author lshaci
  * @since 0.0.1
  * @version 0.0.4
  */
+@Slf4j
 @Configuration
 // Load datasource config
 @PropertySources({
 	@PropertySource("classpath:datasource_first.properties"),
 	@PropertySource("classpath:datasource_second.properties")
 })
-@Slf4j
+@ConditionalOnProperty(value = "datasource.dynamic", havingValue = "true")
 public class DataSourceConfig {
 	
 	/**
@@ -44,11 +47,11 @@ public class DataSourceConfig {
 	 * 
 	 * @return dynamic data source first
 	 */
-	@ConditionalOnProperty(value = {"datasource.dynamic", "spring.datasource.druid.first.url"}, matchIfMissing = false)
-	@Bean(name = "firstDataSource")
-	@ConfigurationProperties("spring.datasource.druid.first")
+    @Bean(name = "firstDataSource")
+    @ConfigurationProperties("spring.datasource.druid.first")
+	@ConditionalOnProperty(value = "spring.datasource.druid.first.url")
 	public DataSource firstDataSource() {
-		log.info("Init First Druid DataSource...");
+		log.debug("Init First Druid DataSource...");
 		
 		return new DruidDataSource();
 	}
@@ -58,11 +61,11 @@ public class DataSourceConfig {
 	 * 
 	 * @return dynamic data source second
 	 */
-	@ConditionalOnProperty(value = {"datasource.dynamic", "spring.datasource.druid.second.url"}, matchIfMissing = false)
-	@Bean(name = "secondDataSource")
-	@ConfigurationProperties("spring.datasource.druid.second")
+    @Bean(name = "secondDataSource")
+    @ConfigurationProperties("spring.datasource.druid.second")
+	@ConditionalOnProperty("spring.datasource.druid.second.url")
 	public DataSource secondDataSource() {
-		log.info("Init Second Druid DataSource...");
+		log.debug("Init Second Druid DataSource...");
 		
 		return new DruidDataSource();
 	}
@@ -74,10 +77,9 @@ public class DataSourceConfig {
 	 */
 	@Primary
 	@Bean(name = "dataSource")
-	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
 	@DependsOn({"firstDataSource", "secondDataSource"})
     public DynamicDataSource dynamicDataSource() {
-		log.info("Init Dynamic Druid DataSource...");
+		log.debug("Init Dynamic Druid DataSource...");
 		
 		DynamicDataSource dataSource = new DynamicDataSource();
 		
@@ -96,10 +98,9 @@ public class DataSourceConfig {
 	 * 
 	 * @return transaction manager
 	 */
-	@ConditionalOnProperty(value = "datasource.dynamic", matchIfMissing = false)
-    @Bean
+	@Bean
     public DataSourceTransactionManager transactionManager() {
-		log.info("Init Data Source Transaction Manager...");
+		log.debug("Init Data Source Transaction Manager...");
 		
         return new DataSourceTransactionManager(dynamicDataSource());
     }

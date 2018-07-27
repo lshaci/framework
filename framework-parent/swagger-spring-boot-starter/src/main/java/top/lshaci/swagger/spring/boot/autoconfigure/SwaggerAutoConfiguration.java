@@ -28,7 +28,7 @@ import top.lshaci.swagger.spring.boot.properties.SwaggerProperties;
 @Configuration
 @EnableSwagger2
 @EnableConfigurationProperties(SwaggerProperties.class)
-@ConditionalOnProperty(prefix = SwaggerProperties.SWAGGER_PREFIX,value = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = SwaggerProperties.SWAGGER_PREFIX, value = "enabled", havingValue = "true")
 public class SwaggerAutoConfiguration {
     
     @Autowired

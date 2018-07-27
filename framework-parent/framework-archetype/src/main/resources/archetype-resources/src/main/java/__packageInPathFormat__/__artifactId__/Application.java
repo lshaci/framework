@@ -5,10 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 import tk.mybatis.spring.annotation.MapperScan;
-import top.lshaci.framework.mybatis.MybatisApplication;
 
 @SpringBootApplication
-@Import({MybatisApplication.class})
 @MapperScan("${groupId}.${artifactId}.mapper")
 public class Application {
 
