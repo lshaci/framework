@@ -2,7 +2,6 @@ package top.lshaci.framework.web.handler.exception;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,7 +26,6 @@ import top.lshaci.framework.web.model.JsonResponse;
 @Slf4j
 @RestController
 @ControllerAdvice
-@ConditionalOnProperty(value = "globalExceptionHandler.enabled", havingValue = "true", matchIfMissing = false)
 public class GlobalExceptionHandler {
 	
 	private final static String ARGUMENT_EXCEPTION = "参数异常: ";

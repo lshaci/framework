@@ -2,17 +2,21 @@ package top.lshaci.framework.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.context.request.RequestContextListener;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.web.aspect.WebLogAspect;
+import top.lshaci.framework.web.handler.exception.GlobalExceptionHandler;
 import top.lshaci.framework.web.utils.DownloadUtils;
 
 /**
  * Spring web mvc config<br><br>
  * 
- * <b>0.0.4:</b> Add setDownloadCacheSize method
+ * <b>0.0.4:</b> Add setDownloadCacheSize method;Add config GlobalExceptionHandler and WebLogAspect
  * 
  * @author lshaci
  * @since 0.0.3
@@ -20,9 +24,10 @@ import top.lshaci.framework.web.utils.DownloadUtils;
  */
 @Slf4j
 @Configuration
+@PropertySource("classpath:web.properties")
 public class MvcConfig {
     
-    @Value("${dowanload.cacheSize}")
+    @Value("${web.dowanload.cacheSize}")
     private int downloadCacheSize;
 
     /**
@@ -36,7 +41,30 @@ public class MvcConfig {
         return new RequestContextListener();
     }
     
-
+    /**
+     * Config global exception handler
+     * 
+     * @return the global exception handler bean
+     */
+    @Bean
+    @ConditionalOnProperty(value = "web.globalExceptionHandler.enabled", havingValue = "true", matchIfMissing = false)
+    public GlobalExceptionHandler globalExceptionHandler() {
+        log.debug("Config global exception handler...");
+        return new GlobalExceptionHandler();
+    }
+    
+    /**
+     * Config web log aspect
+     * 
+     * @return the web log aspect bean
+     */
+    @Bean
+    @ConditionalOnProperty(value = "web.webLogAspect.enabled", havingValue = "true", matchIfMissing = false)
+    public WebLogAspect webLogAspect() {
+        log.debug("Config web log aspect...");
+        return new WebLogAspect();
+    }
+    
     /**
      * Set download utils cache size
      */
@@ -48,5 +76,4 @@ public class MvcConfig {
         log.debug("Set DownloadUtils cacheSize: {} bytes", this.downloadCacheSize);
         DownloadUtils.cacheSize = this.downloadCacheSize;
     }
-    
 }
