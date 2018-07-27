@@ -1,6 +1,7 @@
 package top.lshaci.framework.websocket.utils;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,7 +63,7 @@ public class WebSocketUtils {
 	 * @param key unique key of the session
 	 * @param message the message need to be sent(<b>This message will be converted to JSON string</b>)
 	 */
-	public static void sendMsg(String key, Object message) {
+	public static void sendMessage(String key, Object message) {
 		validateKey(key);
 		Objects.requireNonNull(message, "The message must not be null!");
 		Session session = sessionMap.get(key);
@@ -76,6 +77,25 @@ public class WebSocketUtils {
 			throw new BaseException("Sending message failed!");
 		}
 	}
+	
+	   /**
+     * Send json message to all client
+     * 
+     * @param message the message need to be sent(<b>This message will be converted to JSON string</b>)
+     */
+    public static void sendMessage(Object message) {
+        Objects.requireNonNull(message, "The message must not be null!");
+        Collection<Session> sessions = sessionMap.values();
+        for (Session session : sessions) {
+            if (session != null) {
+                try {
+                    session.getBasicRemote().sendText(JSON.toJSONString(message));
+                } catch (IOException e) {
+                    log.error("Sending message failed!", e);
+                }
+            }
+        }
+    }
 	
 	/**
 	 * Validate parameters

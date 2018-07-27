@@ -19,6 +19,12 @@
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-common</artifactId>
 		</dependency>
+		<!-- spring boot configuration -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
 		<!-- spring boot web socket -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
