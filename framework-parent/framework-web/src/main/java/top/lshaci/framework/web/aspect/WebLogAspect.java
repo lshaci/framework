@@ -14,6 +14,7 @@ import org.springframework.core.annotation.Order;
 import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.web.constant.WebConstant;
 import top.lshaci.framework.web.utils.HttpRequestUtils;
 import top.lshaci.framework.web.utils.SessionUserUtils;
 
@@ -39,11 +40,6 @@ public class WebLogAspect {
     private final static ThreadLocal<String> REQUEST_CONTROLLER = new ThreadLocal<>();
     
     /**
-     * The swagger ui controller name
-     */
-    private final static String SWAGGER_CONTROLLER = "springfox.documentation.swagger.web.ApiResourceController";
-    
-    /**
      * The web log point cut
      */
     @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping) "
@@ -60,7 +56,7 @@ public class WebLogAspect {
     public void doBefore(JoinPoint joinPoint) throws Throwable {
         String controllerName = joinPoint.getSignature().getDeclaringTypeName();
         REQUEST_CONTROLLER.set(controllerName);
-        if (SWAGGER_CONTROLLER.equals(controllerName)) {
+        if (WebConstant.SWAGGER_CONTROLLER.equals(controllerName)) {
             return;
         }
         START_TIME.set(System.currentTimeMillis());
@@ -78,7 +74,7 @@ public class WebLogAspect {
     @Order(1)
     @AfterReturning(returning = "ret", pointcut = "webLog()")
     public void doAfterReturning(Object ret) throws Throwable {
-        if (SWAGGER_CONTROLLER.equals(REQUEST_CONTROLLER.get())) {
+        if (WebConstant.SWAGGER_CONTROLLER.equals(REQUEST_CONTROLLER.get())) {
             return;
         }
         log.warn("***OUT********RESPONSE: {}", JSON.toJSONString(ret));

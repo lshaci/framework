@@ -1,1 +1,3 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=top.lshaci.framework.web.config.MvcConfig
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+top.lshaci.framework.web.config.MvcConfig,\
+top.lshaci.framework.web.config.WebPermissionConfig

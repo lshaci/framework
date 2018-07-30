@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xdbigdata.framework.permission.mapper.UserRoleMapper">
+	<resultMap id="BaseResultMap" type="com.xdbigdata.framework.permission.model.UserRole">
+		<result column="user" property="user" />
+		<result column="role_id" property="roleId" />
+	</resultMap>
+
+	<select id="createTable">
+		create table if not exists `p_user_role` (
+			`user` varchar(255) not null comment '用户唯一标识',
+			`role_id` bigint(20) not null comment '角色id',
+			primary key (`user`,`role_id`)
+		) engine=innodb default charset=utf8;
+	</select>
+
+	<insert id="insertList" parameterType="list">
+		insert into p_role_resource (user, role_id) values
+		<foreach collection="list" item="ur" separator=",">
+			( #{ur.user}, #{ur.roleId} )
+		</foreach>
+	</insert>
+</mapper>

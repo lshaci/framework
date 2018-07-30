@@ -23,7 +23,7 @@ public class WebsocketConfig {
 	 * @return the server endpoint exporter bean
 	 */
 	@Bean
-	@ConditionalOnProperty(value = "websocket.enabled", havingValue = "true", matchIfMissing = false)
+	@ConditionalOnProperty(value = "websocket.enabled", havingValue = "true")
 	public ServerEndpointExporter serverEndpointExporter() {
 		log.debug("Init server endpoint exporter...");
 		return new ServerEndpointExporter();

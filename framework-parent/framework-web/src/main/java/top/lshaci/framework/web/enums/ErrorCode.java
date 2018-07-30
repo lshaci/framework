@@ -5,7 +5,8 @@ import lombok.Getter;
 /**
  * Error code enum<br><br>
  * <b>0.0.4: </b>Add org.springframework.http.converter.HttpMessageNotReadableException<br>
- * org.springframework.web.HttpRequestMethodNotSupportedException
+ * org.springframework.web.HttpRequestMethodNotSupportedException<br>
+ * top.lshaci.framework.web.exception.NoPermissionException
  * 
  * @author lshaci
  * @since 0.0.3
@@ -15,13 +16,17 @@ import lombok.Getter;
 public enum ErrorCode {
 	
 	/**
-	 * com.xdbigdata.framework.web.exception.NotLoginException
+	 * top.lshaci.framework.web.exception.NotLoginException
 	 */
-	NOT_LOGIN_EXCEPTION(40001, "登录失效，请重新登录", "com.xdbigdata.framework.web.exception.NotLoginException"),
+	NOT_LOGIN_EXCEPTION(40001, "登录失效，请重新登录", "top.lshaci.framework.web.exception.NotLoginException"),
+	/**
+     * top.lshaci.framework.web.exception.NoPermissionException
+     */
+    NO_PERMISSION_EXCEPTION(40002, "无权限进行此操作", "top.lshaci.framework.web.exception.NoPermissionException"),
 	/**
 	 * com.xdbigdata.framework.common.exception.BaseException
 	 */
-	INTERNAL_PROGRAM_ERROR(50000, "程序内部错误，操作失败", "com.xdbigdata.framework.common.exception.BaseException"),
+	INTERNAL_PROGRAM_ERROR(50000, "程序内部错误，操作失败", "top.lshaci.framework.common.exception.BaseException"),
 	/**
 	 * org.springframework.dao.DataAccessException
 	 */

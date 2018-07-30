@@ -25,7 +25,7 @@ import top.lshaci.framework.web.utils.DownloadUtils;
 @Slf4j
 @Configuration
 @PropertySource("classpath:web.properties")
-public class MvcConfig {
+public class WebMvcConfig {
     
     @Value("${web.dowanload.cacheSize}")
     private int downloadCacheSize;
@@ -47,7 +47,7 @@ public class MvcConfig {
      * @return the global exception handler bean
      */
     @Bean
-    @ConditionalOnProperty(value = "web.globalExceptionHandler.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(value = "web.globalExceptionHandler.enabled", havingValue = "true")
     public GlobalExceptionHandler globalExceptionHandler() {
         log.debug("Config global exception handler...");
         return new GlobalExceptionHandler();
@@ -59,7 +59,7 @@ public class MvcConfig {
      * @return the web log aspect bean
      */
     @Bean
-    @ConditionalOnProperty(value = "web.webLogAspect.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(value = "web.webLogAspect.enabled", havingValue = "true")
     public WebLogAspect webLogAspect() {
         log.debug("Config web log aspect...");
         return new WebLogAspect();

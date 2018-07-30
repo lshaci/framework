@@ -3,12 +3,14 @@ package top.lshaci.framework.web.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.web.constant.WebConstant;
 import top.lshaci.framework.web.enums.ContentType;
 import top.lshaci.framework.web.enums.Encoding;
 import top.lshaci.framework.web.enums.ErrorCode;
@@ -33,6 +35,18 @@ public abstract class AbstractLoginInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		log.debug("LoginInterceptor: " + request.getRequestURI());
+
+        if (!(handler instanceof HandlerMethod)) {
+            log.warn("This request does not access controller!");
+            return true;
+        }
+
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+
+        if (WebConstant.SWAGGER_CONTROLLER.equals(handlerMethod.getBeanType().getName())) {
+            log.warn("This request is to access the swagger ui!");
+            return true;
+        }
 		
 		Object loginUser = SessionUserUtils.getUserInSession();
 		/*
