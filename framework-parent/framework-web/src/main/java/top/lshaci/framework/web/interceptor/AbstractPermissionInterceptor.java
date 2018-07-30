@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.permission.annotation.NeedRole;
+import top.lshaci.framework.permission.annotation.ResourceName;
 import top.lshaci.framework.permission.enums.PermissionType;
 import top.lshaci.framework.permission.model.Resource;
 import top.lshaci.framework.permission.model.Role;
@@ -174,6 +175,10 @@ public abstract class AbstractPermissionInterceptor implements HandlerIntercepto
 	@SuppressWarnings("unchecked")
 	private boolean resourceType(HandlerMethod handlerMethod) {
 		Method method = handlerMethod.getMethod();
+		ResourceName resourceName = method.getAnnotation(ResourceName.class);
+        if (resourceName == null) {
+            return true;
+        }
 		Class<?> controllerClass = handlerMethod.getBeanType();
 		
 		List<String> userReourceList = (List<String>) HttpRequestUtils.getSessionAttribute(RESOURCE_IN_SESSION);

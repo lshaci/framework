@@ -19,8 +19,8 @@ import top.lshaci.framework.permission.utils.ResourceUtils;
 @Slf4j
 @Configuration
 @PropertySource("classpath:permission.properties")
-@MapperScan("com.xdbigdata.framework.permission.mapper")
-@ComponentScan("com.xdbigdata.framework.permission.service")
+@MapperScan("top.lshaci.framework.permission.mapper")
+@ComponentScan("top.lshaci.framework.permission.service")
 public class PermissionConfig {
 	
 	/**
