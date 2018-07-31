@@ -2,6 +2,7 @@ package top.lshaci.framework.permission.config;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -21,6 +22,7 @@ import top.lshaci.framework.permission.utils.ResourceUtils;
 @PropertySource("classpath:permission.properties")
 @MapperScan("top.lshaci.framework.permission.mapper")
 @ComponentScan("top.lshaci.framework.permission.service")
+@ConditionalOnProperty(value = "web.webPermission.enabled", havingValue = "true")
 public class PermissionConfig {
 	
 	/**
