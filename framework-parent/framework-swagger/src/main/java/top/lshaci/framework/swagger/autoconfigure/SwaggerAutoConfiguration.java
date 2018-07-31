@@ -1,4 +1,4 @@
-package top.lshaci.swagger.spring.boot.autoconfigure;
+package top.lshaci.framework.swagger.autoconfigure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -16,7 +16,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import top.lshaci.swagger.spring.boot.properties.SwaggerProperties;
+import top.lshaci.framework.swagger.properties.SwaggerProperties;
 
 /**
  * Swagger auto configuration

@@ -1,4 +1,4 @@
-package top.lshaci.swagger.spring.boot.properties;
+package top.lshaci.framework.swagger.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
