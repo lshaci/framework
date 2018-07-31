@@ -141,13 +141,10 @@ public abstract class AbstractPermissionInterceptor implements HandlerIntercepto
 	@SuppressWarnings("unchecked")
 	private boolean roleType(Method method) {
 		NeedRole needRole = method.getAnnotation(NeedRole.class);
-		if (needRole == null) {
-			return true;
-		}
-		String[] needRoles = needRole.value();
-		if (ArrayUtils.isEmpty(needRoles)) {
-			return true;
-		}
+		if (needRole == null || ArrayUtils.isEmpty(needRole.value())) {
+            log.info("No permissions required.");
+            return true;
+        }
 		
 		List<String> userRoleList = (List<String>) HttpRequestUtils.getSessionAttribute(ROLE_IN_SESSION);
 		if (userRoleList == null) {
@@ -160,7 +157,7 @@ public abstract class AbstractPermissionInterceptor implements HandlerIntercepto
 			}
 		}
 		
-		List<String> needRoleList = new ArrayList<>(Arrays.asList(needRoles));
+		List<String> needRoleList = new ArrayList<>(Arrays.asList(needRole.value()));
 		needRoleList.retainAll(userRoleList);
 		
 		return needRoleList.size() > 0;
@@ -177,6 +174,7 @@ public abstract class AbstractPermissionInterceptor implements HandlerIntercepto
 		Method method = handlerMethod.getMethod();
 		ResourceName resourceName = method.getAnnotation(ResourceName.class);
         if (resourceName == null) {
+            log.info("No permissions required.");
             return true;
         }
 		Class<?> controllerClass = handlerMethod.getBeanType();
