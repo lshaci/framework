@@ -15,7 +15,7 @@
 	</select>
 
 	<insert id="insertList" parameterType="list">
-		insert into p_role_resource (user, role_id) values
+		insert into p_user_role (user, role_id) values
 		<foreach collection="list" item="ur" separator=",">
 			( #{ur.user}, #{ur.roleId} )
 		</foreach>
