@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -70,7 +71,7 @@ public abstract class POIExcelUploadHandler {
      * @param entityClass the entity class
      * @return the entity list
      */
-    public static <E> List<E> excel2Entities(File excelFile, Class<E> entityClass) {
+    public static <E> List<E> excel2Entities(File excelFile, Class<E> entityClass) throws ExcelHandlerException {
         return excel2Entities(excelFile, 0, entityClass);
     }
     
@@ -82,7 +83,7 @@ public abstract class POIExcelUploadHandler {
      * @param entityClass the entity class
      * @return the entity list
      */
-    public static <E> List<E> excel2Entities(File excelFile, int titleRow, Class<E> entityClass) {
+    public static <E> List<E> excel2Entities(File excelFile, int titleRow, Class<E> entityClass) throws ExcelHandlerException {
         checkParams(titleRow, excelFile, entityClass);
         
         FileType fileType = getFileType(excelFile);
@@ -98,7 +99,7 @@ public abstract class POIExcelUploadHandler {
      * @param entityClass the entity class
      * @return the entity list
      */
-    public static <E> List<E> excel2Entities(InputStream is, Class<E> entityClass) {
+    public static <E> List<E> excel2Entities(InputStream is, Class<E> entityClass) throws ExcelHandlerException {
         return excel2Entities(is, 0, entityClass);
     }
     
@@ -110,7 +111,7 @@ public abstract class POIExcelUploadHandler {
      * @param entityClass the entity class
      * @return the entity list
      */
-    public static <E> List<E> excel2Entities(InputStream is, int titleRow, Class<E> entityClass) {
+    public static <E> List<E> excel2Entities(InputStream is, int titleRow, Class<E> entityClass) throws ExcelHandlerException {
         checkParams(titleRow, is, entityClass);
         ByteArrayOutputStream buffer = StreamUtils.copyInputStream(is);
         
@@ -131,57 +132,70 @@ public abstract class POIExcelUploadHandler {
     private static <E> List<E> workBook2Entities(Workbook workBook, int titleRow, Class<E> entityClass) {
         Map<String[], ExcelRelationModel> relations = handlerRelations(entityClass);
         
-        try {
-            // The number of sheet
-            int sheets = workBook.getNumberOfSheets();
+        // The number of sheet
+        int sheets = workBook.getNumberOfSheets();
+        
+        List<E> result = new ArrayList<>();
+        for (int i = 0; i < sheets; i++) {
+            Sheet sheet = workBook.getSheetAt(i);
             
-            List<E> result = new ArrayList<>();
-            for (int i = 0; i < sheets; i++) {
-                Sheet sheet = workBook.getSheetAt(i);
-                
-                // If the sheet is null, continue loop
-                if (sheet == null) {
-                    continue;
-                }
-                
-                int lastRowNum = sheet.getLastRowNum();
-                
-                // if the sheet not has any data, continue loop
-                if (lastRowNum < 1) {
-                    continue;
-                }
-                
-                String[] titles = getTitles(sheet, titleRow);
-                List<E> rowDatas = getRowDatas(sheet, titleRow, lastRowNum, titles.length, titles, entityClass, relations);
-                
-                if (CollectionUtils.isEmpty(rowDatas)) {
-                    continue;
-                }
-                
-                result.addAll(rowDatas);
+            // If the sheet is null, continue loop
+            if (sheet == null) {
+                continue;
             }
             
-            return result;
-        } catch (Exception e) {
-            log.error("Parse excel error", e);
-            throw new ExcelHandlerException("Convert excel file to entity list is error!", e);
+            int lastRowNum = sheet.getLastRowNum();
+            
+            // if the sheet not has any data, continue loop
+            if (lastRowNum <= titleRow) {
+            	log.warn("The sheet last row number is {}.", lastRowNum);
+                continue;
+            }
+            
+            String[] titles = getTitles(sheet, titleRow);
+            verifyTitle(relations.keySet(), titles);
+            
+            List<E> rowDatas = getRowDatas(sheet, titleRow, lastRowNum, titles, entityClass, relations);
+            
+            if (CollectionUtils.isEmpty(rowDatas)) {
+                continue;
+            }
+            
+            result.addAll(rowDatas);
         }
+        
+        return result;
     }
     
     /**
+     * Verify the excel title
+     * 
+     * @param fieldTitles the set of title defined by annotations on the field
+     * @param excelTitles the excel title array
+     */
+    private static void verifyTitle(Set<String[]> fieldTitles, String[] excelTitles) {
+    	Set<String> fieldTitleSet = fieldTitles.stream().flatMap(Arrays::stream).collect(Collectors.toSet());
+    	Set<String> excelTitleSet = Arrays.stream(excelTitles).collect(Collectors.toSet());
+    	fieldTitleSet.retainAll(excelTitleSet);
+    	
+    	if (CollectionUtils.isEmpty(fieldTitleSet)) {
+			throw new ExcelHandlerException("Please use the correct excel file!");
+		}
+	}
+
+	/**
      * Get the row data and change to entity list of the sheet
      *
      * @param sheet the sheet
      * @param titleRow the title row number
      * @param lastRowNum the all row number
-     * @param rowLength the row length
      * @param titles the excel title array
      * @param entityClass the entity class
      * @param relations the excel relation model map, key is excel title, value is relation model
      * @return the entity list
      */
-    private static <E> List<E> getRowDatas(Sheet sheet, int titleRow, int lastRowNum, int rowLength, 
-            String[] titles, Class<E> entityClass, Map<String[], ExcelRelationModel> relations) {
+    private static <E> List<E> getRowDatas(Sheet sheet, int titleRow, int lastRowNum, String[] titles, 
+    		Class<E> entityClass, Map<String[], ExcelRelationModel> relations) {
         List<E> rowDatas = new ArrayList<>();
         // Loop the sheet get row
         for (int i = titleRow + 1; i <= lastRowNum; i++) {
@@ -204,8 +218,10 @@ public abstract class POIExcelUploadHandler {
             final Set<Object> targetValues = new HashSet<>();
             Map<String, String> cellValueMap = new HashMap<>();
             
-            for (Cell cell : row) {
+            for (int j = 0; j < titles.length; j++) {
+            	Cell cell = row.getCell(j);
                 if (cell == null) {
+                	log.warn("The cell is null! row:{} column:{}", i, j);
                     continue;
                 }
                 
@@ -226,7 +242,6 @@ public abstract class POIExcelUploadHandler {
             relations.forEach((titleArray, relationModel) -> {
                 Object[] cellValues = Arrays.stream(titleArray)
                         .map(t -> cellValueMap.get(t))
-//                      .filter(v -> v != null)
                         .collect(Collectors.toList())
                         .toArray(new Object[titleArray.length]);
                 
@@ -448,12 +463,17 @@ public abstract class POIExcelUploadHandler {
         
         Map<Class<?>, Object> convertClassCache = new HashMap<>();
         
-        return Arrays.stream(fields)
+        Map<String[], ExcelRelationModel> relations = Arrays.stream(fields)
                 .filter(f -> f.getAnnotation(UploadExcelTitle.class) != null)
                 .collect(Collectors.toMap(
                     f -> getFieldTitleName(f), 
                     f -> createExcelRelationModel(f, convertClassCache)
                 ));
+        if (MapUtils.isEmpty(relations)) {
+        	throw new ExcelHandlerException("The all fields does not contain @UploadExcelTitle annotation!");
+		}
+        
+        return relations;
     }
     
     /**

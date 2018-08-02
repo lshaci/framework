@@ -28,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.excel.annotation.DownloadAllField;
 import top.lshaci.framework.excel.annotation.DownloadConvert;
 import top.lshaci.framework.excel.annotation.DownloadExcelFirstTitle;
 import top.lshaci.framework.excel.annotation.DownloadExcelSheet;
@@ -75,13 +76,12 @@ public abstract class POIExcelDownloadHandler {
 		Class<?> entityClass = entities.get(0).getClass();
 		
 		List<DownloadOrder> titleOrder = getTitleOrder(entityClass);
-		List<String[]> rowDatas = entities2StringArrays(entities, titleOrder, entityClass);
-		
 		if (CollectionUtils.isEmpty(titleOrder)) {
 			log.error("The excel title is empty!");
 			throw new ExcelHandlerException("The excel title must not be empty!");
 		}
 		
+		List<String[]> rowDatas = entities2StringArrays(entities, titleOrder, entityClass);
 		if (CollectionUtils.isEmpty(rowDatas)) {
 			log.error("The content is empty!");
 			throw new ExcelHandlerException("The content must not be empty!");
@@ -410,14 +410,14 @@ public abstract class POIExcelDownloadHandler {
 		}
 		
 		Map<Class<?>, Object> convertClassCache = new HashMap<>();
+		boolean downloadAllField = entityClass.getAnnotation(DownloadAllField.class) != null;
 		
 		return Arrays.stream(fields)
 				.filter(f -> f.getAnnotation(DownloadIgnore.class) == null)
+				.filter(f -> downloadAllField || f.getAnnotation(DownloadExcelTitle.class) != null)
 				.collect(Collectors.toMap(
 					f -> getFieldTitleName(f), 
-					f -> {
-						return createExcelRelationModel(f, convertClassCache);
-					})
+					f -> createExcelRelationModel(f, convertClassCache))
 				);
 	}
 	
@@ -517,9 +517,12 @@ public abstract class POIExcelDownloadHandler {
 			throw new ExcelHandlerException("The entity not has any field!");
 		}
 
+		boolean downloadAllField = entityClass.getAnnotation(DownloadAllField.class) != null;
+
 		return Arrays.stream(fields)
 				.filter(f -> f.getAnnotation(DownloadIgnore.class) == null)
-				.map(f -> createDownloadOrder(f))
+				.filter(f -> downloadAllField || f.getAnnotation(DownloadExcelTitle.class) != null)
+				.map(f -> createDownloadOrder(f, downloadAllField))
 				.sorted()
 				.collect(Collectors.toList());
 	}
@@ -527,21 +530,18 @@ public abstract class POIExcelDownloadHandler {
 	/**
 	 * Create download order of field
 	 * 
-	 * @param field the field
+	 * @param field            the field
+	 * @param downloadAllField if true download all field
 	 * @return the download order
 	 */
-	private static DownloadOrder createDownloadOrder(Field field) {
+	private static DownloadOrder createDownloadOrder(Field field, boolean downloadAllField) {
 		DownloadExcelTitle downloadExcelTitle = field.getAnnotation(DownloadExcelTitle.class);
 		
-		DownloadOrder downloadOrder = new DownloadOrder();
-		downloadOrder.setField(field);
+		DownloadOrder downloadOrder = new DownloadOrder(field);
 		
-		if (downloadExcelTitle == null) {
-			downloadOrder.setTitle(field.getName());
-			downloadOrder.setOrder(0);
-		} else {
+		if (downloadExcelTitle != null) {
 			String title = downloadExcelTitle.title();
-			if (StringUtils.isEmpty(title)) {
+			if (StringUtils.isBlank(title)) {
 				title = field.getName();
 			}
 			int order = downloadExcelTitle.order();
@@ -550,8 +550,10 @@ public abstract class POIExcelDownloadHandler {
 			downloadOrder.setTitle(title);
 			downloadOrder.setOrder(order);
 			downloadOrder.setColumnWidth(columnWidth);
+		} else {
+			downloadOrder.setTitle(field.getName());
+			downloadOrder.setOrder(0);
 		}
-		
 		
 		return downloadOrder;
 	}
