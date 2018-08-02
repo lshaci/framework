@@ -7,14 +7,11 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSON;
-
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.web.constant.WebConstant;
-import top.lshaci.framework.web.enums.ContentType;
-import top.lshaci.framework.web.enums.Encoding;
 import top.lshaci.framework.web.enums.ErrorCode;
 import top.lshaci.framework.web.model.JsonResponse;
+import top.lshaci.framework.web.utils.HttpResponseUtils;
 import top.lshaci.framework.web.utils.SessionUserUtils;
 
 /**
@@ -59,16 +56,13 @@ public abstract class AbstractLoginInterceptor implements HandlerInterceptor {
 			if (isAjaxRequest(request)) {
 				log.info("This request is an ajax request.");
 				
-				response.setCharacterEncoding(Encoding.UTF_8.getName());
-				response.setContentType(ContentType.JSON_UTF_8.getName());
-				
 				JsonResponse jsonResponse = JsonResponse
 						.failure(ErrorCode.NOT_LOGIN_EXCEPTION.getMsg())
 						.setCode(ErrorCode.NOT_LOGIN_EXCEPTION.getCode())
 						.addParam("redirectUrl", redirectUrl);
 				
 				log.warn("No login, response json.");
-				response.getWriter().write(JSON.toJSONString(jsonResponse));
+				HttpResponseUtils.responseJson(jsonResponse);
 			} else {
 				log.warn("No login, redirect home page.");
 				response.sendRedirect(redirectUrl);

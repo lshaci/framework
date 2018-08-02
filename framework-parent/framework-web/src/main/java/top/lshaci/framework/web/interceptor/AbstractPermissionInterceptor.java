@@ -15,8 +15,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSON;
-
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.permission.annotation.NeedRole;
 import top.lshaci.framework.permission.annotation.ResourceName;
@@ -27,11 +25,10 @@ import top.lshaci.framework.permission.service.ResourceService;
 import top.lshaci.framework.permission.service.RoleService;
 import top.lshaci.framework.permission.utils.ResourceUtils;
 import top.lshaci.framework.web.constant.WebConstant;
-import top.lshaci.framework.web.enums.ContentType;
-import top.lshaci.framework.web.enums.Encoding;
 import top.lshaci.framework.web.enums.ErrorCode;
 import top.lshaci.framework.web.model.JsonResponse;
 import top.lshaci.framework.web.utils.HttpRequestUtils;
+import top.lshaci.framework.web.utils.HttpResponseUtils;
 
 /**
  * Permission Interceptor
@@ -113,16 +110,13 @@ public abstract class AbstractPermissionInterceptor implements HandlerIntercepto
 			if (isAjaxRequest(request)) {
 				log.info("This request is an ajax request.");
 	
-				response.setCharacterEncoding(Encoding.UTF_8.getName());
-				response.setContentType(ContentType.JSON_UTF_8.getName());
-	
 				JsonResponse jsonResponse = JsonResponse
 						.failure(ErrorCode.NO_PERMISSION_EXCEPTION.getMsg())
 						.setCode(ErrorCode.NO_PERMISSION_EXCEPTION.getCode())
 						.addParam("redirectUrl", noPermissionUrl);
 	
 				log.warn("No permission, response json.");
-				response.getWriter().write(JSON.toJSONString(jsonResponse));
+				HttpResponseUtils.responseJson(jsonResponse);
 			} else {
 				log.warn("No permission, redirect no permission page.");
 				response.sendRedirect(noPermissionUrl);
