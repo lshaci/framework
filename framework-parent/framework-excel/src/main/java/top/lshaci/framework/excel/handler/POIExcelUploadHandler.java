@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.common.exception.BaseException;
 import top.lshaci.framework.excel.annotation.UploadConvert;
 import top.lshaci.framework.excel.annotation.UploadExcelTitle;
+import top.lshaci.framework.excel.annotation.UploadVerifyTitleLength;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.model.ExcelRelationModel;
 import top.lshaci.framework.utils.DateUtils;
@@ -153,7 +154,8 @@ public abstract class POIExcelUploadHandler {
             }
             
             String[] titles = getTitles(sheet, titleRow);
-            verifyTitle(relations.keySet(), titles);
+            boolean verifyTitleLength = entityClass.getAnnotation(UploadVerifyTitleLength.class) != null;
+            verifyTitle(relations.keySet(), titles, verifyTitleLength);
             
             List<E> rowDatas = getRowDatas(sheet, titleRow, lastRowNum, titles, entityClass, relations);
             
@@ -172,16 +174,17 @@ public abstract class POIExcelUploadHandler {
      * 
      * @param fieldTitles the set of title defined by annotations on the field
      * @param excelTitles the excel title array
+     * @param verifyTitleLength if true means verify the excel title length
      */
-    private static void verifyTitle(Set<String[]> fieldTitles, String[] excelTitles) {
-    	Set<String> fieldTitleSet = fieldTitles.stream().flatMap(Arrays::stream).collect(Collectors.toSet());
-    	Set<String> excelTitleSet = Arrays.stream(excelTitles).collect(Collectors.toSet());
-    	fieldTitleSet.retainAll(excelTitleSet);
-    	
-    	if (CollectionUtils.isEmpty(fieldTitleSet)) {
-			throw new ExcelHandlerException("Please use the correct excel file!");
-		}
-	}
+    private static void verifyTitle(Set<String[]> fieldTitles, String[] excelTitles, boolean verifyTitleLength) {
+        Set<String> fieldTitleSet = fieldTitles.stream().flatMap(Arrays::stream).collect(Collectors.toSet());
+        Set<String> excelTitleSet = Arrays.stream(excelTitles).collect(Collectors.toSet());
+        fieldTitleSet.retainAll(excelTitleSet);
+        
+        if (CollectionUtils.isEmpty(fieldTitleSet) || (verifyTitleLength && fieldTitleSet.size() != excelTitleSet.size())) {
+            throw new ExcelHandlerException("Please use the correct excel file!");
+        }
+    }
 
 	/**
      * Get the row data and change to entity list of the sheet
