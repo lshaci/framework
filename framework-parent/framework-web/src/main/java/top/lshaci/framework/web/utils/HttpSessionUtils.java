@@ -6,11 +6,9 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Http request utils<br><br>
- * <b>0.0.4: </b>Add method destroySession, removeRequestAttribute, removeSessionAttribute(String)
  * 
  * @author lshaci
- * @since 0.0.3
- * @version 0.0.4
+ * @since 0.0.4
  */
 public class HttpSessionUtils {
 
