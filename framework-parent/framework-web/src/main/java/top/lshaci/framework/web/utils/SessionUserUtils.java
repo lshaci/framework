@@ -26,7 +26,7 @@ public class SessionUserUtils {
 	 */
 	public static void setUserInSession(Object user) {
 		Objects.requireNonNull(user, "The user must not be null!");
-		HttpRequestUtils.setSessionAttribute(USER_IN_SESSION, user);
+		HttpSessionUtils.setAttribute(USER_IN_SESSION, user);
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class SessionUserUtils {
 	 * @return the user in session
 	 */
 	public static Object getUserInSession() {
-		return HttpRequestUtils.getSessionAttribute(USER_IN_SESSION);
+		return HttpSessionUtils.getAttribute(USER_IN_SESSION);
 	}
 	
 	/**

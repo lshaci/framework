@@ -27,8 +27,8 @@ import top.lshaci.framework.permission.utils.ResourceUtils;
 import top.lshaci.framework.web.constant.WebConstant;
 import top.lshaci.framework.web.enums.ErrorCode;
 import top.lshaci.framework.web.model.JsonResponse;
-import top.lshaci.framework.web.utils.HttpRequestUtils;
 import top.lshaci.framework.web.utils.HttpResponseUtils;
+import top.lshaci.framework.web.utils.HttpSessionUtils;
 
 /**
  * Permission Interceptor
@@ -140,14 +140,14 @@ public abstract class AbstractPermissionInterceptor implements HandlerIntercepto
             return true;
         }
 		
-		List<String> userRoleList = (List<String>) HttpRequestUtils.getSessionAttribute(ROLE_IN_SESSION);
+		List<String> userRoleList = (List<String>) HttpSessionUtils.getAttribute(ROLE_IN_SESSION);
 		if (userRoleList == null) {
 			userRoleList = roleService.selectByUser(getUser())
 					.stream()
 					.map(Role::getName)
 					.collect(Collectors.toList());
 			if (cachePermission) {
-				HttpRequestUtils.setSessionAttribute(ROLE_IN_SESSION, userRoleList);
+			    HttpSessionUtils.setAttribute(ROLE_IN_SESSION, userRoleList);
 			}
 		}
 		
@@ -173,14 +173,14 @@ public abstract class AbstractPermissionInterceptor implements HandlerIntercepto
         }
 		Class<?> controllerClass = handlerMethod.getBeanType();
 		
-		List<String> userReourceList = (List<String>) HttpRequestUtils.getSessionAttribute(RESOURCE_IN_SESSION);
+		List<String> userReourceList = (List<String>) HttpSessionUtils.getAttribute(RESOURCE_IN_SESSION);
 		if (userReourceList == null) {
 			userReourceList = resourceService.selectByUser(getUser())
 					.stream()
 					.map(Resource::getResource)
 					.collect(Collectors.toList());
 			if (cachePermission) {
-				HttpRequestUtils.setSessionAttribute(RESOURCE_IN_SESSION, userReourceList);
+			    HttpSessionUtils.setAttribute(RESOURCE_IN_SESSION, userReourceList);
 			}
 		}
 		

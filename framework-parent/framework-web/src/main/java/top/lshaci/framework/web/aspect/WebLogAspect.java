@@ -60,7 +60,7 @@ public class WebLogAspect {
             return;
         }
         START_TIME.set(System.currentTimeMillis());
-        HttpServletRequest request = HttpRequestUtils.getRequest();
+        HttpServletRequest request = HttpRequestUtils.get();
         Object userInSession = SessionUserUtils.getUserInSession();
         log.warn("***IN*********LOGIN USER: {}", JSON.toJSONString(userInSession));
         log.warn("***IN*********REQUEST URL: {}", request.getRequestURL());

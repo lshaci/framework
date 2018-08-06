@@ -3,16 +3,16 @@ package top.lshaci.framework.web.utils;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- * Http request utils
+ * Http request utils<br><br>
  * 
  * @author lshaci
  * @since 0.0.3
+ * @version 0.0.4
  */
 public class HttpRequestUtils {
 
@@ -21,7 +21,7 @@ public class HttpRequestUtils {
 	 * 
 	 * @return the http servlet request
 	 */
-	public static HttpServletRequest getRequest() {
+	public static HttpServletRequest get() {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder
 				.getRequestAttributes();
 		
@@ -34,57 +34,33 @@ public class HttpRequestUtils {
 	/**
 	 * Set value in http servlet request attribute
 	 * 
-	 * @param name the name
+	 * @param key the key of the request attribute
 	 * @param value the value of the name
 	 */
-	public static void setRequestAttribute(String name, Object value) {
-		HttpServletRequest request = getRequest();
-		request.setAttribute(name, value);
+	public static void setAttribute(String key, Object value) {
+		HttpServletRequest request = get();
+		request.setAttribute(key, value);
 	}
 	
 	/**
-	 * Get value from http servlet request attribute with name
+	 * Get value from http servlet request attribute with the key
 	 * 
-	 * @param name the name
+	 * @param key the key of the request attribute
 	 * @return the value of the name
 	 */
-	public static Object getRequestAttribute(String name) {
-		HttpServletRequest request = getRequest();
-		return request.getAttribute(name);
+	public static Object getAttribute(String key) {
+		HttpServletRequest request = get();
+		return request.getAttribute(key);
 	}
 	
 	/**
-	 * Get the http session
+	 * Remove value from http servlet request attribute with the key
 	 * 
-	 * @return the http session
+	 * @param key the key of the request attribute
 	 */
-	public static HttpSession getSession() {
-		HttpSession session = getRequest().getSession();
-		Objects.requireNonNull(session, "The http session is null!");
-		
-		return session;
-	}
-	
-	/**
-	 * Set value in http session attribute
-	 * 
-	 * @param name the name
-	 * @param value the value of the name
-	 */
-	public static void setSessionAttribute(String name, Object value) {
-		HttpSession session = getSession();
-		session.setAttribute(name, value);
-	}
-	
-	/**
-	 * Get value from http session attribute with name
-	 * 
-	 * @param name the name
-	 * @return the value of the name
-	 */
-	public static Object getSessionAttribute(String name) {
-		HttpSession session = getSession();
-		return session.getAttribute(name);
+	public static void removeAttribute(String key) {
+		HttpServletRequest request = get();
+		request.removeAttribute(key);
 	}
 	
 	/**
@@ -93,7 +69,7 @@ public class HttpRequestUtils {
 	 * @return ip of the client
 	 */
 	public static String getIp() {
-		HttpServletRequest request = getRequest();
+		HttpServletRequest request = get();
 		String ip = request.getHeader("x-forwarded-for");
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getHeader("Proxy-Client-IP");
