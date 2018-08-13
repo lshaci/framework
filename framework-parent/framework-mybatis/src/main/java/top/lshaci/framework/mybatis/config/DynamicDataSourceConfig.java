@@ -40,7 +40,7 @@ import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
 	@PropertySource("classpath:datasource_second.properties")
 })
 @ConditionalOnProperty(value = "datasource.dynamic", havingValue = "true")
-public class DataSourceConfig {
+public class DynamicDataSourceConfig {
 	
 	/**
 	 * Define dynamic data source(first)

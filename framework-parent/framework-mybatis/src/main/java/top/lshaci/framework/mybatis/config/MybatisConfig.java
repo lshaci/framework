@@ -25,7 +25,7 @@ import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
  */
 @Slf4j
 @Configuration
-@AutoConfigureAfter(DataSourceConfig.class)
+@AutoConfigureAfter(DynamicDataSourceConfig.class)
 @PropertySource("classpath:mybatis.properties")
 @ConditionalOnProperty(value = "datasource.dynamic", havingValue = "true")
 public class MybatisConfig {
