@@ -116,10 +116,9 @@ public class DownloadUtils {
         if (StringUtils.isBlank(downloadName)) {
             throw new BaseException("The download file name must not be empty!");
         }
-        if (contentType == null) {
-            throw new WebBaseException("The http servlet response content type must not be null!");
+        if (contentType != null) {
+            response.setContentType(contentType.getName());
         }
-        response.setContentType(contentType.getName());
 
         byte[] b = new byte[cacheSize];
         int length;

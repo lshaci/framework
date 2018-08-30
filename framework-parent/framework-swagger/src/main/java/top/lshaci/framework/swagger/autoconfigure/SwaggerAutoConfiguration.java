@@ -45,6 +45,7 @@ public class SwaggerAutoConfiguration {
         
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
+                .directModelSubstitute(Byte.class, Integer.class)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(properties.getBasePackage()))
                 .paths(PathSelectors.any())

@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.common.exception.BaseException;
 import top.lshaci.framework.excel.annotation.UploadConvert;
 import top.lshaci.framework.excel.annotation.UploadExcelTitle;
-import top.lshaci.framework.excel.annotation.UploadVerifyTitleLength;
+import top.lshaci.framework.excel.annotation.UploadVerify;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.model.ExcelRelationModel;
 import top.lshaci.framework.utils.DateUtils;
@@ -154,8 +154,7 @@ public abstract class POIExcelUploadHandler {
             }
             
             String[] titles = getTitles(sheet, titleRow);
-            boolean verifyTitleLength = entityClass.getAnnotation(UploadVerifyTitleLength.class) != null;
-            verifyTitle(relations.keySet(), titles, verifyTitleLength);
+            verifyTitle(relations.keySet(), titles, entityClass);
             
             List<E> rowDatas = getRowDatas(sheet, titleRow, lastRowNum, titles, entityClass, relations);
             
@@ -174,17 +173,20 @@ public abstract class POIExcelUploadHandler {
      * 
      * @param fieldTitles the set of title defined by annotations on the field
      * @param excelTitles the excel title array
-     * @param verifyTitleLength if true means verify the excel title length
+     * @param entityClass the entity class
      */
-    private static void verifyTitle(Set<String[]> fieldTitles, String[] excelTitles, boolean verifyTitleLength) {
-        Set<String> fieldTitleSet = fieldTitles.stream().flatMap(Arrays::stream).collect(Collectors.toSet());
-        Set<String> excelTitleSet = Arrays.stream(excelTitles).collect(Collectors.toSet());
-        fieldTitleSet.retainAll(excelTitleSet);
-        
-        if (CollectionUtils.isEmpty(fieldTitleSet) || (verifyTitleLength && fieldTitleSet.size() != excelTitleSet.size())) {
-            throw new ExcelHandlerException("Please use the correct excel file!");
-        }
-    }
+    private static <E> void verifyTitle(Set<String[]> fieldTitles, String[] excelTitles, Class<E> entityClass) {
+    	UploadVerify uploadVerify = entityClass.getAnnotation(UploadVerify.class);
+    	if (uploadVerify != null && uploadVerify.verifyTitleLength()) {
+    		Set<String> fieldTitleSet = fieldTitles.stream().flatMap(Arrays::stream).collect(Collectors.toSet());
+    		Set<String> excelTitleSet = Arrays.stream(excelTitles).collect(Collectors.toSet());
+    		fieldTitleSet.retainAll(excelTitleSet);
+    		
+    		if (CollectionUtils.isEmpty(fieldTitleSet) || fieldTitleSet.size() != excelTitleSet.size()) {
+    			throw new ExcelHandlerException("Please use the correct excel file!");
+    		}
+		}
+	}
 
 	/**
      * Get the row data and change to entity list of the sheet
@@ -200,62 +202,34 @@ public abstract class POIExcelUploadHandler {
     private static <E> List<E> getRowDatas(Sheet sheet, int titleRow, int lastRowNum, String[] titles, 
     		Class<E> entityClass, Map<String[], ExcelRelationModel> relations) {
         List<E> rowDatas = new ArrayList<>();
+        
+        UploadVerify uploadVerify = entityClass.getAnnotation(UploadVerify.class);
+        boolean requireCellValue = uploadVerify != null && uploadVerify.requireCellValue();
+        boolean requireRowValue = uploadVerify != null && uploadVerify.requireRowValue();
+        
         // Loop the sheet get row
         for (int i = titleRow + 1; i <= lastRowNum; i++) {
             Row row = sheet.getRow(i);
             
             // If the row is null, continue loop
             if (row == null) {
+            	log.warn("The row[{}] is null!", i + 1);
+		    	if (requireRowValue) {
+					throw new ExcelHandlerException("The row[" + (i + 1) + "] is null!");
+				}
                 continue;
             }
             
             // Loop the row get cell
-            E entity = ReflectionUtils.newInstance(entityClass);
-            
-            if (entity == null) {
-                String msg = "New instance is error!";
-                log.error(msg);
-                throw new ExcelHandlerException(msg);
-            }
             
             final Set<Object> targetValues = new HashSet<>();
-            Map<String, String> cellValueMap = new HashMap<>();
-            
-            for (int j = 0; j < titles.length; j++) {
-            	Cell cell = row.getCell(j);
-                if (cell == null) {
-                	log.warn("The cell is null! row:{} column:{}", i, j);
-                    continue;
-                }
-                
-                int columnIndex = cell.getColumnIndex();
-                String cellValue = getCellValue(cell);
-                if (StringUtils.isEmpty(cellValue)) {
-                    continue;
-                }
-                
-                String title = titles[columnIndex];
-                cellValueMap.put(title, cellValue);
-            }
+            Map<String, String> cellValueMap = getCellValues(titles, row, requireCellValue);
             
             if (cellValueMap.isEmpty()) {
                 continue;
             }
             
-            relations.forEach((titleArray, relationModel) -> {
-                Object[] cellValues = Arrays.stream(titleArray)
-                        .map(t -> cellValueMap.get(t))
-                        .collect(Collectors.toList())
-                        .toArray(new Object[titleArray.length]);
-                
-                Object targetValue = getTargetValue(relationModel, cellValues);
-                
-                if (targetValue != null) {
-                    targetValues.add(targetValue);
-                    // set field value and get the target value
-                    ReflectionUtils.setFieldValue(entity, relationModel.getTargetField(), targetValue);
-                }
-            });
+            E entity = createEntity(entityClass, relations, targetValues, cellValueMap);
 
             // all field value is not null, add the new entity to row datas
             if (CollectionUtils.isNotEmpty(targetValues)) {
@@ -264,8 +238,93 @@ public abstract class POIExcelUploadHandler {
         }
         return rowDatas;
     }
-    
+
     /**
+     * Create entity and set the field value
+     * 
+     * @param entityClass the entity class
+     * @param relations the excel relation model map, key is excel title, value is relation model
+     * @param targetValues the cell target values
+     * @param cellValueMap the cell value map
+     * @return the entity
+     */
+	private static <E> E createEntity(Class<E> entityClass, Map<String[], ExcelRelationModel> relations,
+			final Set<Object> targetValues, Map<String, String> cellValueMap) {
+		E entity = ReflectionUtils.newInstance(entityClass);
+		
+		if (entity == null) {
+			String msg = "New instance is error!";
+			log.error(msg);
+			throw new ExcelHandlerException(msg);
+		}
+		
+		relations.forEach((titleArray, relationModel) -> {
+		    Object[] cellValues = Arrays.stream(titleArray)
+		            .map(t -> cellValueMap.get(t))
+		            .collect(Collectors.toList())
+		            .toArray(new Object[titleArray.length]);
+		    
+		    Object targetValue = verifyTargetValue(relationModel, cellValues);
+		    
+		    if (targetValue != null) {
+		        targetValues.add(targetValue);
+		        // set field value and get the target value
+		        ReflectionUtils.setFieldValue(entity, relationModel.getTargetField(), targetValue);
+		    }
+		});
+		return entity;
+	}
+
+    /**
+     * Get cell values
+     * 
+     * @param titles the excel title array
+     * @param row the excel row
+     * @param requireCellValue verify the cell value
+     * @return the cell value map
+     */
+	private static Map<String, String> getCellValues(String[] titles, Row row, boolean requireCellValue) {
+		Map<String, String> cellValueMap = new HashMap<>();
+		
+		for (int j = 0; j < titles.length; j++) {
+			Cell cell = row.getCell(j);
+		    if (cell == null) {
+		    	log.warn("The cell is null! row:{} column:{}", row.getRowNum() + 1, j + 1);
+		    	if (requireCellValue) {
+					throw new ExcelHandlerException("The cell is null! row:" + (row.getRowNum() + 1) + " column:" + (j + 1));
+				}
+		        continue;
+		    }
+		    
+		    int columnIndex = cell.getColumnIndex();
+		    String cellValue = getCellValue(cell);
+		    if (StringUtils.isEmpty(cellValue)) {
+		        continue;
+		    }
+		    
+		    String title = titles[columnIndex];
+		    cellValueMap.put(title, cellValue);
+		}
+		return cellValueMap;
+	}
+    
+	/**
+     * Verify and get the target value with cell value
+     * 
+     * @param relationModel the excel relation model
+     * @param cellValues the cell value array
+     * @return the convert value
+     */
+    private static Object verifyTargetValue(ExcelRelationModel relationModel, Object[] cellValues) {
+    	Object targetValue = getTargetValue(relationModel, cellValues);
+    	if (relationModel.isRequire() && targetValue == null) {
+    		String fieldName = relationModel.getTargetField().getName();
+			throw new ExcelHandlerException("The filed[" + fieldName + "] must not be null!");
+		}
+		return targetValue;
+	}
+
+	/**
      * Get the target value with cell value
      * 
      * @param relationModel the excel relation model
@@ -555,10 +614,11 @@ public abstract class POIExcelUploadHandler {
         ExcelRelationModel model = new ExcelRelationModel(field);
         
         UploadConvert convert = field.getAnnotation(UploadConvert.class);
+        UploadExcelTitle uploadExcelTitle = field.getAnnotation(UploadExcelTitle.class);
+        model.setRequire(uploadExcelTitle.require());
         
         if (convert != null) {
             int argSize = 1;
-            UploadExcelTitle uploadExcelTitle = field.getAnnotation(UploadExcelTitle.class);
             if (uploadExcelTitle != null) {
                 argSize = uploadExcelTitle.value().length;
             }

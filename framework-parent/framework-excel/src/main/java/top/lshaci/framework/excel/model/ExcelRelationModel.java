@@ -11,6 +11,7 @@ import lombok.Setter;
  * 
  * @author lshaci
  * @since 0.0.3
+ * @version 0.0.4
  */
 @Getter
 @Setter
@@ -19,6 +20,7 @@ public class ExcelRelationModel {
 	private Field targetField;	// the entity target field
 	private Object convertInstance; // the convert instance
 	private Method convertMethod; // the convert method
+	private boolean require; // the field is require
 	
 	/**
 	 * Construction a new instance by target field
