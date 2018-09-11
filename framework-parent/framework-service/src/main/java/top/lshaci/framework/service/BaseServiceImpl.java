@@ -20,10 +20,13 @@ import top.lshaci.framework.mybatis.model.MybatisPageResult;
 import top.lshaci.framework.service.exception.BaseServiceException;
 
 /**
- * Base common service implement
+ * Base common service implement<br><br>
+ * 
+ * <b>0.0.4:</b>Add method: insertSelective, updateSelective
  * 
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  *
  * @param <T>	The entity type
  * @param <M>	The mapper type
@@ -39,6 +42,12 @@ public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseS
 		Objects.requireNonNull(entity, "The entity must not be null!");
 		return mapper.insert(entity);
 	}
+	
+	@Override
+	public int insertSelective(T entity) {
+		Objects.requireNonNull(entity, "The entity must not be null!");
+		return mapper.insertSelective(entity);
+	}
 
 	@Override
 	public int insertList(List<T> entities) {
@@ -52,6 +61,12 @@ public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseS
 	public int update(T entity) {
 		Objects.requireNonNull(entity, "The entity must not be null!");
 		return mapper.updateByPrimaryKey(entity);
+	}
+	
+	@Override
+	public int updateSelective(T entity) {
+		Objects.requireNonNull(entity, "The entity must not be null!");
+		return mapper.updateByPrimaryKeySelective(entity);
 	}
 
 	@Override
@@ -144,7 +159,7 @@ public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseS
 	 * @return the string of the primary keys
 	 */
 	private String repalceList2String(List<? extends Object> primarykeys) {
-	    return primarykeys.stream().map(Object::toString).collect(Collectors.joining(","));
+		return primarykeys.stream().map(Object::toString).collect(Collectors.joining(","));
     }
-
+	
 }

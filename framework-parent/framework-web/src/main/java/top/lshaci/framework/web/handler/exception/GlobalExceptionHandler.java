@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 	
 	private final static String ARGUMENT_EXCEPTION = "参数异常: ";
 	
-	private final static String FIELD = "字段";
+	private final static String FIELD = "字段:";
 
 	/**
 	 * Base exception handler
@@ -72,8 +72,9 @@ public class GlobalExceptionHandler {
         
         if (fieldError != null) {
         	String field = fieldError.getField();
+        	log.warn(FIELD + field);
         	String msg = fieldError.getDefaultMessage();
-        	message.append(field + FIELD + msg);
+        	message.append(msg);
 		}
 
         return JsonResponse.failure(message.toString());

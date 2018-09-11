@@ -6,10 +6,13 @@ import top.lshaci.framework.common.model.PageResult;
 import top.lshaci.framework.mybatis.mapper.TKMapper;
 
 /**
- * Base common service interface
+ * Base common service interface<br><br>
+ * 
+ * <b>0.0.4:</b>Add method: insertSelective, updateSelective
  * 
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  *
  * @param <T>	The entity type
  * @param <M>	The mapper type
@@ -23,6 +26,14 @@ public interface BaseService<T, M extends TKMapper<T>> {
 	 * @return	Insert the number of data
 	 */
 	int insert(T entity);
+	
+	/**
+	 * Insert one entity instance, the properties of null will not be saved and the database defaults will be used
+	 * 
+	 * @param entity the instance
+	 * @return	Insert the number of data
+	 */
+	int insertSelective(T entity);
 
 	/**
 	 * Insert list entity instances
@@ -39,6 +50,14 @@ public interface BaseService<T, M extends TKMapper<T>> {
 	 * @return	Update the number of data
 	 */
 	int update(T entity);
+	
+	/**
+	 * Update the value that the property is not null based on the primary key
+	 * 
+	 * @param entity the instance
+	 * @return	Update the number of data
+	 */
+	int updateSelective(T entity);
 
 	/**
 	 * Delete one by primary key

@@ -2,11 +2,13 @@ package top.lshaci.framework.web.utils;
 
 import java.util.Objects;
 
+import com.alibaba.fastjson.JSON;
+
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.web.exception.WebBaseException;
 
 /**
- * Session User Utils
+ * Session User Utils<br><br>
  * 
  * @author lshaci
  * @since 0.0.4
@@ -22,20 +24,21 @@ public class SessionUserUtils {
 	/**
 	 * Set user in session
 	 * 
-	 * @param user the user
+	 * @param user the user(This object will be converted to json string.)
 	 */
 	public static void setUserInSession(Object user) {
 		Objects.requireNonNull(user, "The user must not be null!");
-		HttpSessionUtils.setAttribute(USER_IN_SESSION, user);
+		String jsonUser = JSON.toJSONString(user);
+		HttpSessionUtils.setAttribute(USER_IN_SESSION, jsonUser);
 	}
 	
 	/**
 	 * Get user in session
 	 * 
-	 * @return the user in session
+	 * @return the user in session(json string)
 	 */
-	public static Object getUserInSession() {
-		return HttpSessionUtils.getAttribute(USER_IN_SESSION);
+	public static String getUserInSession() {
+		return (String) HttpSessionUtils.getAttribute(USER_IN_SESSION);
 	}
 	
 	/**
@@ -46,11 +49,10 @@ public class SessionUserUtils {
 	 * 
 	 * @return the user in session
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T getUserInSession(Class<T> userType) {
-		Object userInSession = getUserInSession();
+		String userInSession = getUserInSession();
 		try {
-			return (T) userInSession;
+			return JSON.parseObject(userInSession, userType);
 		} catch (Exception e) {
 			log.error("The user type error!", e);
 			throw new WebBaseException("The user type error!", e);
