@@ -1,11 +1,11 @@
 package top.lshaci.framework.web.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Web controller json response<br><br>
@@ -55,12 +55,8 @@ public class JsonResponse implements Serializable {
      */
     public static JsonResponse success(Object data) {
     	JsonResponse response = build();
-    	if (data != null) {
-    		response.status = true;
-    		response.data = data;
-        } else {
-        	response.status = false;
-        }
+		response.status = true;
+		response.data = data;
     	return response;
     }
     
