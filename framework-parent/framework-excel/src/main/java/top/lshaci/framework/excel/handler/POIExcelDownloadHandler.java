@@ -95,16 +95,7 @@ public abstract class POIExcelDownloadHandler {
 			
 			XSSFSheet sheet = workbook.createSheet(sheetName);
 			
-			// set default column width
-			sheet.setDefaultColumnWidth(12);
-			// set first column width
-			sheet.setColumnWidth(0, 1500);
-			// set column width
-			for (int i = 0; i < titleOrder.size(); i++) {
-				DownloadOrder downloadOrder = titleOrder.get(i);
-				int columnWidth = downloadOrder.getColumnWidth();
-				sheet.setColumnWidth(i + 1, columnWidth == 0 ? 3000: columnWidth);
-			}
+			setColumnWidth(titleOrder, sheet);
 			
 			// set current row number
 			CURRENT_ROW_NUMBER.set(0);
@@ -125,6 +116,25 @@ public abstract class POIExcelDownloadHandler {
 			throw new ExcelHandlerException("Convert entity list to excel file is error!", e);
 		}
 	}
+
+    /**
+     * Set column width
+     * 
+     * @param titleOrder the titles
+     * @param sheet the excel sheet of the work book
+     */
+    private static void setColumnWidth(List<DownloadOrder> titleOrder, XSSFSheet sheet) {
+        // set default column width
+        sheet.setDefaultColumnWidth(12);
+        // set first column width
+        sheet.setColumnWidth(0, 1500);
+        // set column width
+        for (int i = 0; i < titleOrder.size(); i++) {
+        	DownloadOrder downloadOrder = titleOrder.get(i);
+        	int columnWidth = downloadOrder.getColumnWidth();
+        	sheet.setColumnWidth(i + 1, columnWidth <= 0 ? 12 * 256 : columnWidth * 256);
+        }
+    }
 	
 	/**
 	 * Set excel sheet row content

@@ -32,9 +32,9 @@ public @interface DownloadExcelTitle {
 	int order();
 	
 	/**
-	 * Get the column width(in units of 1/256th of a character width)
+	 * Get the column width
 	 * 
 	 * @return the column width
 	 */
-	int columnWidth() default 12 * 256;
+	int columnWidth() default 12;
 }
