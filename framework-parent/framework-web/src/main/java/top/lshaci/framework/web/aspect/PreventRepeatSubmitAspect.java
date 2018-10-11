@@ -45,11 +45,11 @@ public class PreventRepeatSubmitAspect {
 	 * The prevent repeat submit point cut
 	 */
 	@Pointcut("@annotation(top.lshaci.framework.web.annotation.PreventRepeatSubmit)")
-	public void webLog() {
+	public void preventRepeatSubmit() {
 	}
 
 	@Order(2)
-	@Before("webLog()")
+	@Before("preventRepeatSubmit()")
 	public void doBefore(JoinPoint joinPoint) throws Throwable {
 		HttpServletRequest request = HttpRequestUtils.get();
 		String requestUrl = request.getRequestURI();
@@ -70,7 +70,7 @@ public class PreventRepeatSubmitAspect {
 	}
 
 	@Order(2)
-	@AfterReturning("webLog()")
+	@AfterReturning("preventRepeatSubmit()")
 	public void doAfterReturning() throws Throwable {
 		String requestUrl = HttpRequestUtils.get().getRequestURI();
 		HttpSessionUtils.removeAttribute(requestUrl);
