@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.context.request.RequestContextListener;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.web.aspect.PreventRepeatSubmitAspect;
 import top.lshaci.framework.web.aspect.WebLogAspect;
 import top.lshaci.framework.web.handler.exception.GlobalExceptionHandler;
 import top.lshaci.framework.web.utils.DownloadUtils;
@@ -16,7 +17,7 @@ import top.lshaci.framework.web.utils.DownloadUtils;
 /**
  * Spring web mvc config<br><br>
  * 
- * <b>0.0.4:</b> Add setDownloadCacheSize method;Add config GlobalExceptionHandler and WebLogAspect
+ * <b>0.0.4:</b> Add setDownloadCacheSize method;Add config GlobalExceptionHandler, WebLogAspect, PreventRepeatSubmitAspect
  * 
  * @author lshaci
  * @since 0.0.3
@@ -63,6 +64,18 @@ public class WebMvcConfig {
     public WebLogAspect webLogAspect() {
         log.debug("Config web log aspect...");
         return new WebLogAspect();
+    }
+    
+    /**
+     * Config prevent repeat submit aspect
+     * 
+     * @return the prevent repeat submit aspect bean
+     */
+    @Bean
+    @ConditionalOnProperty(value = "web.preventRepeatSubmitAspect.enabled", havingValue = "true")
+    public PreventRepeatSubmitAspect preventRepeatSubmitAspect() {
+        log.debug("Config prevent repeat submit aspect...");
+        return new PreventRepeatSubmitAspect();
     }
     
     /**
