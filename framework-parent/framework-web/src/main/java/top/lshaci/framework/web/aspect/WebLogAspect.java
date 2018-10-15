@@ -27,6 +27,7 @@ import top.lshaci.framework.web.utils.SessionUserUtils;
  */
 @Slf4j
 @Aspect
+@Order(1)
 public class WebLogAspect {
     
     /**
@@ -51,7 +52,6 @@ public class WebLogAspect {
     public void webLog() {
     }
 
-    @Order(1)
     @Before("webLog()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
         String controllerName = joinPoint.getSignature().getDeclaringTypeName();
@@ -71,7 +71,6 @@ public class WebLogAspect {
         log.warn("***IN*********ARGS: {}", Arrays.toString(joinPoint.getArgs()));
     }
 
-    @Order(1)
     @AfterReturning(returning = "ret", pointcut = "webLog()")
     public void doAfterReturning(Object ret) throws Throwable {
         if (WebConstant.SWAGGER_CONTROLLER.equals(REQUEST_CONTROLLER.get())) {

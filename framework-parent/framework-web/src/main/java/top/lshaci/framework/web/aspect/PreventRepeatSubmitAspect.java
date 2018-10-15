@@ -24,6 +24,7 @@ import top.lshaci.framework.web.utils.HttpSessionUtils;
  */
 @Slf4j
 @Aspect
+@Order(2)
 public class PreventRepeatSubmitAspect {
 	
 	/**
@@ -48,7 +49,6 @@ public class PreventRepeatSubmitAspect {
 	public void preventRepeatSubmit() {
 	}
 
-	@Order(2)
 	@Before("preventRepeatSubmit()")
 	public void doBefore(JoinPoint joinPoint) throws Throwable {
 		HttpServletRequest request = HttpRequestUtils.get();
@@ -69,7 +69,6 @@ public class PreventRepeatSubmitAspect {
 		HttpSessionUtils.setAttribute(requestUrl, token);
 	}
 
-	@Order(2)
 	@After("preventRepeatSubmit()")
 	public void doAfterReturning() throws Throwable {
 		String requestUrl = HttpRequestUtils.get().getRequestURI();
