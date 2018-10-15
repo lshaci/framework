@@ -5,7 +5,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -70,7 +70,7 @@ public class PreventRepeatSubmitAspect {
 	}
 
 	@Order(2)
-	@AfterReturning("preventRepeatSubmit()")
+	@After("preventRepeatSubmit()")
 	public void doAfterReturning() throws Throwable {
 		String requestUrl = HttpRequestUtils.get().getRequestURI();
 		HttpSessionUtils.removeAttribute(requestUrl);
