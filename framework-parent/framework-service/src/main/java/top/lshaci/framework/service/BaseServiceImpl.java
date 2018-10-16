@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -22,7 +21,8 @@ import top.lshaci.framework.service.exception.BaseServiceException;
 /**
  * Base common service implement<br><br>
  * 
- * <b>0.0.4:</b>Add method: insertSelective, updateSelective
+ * <b>0.0.4:</b>Add method: insertSelective, updateSelective; 
+ *              Modify transactional isolation&propagation level to default(history: READ_COMMITTED)
  * 
  * @author lshaci
  * @since 0.0.1
@@ -31,7 +31,7 @@ import top.lshaci.framework.service.exception.BaseServiceException;
  * @param <T>	The entity type
  * @param <M>	The mapper type
  */
-@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+@Transactional(rollbackFor = Exception.class)
 public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseService<T, M> {
 	
 	@Autowired
