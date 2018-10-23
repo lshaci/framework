@@ -108,7 +108,7 @@ public class JsonResponse implements Serializable {
     /**
      * Add other data value
      *
-     * @param key key of  other data
+     * @param key key of other data
      * @param value value of other data
      * @return this
      */
@@ -120,7 +120,7 @@ public class JsonResponse implements Serializable {
     /**
      * Remove other data value
      *
-     * @param key key of  other data
+     * @param key key of other data
      * @return this
      */
     public JsonResponse removeOtherData(String key) {
