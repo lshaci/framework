@@ -113,7 +113,7 @@ public abstract class AbstractPermissionInterceptor implements HandlerIntercepto
 				JsonResponse jsonResponse = JsonResponse
 						.failure(ErrorCode.NO_PERMISSION_EXCEPTION.getMsg())
 						.setCode(ErrorCode.NO_PERMISSION_EXCEPTION.getCode())
-						.addParam("redirectUrl", noPermissionUrl);
+						.addOtherData("redirectUrl", noPermissionUrl);
 	
 				log.warn("No permission, response json.");
 				HttpResponseUtils.responseJson(jsonResponse);

@@ -59,7 +59,7 @@ public abstract class AbstractLoginInterceptor implements HandlerInterceptor {
 				JsonResponse jsonResponse = JsonResponse
 						.failure(ErrorCode.NOT_LOGIN_EXCEPTION.getMsg())
 						.setCode(ErrorCode.NOT_LOGIN_EXCEPTION.getCode())
-						.addParam("redirectUrl", redirectUrl);
+						.addOtherData("redirectUrl", redirectUrl);
 				
 				log.warn("No login, response json.");
 				HttpResponseUtils.responseJson(jsonResponse);

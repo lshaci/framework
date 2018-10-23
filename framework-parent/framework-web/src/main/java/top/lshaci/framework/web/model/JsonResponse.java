@@ -10,7 +10,7 @@ import lombok.Setter;
 /**
  * Web controller json response<br><br>
  * 
- * <b>0.0.4:</b> Add method: successMessage and message
+ * <b>0.0.4:</b> Add method: successMessage and message; Change the name of the params field to otherData
  *
  * @author lshaci
  * @since 0.0.1
@@ -30,7 +30,7 @@ public class JsonResponse implements Serializable {
 
     private Object data;
 
-    private Map<String, Object> params = new HashMap<>();
+    private Map<String, Object> otherData = new HashMap<>();
 
     /**
      * Privatized constructor
@@ -95,36 +95,36 @@ public class JsonResponse implements Serializable {
     }
 
     /**
-     * Set other datas
+     * Set other data
      *
-     * @param params datas
+     * @param otherData other data
      * @return this
      */
-    public JsonResponse setParams(Map<String, Object> params) {
-        this.params = params;
+    public JsonResponse setOtherData(Map<String, Object> otherData) {
+        this.otherData = otherData;
         return this;
     }
 
     /**
      * Add other data value
      *
-     * @param key	key of  other data
-     * @param value	value of  other data
+     * @param key key of  other data
+     * @param value value of other data
      * @return this
      */
-    public JsonResponse addParam(String key, Object value) {
-        this.params.put(key, value);
+    public JsonResponse addOtherData(String key, Object value) {
+        this.otherData.put(key, value);
         return this;
     }
 
     /**
      * Remove other data value
      *
-     * @param key	key of  other data
+     * @param key key of  other data
      * @return this
      */
-    public JsonResponse removeParam(String key) {
-        this.params.remove(key);
+    public JsonResponse removeOtherData(String key) {
+        this.otherData.remove(key);
         return this;
     }
 
