@@ -55,8 +55,8 @@
 		<spring.boot.version>2.0.1.RELEASE</spring.boot.version>
 		<spring.cloud.version>Finchley.RELEASE</spring.cloud.version>
 		<druid.spring.boot.version>1.1.10</druid.spring.boot.version>
-		<tk.mybatis.generator.version>1.0.4</tk.mybatis.generator.version>
-		<tkmybatis.spring.boot.version>2.0.3</tkmybatis.spring.boot.version>
+		<tk.mybatis.generator.version>1.0.5</tk.mybatis.generator.version>
+		<tkmybatis.spring.boot.version>2.0.4</tkmybatis.spring.boot.version>
 		<pagehelper.spring.boot.version>1.2.5</pagehelper.spring.boot.version>
 		<flying.saucer.pdf.itext5.version>9.0.6</flying.saucer.pdf.itext5.version>
 	</properties>
