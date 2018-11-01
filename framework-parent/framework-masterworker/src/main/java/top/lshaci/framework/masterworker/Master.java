@@ -5,14 +5,22 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import top.lshaci.framework.masterworker.utils.ExecutorUtils;
+
 /**
  * Task master
  * 
  * @author lshaci
  *
  * @param <R> The task result type
+ * @since 0.0.4
  */
 public class Master<R> {
+    
+    /**
+     * The default worker number
+     */
+    private final static int DEFAULT_WORKER_NUMBER = ExecutorUtils.PROCESSORS * 2;
 	
 	/**
 	 * The task queue to be executed
@@ -22,7 +30,7 @@ public class Master<R> {
 	/**
 	 * All task workers
 	 */
-	private HashMap<String, Thread> workers = new HashMap<>();
+	private HashMap<String, Worker<R>> workers = new HashMap<>();
 	
 	/**
 	 * Tasks execution result containers
@@ -33,25 +41,29 @@ public class Master<R> {
 	 * Get the result delay time
 	 */
 	private long delayMillis;
-
+	
 	/**
 	 * Construct a task master
 	 */
 	public Master() {
-		this(10);
+		this(10, DEFAULT_WORKER_NUMBER);
 	}
 	
 	/**
 	 * Construct a task master with get result delay time
 	 * 
 	 * @param delayMillis the get result delay time
+	 * @param workerNumber the worker number
+	 * 
+	 * @throws IllegalArgumentException if {@code delayMillis <= 0 or @code workerNumber <= 0}
 	 */
-	public Master(long delayMillis) {
+	public Master(long delayMillis, int workerNumber) {
+	    if (delayMillis < 0 || workerNumber <= 0) {
+	        throw new IllegalArgumentException();
+	    }
 		this.delayMillis = delayMillis;
-		int processors = Runtime.getRuntime().availableProcessors();
-		Worker<R> worker = new Worker<>(taskQueue, result);
-		for (int i = 0; i < processors * 2; i++) {
-			workers.put("worker:" + i, new Thread(() -> worker.run()));
+		for (int i = 0; i < workerNumber; i++) {
+			workers.put("worker:" + i, new Worker<>(taskQueue, result));
 		}
 	}
 	
@@ -69,19 +81,18 @@ public class Master<R> {
 	 */
 	public void execute() {
 		workers.forEach((key, worker) -> {
-			worker.start();
+		    ExecutorUtils.execute(() -> worker.run());
 		});
 	}
 	
 	/**
 	 * Determine if all tasks are completed
 	 * 
-	 * @return if all tasks ar completed while return true
+	 * @return if all tasks are completed while return true
 	 */
 	public boolean isComplete() {
-		for (Entry<String, Thread> entry : workers.entrySet()) {
-			System.err.println(entry.getValue().getState());
-			if (!Thread.State.TERMINATED.equals(entry.getValue().getState())) {
+		for (Entry<String, Worker<R>> entry : workers.entrySet()) {
+			if (!entry.getValue().isDone()) {
 				return false;
 			}
 		}
