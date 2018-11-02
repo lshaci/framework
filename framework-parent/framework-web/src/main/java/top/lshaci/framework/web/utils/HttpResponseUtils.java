@@ -43,7 +43,7 @@ public class HttpResponseUtils {
 	 * @param jsonResponse the json response
 	 * @throws IOException 
 	 */
-	public static void responseJson(JsonResponse jsonResponse) throws IOException {
+	public static <R> void responseJson(JsonResponse<R> jsonResponse) throws IOException {
 		HttpServletResponse response = getResponse();
 		
 		response.setCharacterEncoding(Encoding.UTF_8.getName());

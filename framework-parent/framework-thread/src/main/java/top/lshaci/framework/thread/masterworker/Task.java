@@ -21,7 +21,7 @@ public abstract class Task<R> {
 	/**
 	 * Construct a task with unique task name
 	 * 
-	 * @param name the task name, must be unique
+	 * @param uniqueName the task name, must be unique
 	 */
 	protected Task(String uniqueName) {
 		this.uniqueName = uniqueName;

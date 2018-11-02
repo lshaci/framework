@@ -22,7 +22,7 @@ import top.lshaci.framework.service.exception.BaseServiceException;
  * Base common service implement<br><br>
  * 
  * <b>0.0.4:</b>Add method: insertSelective, updateSelective; 
- *              Modify transactional isolation&propagation level to default(history: READ_COMMITTED)
+ *              Modify transactional isolation and propagation level to default(history: READ_COMMITTED)
  * 
  * @author lshaci
  * @since 0.0.1
