@@ -1,11 +1,11 @@
-package top.lshaci.framework.masterworker;
+package top.lshaci.framework.thread.masterworker;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import top.lshaci.framework.masterworker.utils.ExecutorUtils;
+import top.lshaci.framework.thread.utils.ExecutorUtils;
 
 /**
  * Task master

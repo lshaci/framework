@@ -24,6 +24,7 @@
 		<module>framework-pdfUtils</module>
 		<module>framework-permission</module>
 		<module>framework-swagger</module>
+		<module>framework-thread</module>
 	</modules>
 
 	<name>framework-parent</name>
@@ -151,6 +152,12 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-excel</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework thread module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-thread</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework test module -->

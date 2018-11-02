@@ -1,4 +1,4 @@
-package top.lshaci.framework.masterworker;
+package top.lshaci.framework.thread.masterworker;
 
 import lombok.Data;
 

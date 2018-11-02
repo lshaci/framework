@@ -1,4 +1,4 @@
-package top.lshaci.framework.masterworker;
+package top.lshaci.framework.thread.masterworker;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;

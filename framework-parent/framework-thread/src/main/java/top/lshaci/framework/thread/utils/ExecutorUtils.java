@@ -1,4 +1,4 @@
-package top.lshaci.framework.masterworker.utils;
+package top.lshaci.framework.thread.utils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

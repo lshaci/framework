@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
 	 * @return json response
 	 */
     @ExceptionHandler(BaseException.class)
-    public JsonResponse baseExceptionHandler(HttpServletRequest req, Exception e) {
+    public JsonResponse<Object> baseExceptionHandler(HttpServletRequest req, Exception e) {
     	log.error("System be happend exception!", e);
     	
         return JsonResponse
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
 	 * @return json response
 	 */
     @ExceptionHandler(value = { BindException.class, MethodArgumentNotValidException.class })
-    public JsonResponse argumentExceptionHandler(HttpServletRequest req, Exception e) {
+    public JsonResponse<Object> argumentExceptionHandler(HttpServletRequest req, Exception e) {
     	log.error("System be happend exception!", e);
     	
         StringBuilder message = new StringBuilder(ARGUMENT_EXCEPTION);
@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
 	 * @return json response
 	 */
     @ExceptionHandler(Exception.class)
-    public JsonResponse defaultExceptionHandler(HttpServletRequest req, Exception e) {
+    public JsonResponse<Object> defaultExceptionHandler(HttpServletRequest req, Exception e) {
     	log.error("System be happend exception!", e);
     	
     	ErrorCode errorCode = ErrorCode.getByException(e);

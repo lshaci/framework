@@ -56,7 +56,7 @@ public abstract class AbstractLoginInterceptor implements HandlerInterceptor {
 			if (isAjaxRequest(request)) {
 				log.info("This request is an ajax request.");
 				
-				JsonResponse jsonResponse = JsonResponse
+				JsonResponse<Object> jsonResponse = JsonResponse
 						.failure(ErrorCode.NOT_LOGIN_EXCEPTION.getMsg())
 						.setCode(ErrorCode.NOT_LOGIN_EXCEPTION.getCode())
 						.addOtherData("redirectUrl", redirectUrl);

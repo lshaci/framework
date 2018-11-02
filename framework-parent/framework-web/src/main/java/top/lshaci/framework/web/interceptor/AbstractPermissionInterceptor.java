@@ -110,7 +110,7 @@ public abstract class AbstractPermissionInterceptor implements HandlerIntercepto
 			if (isAjaxRequest(request)) {
 				log.info("This request is an ajax request.");
 	
-				JsonResponse jsonResponse = JsonResponse
+				JsonResponse<Object> jsonResponse = JsonResponse
 						.failure(ErrorCode.NO_PERMISSION_EXCEPTION.getMsg())
 						.setCode(ErrorCode.NO_PERMISSION_EXCEPTION.getCode())
 						.addOtherData("redirectUrl", noPermissionUrl);

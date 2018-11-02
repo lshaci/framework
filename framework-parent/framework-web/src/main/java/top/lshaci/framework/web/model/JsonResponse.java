@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Web controller json response<br><br>
@@ -17,8 +16,7 @@ import lombok.Setter;
  * @version 0.0.4
  */
 @Getter
-@Setter
-public class JsonResponse implements Serializable {
+public class JsonResponse<R> implements Serializable {
 
     private static final long serialVersionUID = 7574078101944305355L;
 
@@ -28,23 +26,14 @@ public class JsonResponse implements Serializable {
 
     private String message;
 
-    private Object data;
+    private R data;
 
     private Map<String, Object> otherData = new HashMap<>();
 
     /**
-     * Privatized constructor
+     * Constructor a json response
      */
-    private JsonResponse() {
-    }
-    
-    /**
-     * Build a success json response
-     *
-     * @return json response
-     */
-    public static JsonResponse build() {
-    	return new JsonResponse();
+    public JsonResponse() {
     }
     
     /**
@@ -53,11 +42,11 @@ public class JsonResponse implements Serializable {
      * @param data the success response data
      * @return success json response
      */
-    public static JsonResponse success(Object data) {
-    	JsonResponse response = build();
-		response.status = true;
-		response.data = data;
-    	return response;
+    public static <R> JsonResponse<R> success(R data) {
+        JsonResponse<R> response = new JsonResponse<>();
+        response.status = true;
+        response.data = data;
+        return response;
     }
     
     /**
@@ -66,8 +55,8 @@ public class JsonResponse implements Serializable {
      * @param message the success response message
      * @return success json response
      */
-    public static JsonResponse successMessage(String message) {
-    	return message(true, message);
+    public static <R> JsonResponse<R> successMessage(String message) {
+        return message(true, message);
     }
     
     /**
@@ -77,11 +66,11 @@ public class JsonResponse implements Serializable {
      * @param message the response message
      * @return message json response
      */
-    public static JsonResponse message(boolean status, String message) {
-    	JsonResponse response = build();
-    	response.status = status;
-    	response.message = message;
-    	return response;
+    public static <R> JsonResponse<R> message(boolean status, String message) {
+        JsonResponse<R> response = new JsonResponse<>();
+        response.status = status;
+        response.message = message;
+        return response;
     }
     
     /**
@@ -90,8 +79,8 @@ public class JsonResponse implements Serializable {
      * @param message the failure response message
      * @return failure json response
      */
-    public static JsonResponse failure(String message) {
-    	return message(false, message);
+    public static <R> JsonResponse<R> failure(String message) {
+        return message(false, message);
     }
 
     /**
@@ -100,7 +89,7 @@ public class JsonResponse implements Serializable {
      * @param otherData other data
      * @return this
      */
-    public JsonResponse setOtherData(Map<String, Object> otherData) {
+    public JsonResponse<R> setOtherData(Map<String, Object> otherData) {
         this.otherData = otherData;
         return this;
     }
@@ -112,7 +101,7 @@ public class JsonResponse implements Serializable {
      * @param value value of other data
      * @return this
      */
-    public JsonResponse addOtherData(String key, Object value) {
+    public JsonResponse<R> addOtherData(String key, Object value) {
         this.otherData.put(key, value);
         return this;
     }
@@ -123,53 +112,53 @@ public class JsonResponse implements Serializable {
      * @param key key of other data
      * @return this
      */
-    public JsonResponse removeOtherData(String key) {
+    public JsonResponse<R> removeOtherData(String key) {
         this.otherData.remove(key);
         return this;
     }
 
-	/**
-	 * Set response status
-	 *
-	 * @param status json response status
-	 * @return this
-	 */
-	public JsonResponse setStatus(boolean status) {
-		this.status = status;
-		return this;
-	}
+    /**
+     * Set response status
+     *
+     * @param status json response status
+     * @return this
+     */
+    public JsonResponse<R> setStatus(boolean status) {
+        this.status = status;
+        return this;
+    }
 
-	/**
-	 * Set response code
-	 *
-	 * @param code json response code
-	 * @return this
-	 */
-	public JsonResponse setCode(int code) {
-		this.code = code;
-		return this;
-	}
+    /**
+     * Set response code
+     *
+     * @param code json response code
+     * @return this
+     */
+    public JsonResponse<R> setCode(int code) {
+        this.code = code;
+        return this;
+    }
 
-	/**
-	 * Set response message
-	 *
-	 * @param message json response message
-	 * @return this
-	 */
-	public JsonResponse setMessage(String message) {
-		this.message = message;
-		return this;
-	}
+    /**
+     * Set response message
+     *
+     * @param message json response message
+     * @return this
+     */
+    public JsonResponse<R> setMessage(String message) {
+        this.message = message;
+        return this;
+    }
 
-	/**
-	 * Set response data
-	 *
-	 * @param data json response data
-	 * @return this
-	 */
-	public JsonResponse setData(Object data) {
-		this.data = data;
-		return this;
-	}
-
+    /**
+     * Set response data
+     *
+     * @param data json response data
+     * @return this
+     */
+    public JsonResponse<R> setData(R data) {
+        this.data = data;
+        return this;
+    }
+    
 }
