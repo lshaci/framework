@@ -5,7 +5,6 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 /**
  * 切换数据源Advice
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Order(-10) // 保证该AOP在@Transactional之前执行
-@Component
 public class DynamicDataSourceAspect {
 
 	/**

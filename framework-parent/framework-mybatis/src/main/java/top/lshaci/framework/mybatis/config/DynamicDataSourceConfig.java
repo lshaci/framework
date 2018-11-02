@@ -22,6 +22,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
+import top.lshaci.framework.mybatis.datasource.DynamicDataSourceAspect;
 
 /**
  * Config datasource with druid<br><br>
@@ -103,6 +104,18 @@ public class DynamicDataSourceConfig {
 		log.debug("Init Data Source Transaction Manager...");
 		
         return new DataSourceTransactionManager(dynamicDataSource());
+    }
+	
+	   /**
+     * Config dynamic data source aspect
+     * 
+     * @return Dynamic Data Source Aspect
+     */
+    @Bean
+    public DynamicDataSourceAspect dynamicDataSourceAspect() {
+        log.debug("Config Dynamic Data Source Aspect...");
+        
+        return new DynamicDataSourceAspect();
     }
 	
 }
