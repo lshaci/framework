@@ -28,8 +28,14 @@ import top.lshaci.framework.web.model.JsonResponse;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	
-	private final static String ARGUMENT_EXCEPTION = "参数异常: ";
+    /**
+     * System exception log message
+     */
+    private static final String SYSTEM_EXCEPTION = "System be happend exception!";
 	
+    /**
+     * Argument exception log message
+     */
 	private final static String FIELD = "字段:";
 
 	/**
@@ -41,7 +47,7 @@ public class GlobalExceptionHandler {
 	 */
     @ExceptionHandler(BaseException.class)
     public JsonResponse<Object> baseExceptionHandler(HttpServletRequest req, Exception e) {
-    	log.error("System be happend exception!", e);
+    	log.error(SYSTEM_EXCEPTION, e);
     	
         return JsonResponse
         		.failure(e.getMessage())
@@ -57,9 +63,9 @@ public class GlobalExceptionHandler {
 	 */
     @ExceptionHandler(value = { BindException.class, MethodArgumentNotValidException.class })
     public JsonResponse<Object> argumentExceptionHandler(HttpServletRequest req, Exception e) {
-    	log.error("System be happend exception!", e);
+    	log.error(SYSTEM_EXCEPTION, e);
     	
-        StringBuilder message = new StringBuilder(ARGUMENT_EXCEPTION);
+        StringBuilder message = new StringBuilder();
         FieldError fieldError = null;
         
         if (e instanceof BindException) {
@@ -89,7 +95,7 @@ public class GlobalExceptionHandler {
 	 */
     @ExceptionHandler(Exception.class)
     public JsonResponse<Object> defaultExceptionHandler(HttpServletRequest req, Exception e) {
-    	log.error("System be happend exception!", e);
+    	log.error(SYSTEM_EXCEPTION, e);
     	
     	ErrorCode errorCode = ErrorCode.getByException(e);
     	
