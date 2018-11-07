@@ -58,12 +58,12 @@ public abstract class POIExcelUploadHandler {
     /**
      * The allow excel file type list
      */
-    private final static List<FileType> ALLOW_FILE_TYPES = Arrays.asList(FileType.XLSX_DOCX, FileType.XLS_DOC, FileType.WPS, FileType.WPSX);
+    private static final List<FileType> ALLOW_FILE_TYPES = Arrays.asList(FileType.XLSX_DOCX, FileType.XLS_DOC, FileType.WPS, FileType.WPSX);
     
     /**
      * The allow excel file suffix list
      */
-    private final static List<String> ALLOW_FILE_SUFFIX = Arrays.asList("xls", "xlsx");
+    private static final List<String> ALLOW_FILE_SUFFIX = Arrays.asList("xls", "xlsx");
     
     /**
      * Change excel file to entity list

@@ -52,17 +52,17 @@ public abstract class POIExcelDownloadHandler {
 	/**
 	 * The current row number of write data
 	 */
-	private final static ThreadLocal<Integer> CURRENT_ROW_NUMBER = new ThreadLocal<>();
+	private static final ThreadLocal<Integer> CURRENT_ROW_NUMBER = new ThreadLocal<>();
 	
 	/**
 	 * The excel font name
 	 */
-	private final static ThreadLocal<String> FONT_NAME = new ThreadLocal<>();
+	private static final ThreadLocal<String> FONT_NAME = new ThreadLocal<>();
 	
 	/**
 	 * The default font name
 	 */
-	private final static String DEFAULT_FONT_NAME = "宋体";
+	private static final String DEFAULT_FONT_NAME = "宋体";
 
 	/**
 	 * Change excel file to entity list
