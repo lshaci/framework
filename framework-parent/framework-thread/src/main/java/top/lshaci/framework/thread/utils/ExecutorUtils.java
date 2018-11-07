@@ -14,7 +14,7 @@ public class ExecutorUtils {
     /**
      * The available processor number
      */
-    public final static int PROCESSORS = Runtime.getRuntime().availableProcessors();
+    public static final int PROCESSORS = Runtime.getRuntime().availableProcessors();
     
     /**
      * The fixed number of thread pools
