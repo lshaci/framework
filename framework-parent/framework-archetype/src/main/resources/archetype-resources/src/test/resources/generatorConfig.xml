@@ -6,8 +6,7 @@
 <generatorConfiguration>
 	<properties resource="generatorConfig.properties" />
 
-	<context id="Mysql" targetRuntime="tk.mybatis.mapper.generator.TkMyBatis3Impl"
-		defaultModelType="flat">
+	<context id="Mysql" targetRuntime="tk.mybatis.mapper.generator.TkMyBatis3Impl" defaultModelType="flat">
 		<property name="beginningDelimiter" value="`" />
 		<property name="endingDelimiter" value="`" />
 
@@ -24,14 +23,11 @@
 			password="${generator.jdbc.password}">
 		</jdbcConnection>
 		
-		<javaModelGenerator targetPackage="${generator.targetModelPackage}"
-			targetProject="${generator.targetJavaProject}" />
+		<javaModelGenerator targetPackage="${generator.targetModelPackage}" targetProject="${generator.targetJavaProject}" />
 
-		<sqlMapGenerator targetPackage="${generator.targetXMLPackage}"
-			targetProject="${generator.targetResourcesProject}" />
+		<sqlMapGenerator targetPackage="${generator.targetXMLPackage}" targetProject="${generator.targetResourcesProject}" />
 
-		<javaClientGenerator targetPackage="${generator.targetMapperPackage}"
-			targetProject="${generator.targetJavaProject}" type="XMLMAPPER" />
+		<javaClientGenerator targetPackage="${generator.targetMapperPackage}" targetProject="${generator.targetJavaProject}" type="XMLMAPPER" />
 
 		<table tableName="%" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"

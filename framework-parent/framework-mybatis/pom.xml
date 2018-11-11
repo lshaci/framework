@@ -35,12 +35,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
-		<!-- spring boot web -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<scope>provided</scope>
-		</dependency>
 		<!-- pagehelper spring boot -->
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>
@@ -50,16 +44,6 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		<!--mybatis generator -->
-		<dependency>
-			<groupId>org.mybatis.generator</groupId>
-			<artifactId>mybatis-generator-core</artifactId>
-		</dependency>
-		<!-- tk mybatis generator -->
-		<dependency>
-			<groupId>tk.mybatis</groupId>
-			<artifactId>mapper-generator</artifactId>
 		</dependency>
 	</dependencies>
 
