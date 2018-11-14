@@ -125,7 +125,7 @@ public abstract class POIExcelUploadHandler {
     /**
      * Change excel work book to entity list
      * 
-     * @param is the excel file input stream
+     * @param workBook the excel work book
      * @param titleRow the title row number
      * @param entityClass the entity class
      * @return the entity list
@@ -426,7 +426,7 @@ public abstract class POIExcelUploadHandler {
      */
     private static Workbook getWorkBook(File excelFile, FileType fileType) {
         try (
-            InputStream is = new FileInputStream(excelFile);
+            InputStream is = new FileInputStream(excelFile)
         ) {
             return getWorkBook(is, fileType);
         } catch (Exception e) {
