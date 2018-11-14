@@ -532,7 +532,7 @@ public abstract class POIExcelDownloadHandler {
 		return Arrays.stream(fields)
 				.filter(f -> f.getAnnotation(DownloadIgnore.class) == null)
 				.filter(f -> downloadAllField || f.getAnnotation(DownloadExcelTitle.class) != null)
-				.map(f -> createDownloadOrder(f, downloadAllField))
+				.map(POIExcelDownloadHandler::createDownloadOrder)
 				.sorted()
 				.collect(Collectors.toList());
 	}
@@ -541,10 +541,9 @@ public abstract class POIExcelDownloadHandler {
 	 * Create download order of field
 	 * 
 	 * @param field            the field
-	 * @param downloadAllField if true download all field
 	 * @return the download order
 	 */
-	private static DownloadOrder createDownloadOrder(Field field, boolean downloadAllField) {
+	private static DownloadOrder createDownloadOrder(Field field) {
 		DownloadExcelTitle downloadExcelTitle = field.getAnnotation(DownloadExcelTitle.class);
 		
 		DownloadOrder downloadOrder = new DownloadOrder(field);
