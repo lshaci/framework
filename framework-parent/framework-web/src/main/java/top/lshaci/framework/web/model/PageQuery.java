@@ -24,8 +24,6 @@ public class PageQuery implements Serializable {
     private Integer pgCt = Constants.DEFAULT_PGCT;
     private Integer pgSz = Constants.DEFAULT_PGSZ;
 
-    private String keyword;    // the key word query condition
-
     /**
      * Set current page number
      *
@@ -53,14 +51,4 @@ public class PageQuery implements Serializable {
         return (this.pgCt - 1) * this.pgSz;
     }
 
-    /**
-     * Set key word query condition
-     * 
-     * @param keyword the key word
-     */
-    public void setKeyword(String keyword) {
-    	if (StringUtils.isNotBlank(keyword)) {
-    		this.keyword = keyword;
-		}
-    }
 }

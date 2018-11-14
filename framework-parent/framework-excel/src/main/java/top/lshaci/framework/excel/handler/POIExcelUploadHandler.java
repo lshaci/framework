@@ -454,7 +454,7 @@ public abstract class POIExcelUploadHandler {
             if (FileType.XLS_DOC.equals(fileType) || FileType.WPS.equals(fileType)) {
                 workbook = new HSSFWorkbook(is);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Create excle work book is error!", e);
             throw new ExcelHandlerException("Create excle work book is error!");
         } finally {
