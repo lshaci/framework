@@ -2,8 +2,6 @@ package top.lshaci.framework.web.model;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Getter;
 import top.lshaci.framework.common.constants.Constants;
 
