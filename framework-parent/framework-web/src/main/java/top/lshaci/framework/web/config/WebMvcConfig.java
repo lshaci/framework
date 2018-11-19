@@ -80,7 +80,7 @@ public class WebMvcConfig {
 	@Bean
 	@ConditionalOnProperty(value = "web.fileUploadExceptionHandler.enabled", havingValue = "true")
 	public TomcatServletWebServerFactory containerFactory() {
-		log.debug("Config tomcat servlet web server factory.");
+		log.debug("Config tomcat servlet web server factory...");
 		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
 		tomcat.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> {
 			if ((connector.getProtocolHandler() instanceof AbstractHttp11Protocol<?>)) {
