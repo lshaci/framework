@@ -1,8 +1,12 @@
 package top.lshaci.framework.web.config;
 
+import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -11,13 +15,14 @@ import org.springframework.web.context.request.RequestContextListener;
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.web.aspect.PreventRepeatSubmitAspect;
 import top.lshaci.framework.web.aspect.WebLogAspect;
+import top.lshaci.framework.web.handler.exception.FileUploadExceptionHandler;
 import top.lshaci.framework.web.handler.exception.GlobalExceptionHandler;
 import top.lshaci.framework.web.utils.DownloadUtils;
 
 /**
  * Spring web mvc config<br><br>
  * 
- * <b>0.0.4:</b> Add setDownloadCacheSize method;Add config GlobalExceptionHandler, WebLogAspect, PreventRepeatSubmitAspect
+ * <b>0.0.4:</b> Add setDownloadCacheSize method; Add config GlobalExceptionHandler, WebLogAspect, PreventRepeatSubmitAspect
  * 
  * @author lshaci
  * @since 0.0.3
@@ -48,12 +53,43 @@ public class WebMvcConfig {
      * @return the global exception handler bean
      */
     @Bean
+    @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "web.globalExceptionHandler.enabled", havingValue = "true")
     public GlobalExceptionHandler globalExceptionHandler() {
         log.debug("Config global exception handler...");
         return new GlobalExceptionHandler();
     }
     
+    /**
+	 * Config file upload exception handler
+	 *
+	 * @return the file upload exception handler bean
+	 */
+	@Bean
+	@ConditionalOnProperty(value = "web.fileUploadExceptionHandler.enabled", havingValue = "true")
+	public FileUploadExceptionHandler fileUploadExceptionHandler() {
+		log.debug("Config global exception handler...");
+		return new FileUploadExceptionHandler();
+	}
+
+	/**
+	 * Config tomcat servlet web server factory(Use it with {@code fileUploadExceptionHandler})
+	 *
+	 * @return the tomcat servlet web server factory bean
+	 */
+	@Bean
+	@ConditionalOnProperty(value = "web.fileUploadExceptionHandler.enabled", havingValue = "true")
+	public TomcatServletWebServerFactory containerFactory() {
+		log.debug("Config tomcat servlet web server factory.");
+		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+		tomcat.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> {
+			if ((connector.getProtocolHandler() instanceof AbstractHttp11Protocol<?>)) {
+				((AbstractHttp11Protocol<?>) connector.getProtocolHandler()).setMaxSwallowSize(-1);
+			}
+		});
+		return tomcat;
+	}
+	
     /**
      * Config web log aspect
      * 

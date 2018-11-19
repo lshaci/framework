@@ -34,6 +34,12 @@ public class SwaggerAutoConfiguration {
     @Autowired
     private SwaggerProperties properties;
     
+    /**
+     * Config swagger docket
+     * 
+     * @return the swagger docket bean
+     * @throws Exception if the base package is null
+     */
     @Bean
     @ConditionalOnMissingBean
     public Docket docket() throws Exception {
@@ -52,6 +58,11 @@ public class SwaggerAutoConfiguration {
                 .build();
     }
     
+    /**
+     * Create swagger api info
+     * 
+     * @return the swagger api info
+     */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title(properties.getTitle())
