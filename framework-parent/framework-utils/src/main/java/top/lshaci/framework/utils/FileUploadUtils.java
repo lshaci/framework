@@ -1,17 +1,18 @@
 package top.lshaci.framework.utils;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import top.lshaci.framework.utils.enums.FileType;
-import top.lshaci.framework.utils.exception.UtilException;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.utils.enums.FileType;
+import top.lshaci.framework.utils.exception.UtilException;
 
 /**
  * 文件上传工具
@@ -36,11 +37,11 @@ public abstract class FileUploadUtils {
 		if (CollectionUtils.isEmpty(allowSuffixes)) {
 			throw new UtilException("允许的文件类型不能为空");
 		}
-		String suffix = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+		String suffix = filename.substring(filename.lastIndexOf(".") + 1);
 		if (StringUtils.isBlank(suffix)) {
 			throw new UtilException("上传文件类型错误");
 		}
-		if (!allowSuffixes.contains(suffix.trim().toUpperCase())) {
+		if (!(allowSuffixes.contains(suffix.trim().toUpperCase()) || allowSuffixes.contains(suffix.trim().toLowerCase()))) {
 			throw new UtilException("该文件类型不被允许");
 		}
 	}

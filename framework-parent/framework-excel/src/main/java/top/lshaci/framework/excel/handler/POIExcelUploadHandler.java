@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import lombok.extern.slf4j.Slf4j;
-import top.lshaci.framework.common.exception.BaseException;
 import top.lshaci.framework.excel.annotation.UploadConvert;
 import top.lshaci.framework.excel.annotation.UploadExcelTitle;
 import top.lshaci.framework.excel.annotation.UploadVerify;
@@ -47,6 +45,7 @@ import top.lshaci.framework.utils.enums.FileType;
 
 /**
  * POI excel upload handler
+ * <b>0.0.4: </b>Change exception message to chinese
  * 
  * @author lshaci
  * @since 0.0.1
@@ -58,12 +57,12 @@ public abstract class POIExcelUploadHandler {
     /**
      * The allow excel file type list
      */
-    private static final List<FileType> ALLOW_FILE_TYPES = Arrays.asList(FileType.XLSX_DOCX, FileType.XLS_DOC, FileType.WPS, FileType.WPSX);
+    private final static List<FileType> ALLOW_FILE_TYPES = Arrays.asList(FileType.XLSX_DOCX, FileType.XLS_DOC, FileType.WPS, FileType.WPSX);
     
     /**
      * The allow excel file suffix list
      */
-    private static final List<String> ALLOW_FILE_SUFFIX = Arrays.asList("xls", "xlsx");
+    private final static List<String> ALLOW_FILE_SUFFIX = Arrays.asList("xls", "xlsx");
     
     /**
      * Change excel file to entity list
@@ -125,7 +124,6 @@ public abstract class POIExcelUploadHandler {
     /**
      * Change excel work book to entity list
      * 
-     * @param workBook the excel work book
      * @param titleRow the title row number
      * @param entityClass the entity class
      * @return the entity list
@@ -183,7 +181,7 @@ public abstract class POIExcelUploadHandler {
     		fieldTitleSet.retainAll(excelTitleSet);
     		
     		if (CollectionUtils.isEmpty(fieldTitleSet) || fieldTitleSet.size() != excelTitleSet.size()) {
-    			throw new ExcelHandlerException("Please use the correct excel file!");
+    			throw new ExcelHandlerException("Excel文件未使用正确的模板");
     		}
 		}
 	}
@@ -215,7 +213,7 @@ public abstract class POIExcelUploadHandler {
             if (row == null) {
             	log.warn("The row[{}] is null!", i + 1);
 		    	if (requireRowValue) {
-					throw new ExcelHandlerException("The row[" + (i + 1) + "] is null!");
+					throw new ExcelHandlerException("表格中, 行[" + (i + 1) + "]为空");
 				}
                 continue;
             }
@@ -253,9 +251,8 @@ public abstract class POIExcelUploadHandler {
 		E entity = ReflectionUtils.newInstance(entityClass);
 		
 		if (entity == null) {
-			String msg = "New instance is error!";
-			log.error(msg);
-			throw new ExcelHandlerException(msg);
+			log.error("New instance is error! {}", entityClass.getSimpleName());
+			throw new ExcelHandlerException("创建上传对象出错");
 		}
 		
 		relations.forEach((titleArray, relationModel) -> {
@@ -264,7 +261,7 @@ public abstract class POIExcelUploadHandler {
 		            .collect(Collectors.toList())
 		            .toArray(new Object[titleArray.length]);
 		    
-		    Object targetValue = verifyTargetValue(relationModel, cellValues);
+		    Object targetValue = verifyTargetValue(titleArray, relationModel, cellValues);
 		    
 		    if (targetValue != null) {
 		        targetValues.add(targetValue);
@@ -291,7 +288,7 @@ public abstract class POIExcelUploadHandler {
 		    if (cell == null) {
 		    	log.warn("The cell is null! row:{} column:{}", row.getRowNum() + 1, j + 1);
 		    	if (requireCellValue) {
-					throw new ExcelHandlerException("The cell is null! row:" + (row.getRowNum() + 1) + " column:" + (j + 1));
+					throw new ExcelHandlerException("单元格为空! 行:" + (row.getRowNum() + 1) + " 列:" + (j + 1));
 				}
 		        continue;
 		    }
@@ -310,16 +307,17 @@ public abstract class POIExcelUploadHandler {
     
 	/**
      * Verify and get the target value with cell value
-     * 
+     *
+     * @param titleArray the excel title array
      * @param relationModel the excel relation model
      * @param cellValues the cell value array
      * @return the convert value
      */
-    private static Object verifyTargetValue(ExcelRelationModel relationModel, Object[] cellValues) {
+    private static Object verifyTargetValue(String[] titleArray, ExcelRelationModel relationModel, Object[] cellValues) {
     	Object targetValue = getTargetValue(relationModel, cellValues);
     	if (relationModel.isRequire() && targetValue == null) {
-    		String fieldName = relationModel.getTargetField().getName();
-			throw new ExcelHandlerException("The filed[" + fieldName + "] must not be null!");
+            String titles = Arrays.toString(titleArray);
+            throw new ExcelHandlerException(titles + "解析为空");
 		}
 		return targetValue;
 	}
@@ -402,7 +400,7 @@ public abstract class POIExcelUploadHandler {
         short lastCellNum = row.getLastCellNum();
         
         if (lastCellNum < 0) {
-            throw new ExcelHandlerException("This excel sheet's title row not has cell!");
+            throw new ExcelHandlerException("该Excel中无标题行");
         }
         
         String[] titles = new String[lastCellNum];
@@ -411,6 +409,7 @@ public abstract class POIExcelUploadHandler {
             if (cell == null) {
                 continue;
             }
+            cell.setCellType(CellType.STRING);
             titles[i] = cell.getStringCellValue().trim();
         }
         
@@ -426,12 +425,12 @@ public abstract class POIExcelUploadHandler {
      */
     private static Workbook getWorkBook(File excelFile, FileType fileType) {
         try (
-            InputStream is = new FileInputStream(excelFile)
+            InputStream is = new FileInputStream(excelFile);
         ) {
             return getWorkBook(is, fileType);
         } catch (Exception e) {
-            log.error("Create excle work book is error!", e);
-            throw new ExcelHandlerException("Create excle work book is error!");
+            log.error("Create excel work book is error!", e);
+            throw new ExcelHandlerException("获取Excel工作簿出错");
         }
     }
     
@@ -455,8 +454,8 @@ public abstract class POIExcelUploadHandler {
                 workbook = new HSSFWorkbook(is);
             }
         } catch (Exception e) {
-            log.error("Create excle work book is error!", e);
-            throw new ExcelHandlerException("Create excle work book is error!");
+            log.error("Create excel work book is error!", e);
+            throw new ExcelHandlerException("获取Excel工作簿出错");
         } finally {
             try {
                 is.close();
@@ -464,9 +463,11 @@ public abstract class POIExcelUploadHandler {
                 log.warn("Close excel file input stream error, ignore this exception!");
             }
         }
-        
-        Objects.requireNonNull(workbook, "The excle work book is must not be null!");
-        
+
+        if (workbook == null) {
+            throw new ExcelHandlerException("未获取到Excel工作簿");
+        }
+
         return workbook;
     }
 
@@ -477,14 +478,11 @@ public abstract class POIExcelUploadHandler {
      * @return the file type{@link FileType}
      */
     private static FileType getFileType(InputStream is) {
-        Objects.requireNonNull(is, "The excel file input stream must not be null!");
-        
-        
         FileType fileType = FileTypeUtil.getType(is);
         if (ALLOW_FILE_TYPES.contains(fileType)) {
             return fileType;
         }
-        throw new ExcelHandlerException("The file type is not excel!");
+        throw new ExcelHandlerException("上传的文件不是Excel格式");
     }
     
     /**
@@ -494,20 +492,18 @@ public abstract class POIExcelUploadHandler {
      * @return the file type{@link FileType}
      */
     private static FileType getFileType(File excelFile) {
-        Objects.requireNonNull(excelFile, "The excel file is must not be null!");
-        
         String fileName = excelFile.getName();
         String fileSuffix = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
         
         if (!ALLOW_FILE_SUFFIX.contains(fileSuffix)) {
-            throw new ExcelHandlerException("The file suffix name is not excel!");
+            throw new ExcelHandlerException("上传的文件不是Excel格式");
         }
         
         FileType fileType = FileTypeUtil.getType(excelFile);
         if (ALLOW_FILE_TYPES.contains(fileType)) {
             return fileType;
         }
-        throw new ExcelHandlerException("The file type is not excel!");
+        throw new ExcelHandlerException("上传的文件不是Excel格式");
     }
     
     /**
@@ -520,7 +516,7 @@ public abstract class POIExcelUploadHandler {
         Field[] fields = entityClass.getDeclaredFields();
         
         if (ArrayUtils.isEmpty(fields)) {
-            throw new ExcelHandlerException("The entity not has any field!");
+            throw new ExcelHandlerException("上传对象中未定义字段");
         }
         
         Map<Class<?>, Object> convertClassCache = new HashMap<>();
@@ -532,7 +528,7 @@ public abstract class POIExcelUploadHandler {
                     f -> createExcelRelationModel(f, convertClassCache)
                 ));
         if (MapUtils.isEmpty(relations)) {
-        	throw new ExcelHandlerException("The all fields does not contain @UploadExcelTitle annotation!");
+        	throw new ExcelHandlerException("上传对象中未标记需要的字段");
 		}
         
         return relations;
@@ -546,33 +542,7 @@ public abstract class POIExcelUploadHandler {
      */
     private static String[] getFieldTitleName(Field field) {
         UploadExcelTitle excelTitle = field.getAnnotation(UploadExcelTitle.class);
-        if (excelTitle != null) {
-            return excelTitle.value();
-        }
-        throw new ExcelHandlerException("This field" + field.getName() + " does not contain @UploadExcelTitle annotation!");
-    }
-    
-    /**
-     * Get the field convert instance
-     * 
-     * @param convertClassCache the convert class cache
-     * @param convert the field convert annotation
-     * @return the convert instance
-     */
-    private static Object getConvertInstance(Map<Class<?>, Object> convertClassCache, UploadConvert convert) {
-        Class<?> convertClass = convert.clazz();
-        
-        if (convertClass == null) {
-            throw new ExcelHandlerException("The convert class must not be null!");
-        }
-        
-        Object convertInstance = convertClassCache.get(convertClass);
-        if (convertInstance == null) {
-            convertInstance = ReflectionUtils.newInstance(convertClass);
-            convertClassCache.put(convertClass, convertInstance);
-        }
-        
-        return convertInstance;
+        return excelTitle.value();
     }
     
     /**
@@ -587,7 +557,7 @@ public abstract class POIExcelUploadHandler {
         Class<?> convertClass = convert.clazz();
         
         if (StringUtils.isBlank(methodName)) {
-            throw new ExcelHandlerException("The convert method name must not be empty!");
+            throw new ExcelHandlerException("目标类型转换方法名为空");
         }
         
         try {
@@ -599,7 +569,7 @@ public abstract class POIExcelUploadHandler {
         } catch (NoSuchMethodException | SecurityException e) {
             String msg = "Get the convert method is error!";
             log.error(msg, e);
-            throw new ExcelHandlerException(msg);
+            throw new ExcelHandlerException("获取目标类型转换方法错误");
         }
     }
     
@@ -622,7 +592,7 @@ public abstract class POIExcelUploadHandler {
             if (uploadExcelTitle != null) {
                 argSize = uploadExcelTitle.value().length;
             }
-            Object convertInstance = getConvertInstance(convertClassCache, convert);
+            Object convertInstance = POIExcelBaseHandler.getConvertInstance(convertClassCache, convert.clazz());
             Method convertMethod = getConvertMethod(convert, argSize);
             model.setConvertInstance(convertInstance);
             model.setConvertMethod(convertMethod);
@@ -640,7 +610,9 @@ public abstract class POIExcelUploadHandler {
      */
     private static <E> void checkParams(int titleRow, File excelFile, Class<E> entityClass) {
         checkParams(titleRow, entityClass);
-        Objects.requireNonNull(excelFile, "The excel file must not be null!");
+        if (excelFile == null) {
+            throw new ExcelHandlerException("上传的文件为空");
+        }
     }
     
     /**
@@ -652,7 +624,9 @@ public abstract class POIExcelUploadHandler {
      */
     private static <E> void checkParams(int titleRow, InputStream is, Class<E> entityClass) {
         checkParams(titleRow, entityClass);
-        Objects.requireNonNull(is, "The excel file input stream must not be null!");
+        if (is == null) {
+            throw new ExcelHandlerException("上传的文件流为空");
+        }
     }
     
     /**
@@ -660,13 +634,14 @@ public abstract class POIExcelUploadHandler {
      * @param <E>
      * 
      * @param titleRow the title row number
-     * @param is the excel file input stream
      * @param entityClass the entity class
      */
     private static <E> void checkParams(int titleRow, Class<E> entityClass) {
         if (titleRow < 0) {
-            throw new BaseException("The number of rows must be greater than or equal to 0!");
+            throw new ExcelHandlerException("标题行小于0");
         }
-        Objects.requireNonNull(entityClass, "The entity class must not be null!");
+        if (entityClass == null) {
+            throw new ExcelHandlerException("上传对象类型为空");
+        }
     }
 }

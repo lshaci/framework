@@ -40,8 +40,10 @@ import top.lshaci.framework.excel.model.ExcelRelationModel;
 import top.lshaci.framework.utils.ReflectionUtils;
 
 /**
- * POI excel download handler
+ * POI excel download handler<br><br>
  * 
+ * <b>0.0.4: </b>Add method setColumnWidth; Change exception message to chinese
+ *
  * @author lshaci
  * @since 0.0.3
  * @version 0.0.4
@@ -52,17 +54,17 @@ public abstract class POIExcelDownloadHandler {
 	/**
 	 * The current row number of write data
 	 */
-	private static final ThreadLocal<Integer> CURRENT_ROW_NUMBER = new ThreadLocal<>();
+	private final static ThreadLocal<Integer> CURRENT_ROW_NUMBER = new ThreadLocal<>();
 	
 	/**
 	 * The excel font name
 	 */
-	private static final ThreadLocal<String> FONT_NAME = new ThreadLocal<>();
+	private final static ThreadLocal<String> FONT_NAME = new ThreadLocal<>();
 	
 	/**
 	 * The default font name
 	 */
-	private static final String DEFAULT_FONT_NAME = "宋体";
+	private final static String DEFAULT_FONT_NAME = "宋体";
 
 	/**
 	 * Change excel file to entity list
@@ -75,18 +77,10 @@ public abstract class POIExcelDownloadHandler {
 		
 		Class<?> entityClass = entities.get(0).getClass();
 		
-		List<DownloadOrder> titleOrder = getTitleOrder(entityClass);
-		if (CollectionUtils.isEmpty(titleOrder)) {
-			log.error("The excel title is empty!");
-			throw new ExcelHandlerException("The excel title must not be empty!");
-		}
-		
-		List<String[]> rowDatas = entities2StringArrays(entities, titleOrder, entityClass);
-		if (CollectionUtils.isEmpty(rowDatas)) {
-			log.error("The content is empty!");
-			throw new ExcelHandlerException("The content must not be empty!");
-		}
-		
+		List<DownloadOrder> titleOrders = getTitleOrder(entityClass);
+
+		List<String[]> rowDatas = entities2StringArrays(entities, titleOrders, entityClass);
+
 		try (
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
 				XSSFWorkbook workbook = new XSSFWorkbook();
@@ -95,16 +89,16 @@ public abstract class POIExcelDownloadHandler {
 			
 			XSSFSheet sheet = workbook.createSheet(sheetName);
 			
-			setColumnWidth(titleOrder, sheet);
+			setColumnWidth(titleOrders, sheet);
 			
 			// set current row number
 			CURRENT_ROW_NUMBER.set(0);
 			
 			// set first title
-			setFirstTitle(workbook, sheet, entityClass, titleOrder.size());
+			setFirstTitle(workbook, sheet, entityClass, titleOrders.size());
 			
 			// set column titles
-			setColumnTitles(workbook, sheet, titleOrder);
+			setColumnTitles(workbook, sheet, titleOrders);
 			
 			// set sheet content
 			setSheetRows(workbook, sheet, rowDatas);
@@ -117,24 +111,24 @@ public abstract class POIExcelDownloadHandler {
 		}
 	}
 
-    /**
-     * Set column width
-     * 
-     * @param titleOrder the titles
-     * @param sheet the excel sheet of the work book
-     */
-    private static void setColumnWidth(List<DownloadOrder> titleOrder, XSSFSheet sheet) {
-        // set default column width
-        sheet.setDefaultColumnWidth(12);
-        // set first column width
-        sheet.setColumnWidth(0, 1500);
-        // set column width
-        for (int i = 0; i < titleOrder.size(); i++) {
-        	DownloadOrder downloadOrder = titleOrder.get(i);
-        	int columnWidth = downloadOrder.getColumnWidth();
-        	sheet.setColumnWidth(i + 1, columnWidth <= 0 ? 12 * 256 : columnWidth * 256);
-        }
-    }
+	/**
+	 * Set column width
+	 * 
+	 * @param titleOrder the titles
+	 * @param sheet the excel sheet of the work book
+	 */
+	private static void setColumnWidth(List<DownloadOrder> titleOrder, XSSFSheet sheet) {
+		// set default column width
+		sheet.setDefaultColumnWidth(12);
+		// set first column width
+		sheet.setColumnWidth(0, 1500);
+		// set column width
+		for (int i = 0; i < titleOrder.size(); i++) {
+			DownloadOrder downloadOrder = titleOrder.get(i);
+			int columnWidth = downloadOrder.getColumnWidth();
+			sheet.setColumnWidth(i + 1, columnWidth <= 0 ? 12 * 256 : columnWidth * 256);
+		}
+	}
 	
 	/**
 	 * Set excel sheet row content
@@ -349,11 +343,6 @@ public abstract class POIExcelDownloadHandler {
 	 * @return the string array list
 	 */
 	private static <E> List<String[]> entities2StringArrays(List<E> entities, List<DownloadOrder> titleOrder, Class<?> entityClass) {
-		if (CollectionUtils.isEmpty(titleOrder)) {
-			log.error("The title is empty");
-			throw new ExcelHandlerException("The download excel title must not be empty!");
-		}
-		
 		Map<String, ExcelRelationModel> handlerRelations = handlerRelations(entityClass);
 		
 		List<String[]> rows = new ArrayList<>();
@@ -384,6 +373,12 @@ public abstract class POIExcelDownloadHandler {
 			
 			rows.add(row);
 		}
+
+		if (CollectionUtils.isEmpty(rows)) {
+			log.error("The content is empty!");
+			throw new ExcelHandlerException("导出对象解析内容为空");
+		}
+
 		return rows;
 	}
 	
@@ -416,7 +411,7 @@ public abstract class POIExcelDownloadHandler {
 		Field[] fields = entityClass.getDeclaredFields();
 		
 		if (ArrayUtils.isEmpty(fields)) {
-			throw new ExcelHandlerException("The entity not has any field!");
+			throw new ExcelHandlerException("导出对象中未定义字段");
 		}
 		
 		Map<Class<?>, Object> convertClassCache = new HashMap<>();
@@ -426,7 +421,7 @@ public abstract class POIExcelDownloadHandler {
 				.filter(f -> f.getAnnotation(DownloadIgnore.class) == null)
 				.filter(f -> downloadAllField || f.getAnnotation(DownloadExcelTitle.class) != null)
 				.collect(Collectors.toMap(
-					f -> getFieldTitleName(f), 
+					POIExcelDownloadHandler::getFieldTitleName,
 					f -> createExcelRelationModel(f, convertClassCache))
 				);
 	}
@@ -458,7 +453,7 @@ public abstract class POIExcelDownloadHandler {
 		DownloadConvert convert = field.getAnnotation(DownloadConvert.class);
 		
 		if (convert != null) {
-			Object convertInstance = getConvertInstance(convertClassCache, convert);
+			Object convertInstance = POIExcelBaseHandler.getConvertInstance(convertClassCache, convert.clazz());
 			Method convertMethod = getConvertMethod(convert, field.getType());
 			model.setConvertInstance(convertInstance);
 			model.setConvertMethod(convertMethod);
@@ -466,30 +461,7 @@ public abstract class POIExcelDownloadHandler {
 		
 		return model;
 	}
-	
-	/**
-	 * Get the field convert instance
-	 * 
-	 * @param convertClassCache the convert class cache
-	 * @param convert the field convert annotation
-	 * @return the convert instance
-	 */
-	private static Object getConvertInstance(Map<Class<?>, Object> convertClassCache, DownloadConvert convert) {
-		Class<?> convertClass = convert.clazz();
-		
-		if (convertClass == null) {
-			throw new ExcelHandlerException("The convert class must not be null!");
-		}
-		
-		Object convertInstance = convertClassCache.get(convertClass);
-		if (convertInstance == null) {
-			convertInstance = ReflectionUtils.newInstance(convertClass);
-			convertClassCache.put(convertClass, convertInstance);
-		}
-		
-		return convertInstance;
-	}
-	
+
 	/**
 	 * Get the field convert method
 	 * 
@@ -502,7 +474,7 @@ public abstract class POIExcelDownloadHandler {
 		Class<?> convertClass = convert.clazz();
 		
 		if (StringUtils.isBlank(methodName)) {
-			throw new ExcelHandlerException("The convert method name must not be empty!");
+			throw new ExcelHandlerException("目标类型转换方法名为空");
 		}
 		
 		try {
@@ -510,7 +482,7 @@ public abstract class POIExcelDownloadHandler {
 		} catch (NoSuchMethodException | SecurityException e) {
 			String msg = "Get the convert method is error!";
 			log.error(msg, e);
-			throw new ExcelHandlerException(msg);
+			throw new ExcelHandlerException("获取目标类型转换方法错误");
 		}
 	}
 	
@@ -524,23 +496,30 @@ public abstract class POIExcelDownloadHandler {
 		Field[] fields = entityClass.getDeclaredFields();
 
 		if (ArrayUtils.isEmpty(fields)) {
-			throw new ExcelHandlerException("The entity not has any field!");
+			throw new ExcelHandlerException("导出对象中未定义字段");
 		}
 
 		boolean downloadAllField = entityClass.getAnnotation(DownloadAllField.class) != null;
 
-		return Arrays.stream(fields)
+		List<DownloadOrder> titleOrders = Arrays.stream(fields)
 				.filter(f -> f.getAnnotation(DownloadIgnore.class) == null)
 				.filter(f -> downloadAllField || f.getAnnotation(DownloadExcelTitle.class) != null)
-				.map(POIExcelDownloadHandler::createDownloadOrder)
+				.map(f -> createDownloadOrder(f))
 				.sorted()
 				.collect(Collectors.toList());
+
+		if (CollectionUtils.isEmpty(titleOrders)) {
+			log.error("The excel title is empty!");
+			throw new ExcelHandlerException("导出对象中未标记需要导出的字段");
+		}
+
+		return titleOrders;
 	}
 	
 	/**
 	 * Create download order of field
 	 * 
-	 * @param field            the field
+	 * @param field the field
 	 * @return the download order
 	 */
 	private static DownloadOrder createDownloadOrder(Field field) {
@@ -575,7 +554,7 @@ public abstract class POIExcelDownloadHandler {
 	private static <E> void checkParams(List<E> entities) {
 		if (CollectionUtils.isEmpty(entities)) {
 			log.error("The entity list is empty!");
-			throw new ExcelHandlerException("The entity list must not be empty!");
+			throw new ExcelHandlerException("无数据可导出");
 		}
 	}
 }
