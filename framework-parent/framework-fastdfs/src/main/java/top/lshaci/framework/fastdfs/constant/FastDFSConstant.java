@@ -1,8 +1,20 @@
 package top.lshaci.framework.fastdfs.constant;
 
+/**
+ * FastDFS constant
+ * 
+ * @author lshaci
+ * @since 0.0.4
+ */
 public interface FastDFSConstant {
 	
+	String POINT = ".";
+	
+	String SEPARATOR = "/";
+	
 	String FAST_DFS_PREFIX = "spring.fastdfs";
+	
+	String FILE_DESCRIPTION_FILE_NAME = "filename";
 	
 	String DEFAULT_CONFIG = "fastdfs.properties";
 

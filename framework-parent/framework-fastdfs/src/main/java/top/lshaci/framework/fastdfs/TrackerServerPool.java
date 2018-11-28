@@ -36,8 +36,7 @@ class TrackerServerPool {
 	protected static int maxStorageConnection;
 
     /**
-     * TrackerServer 对象池.
-     * GenericObjectPool 没有无参构造
+     * The tracker server pool
      */
 	protected static GenericObjectPool<TrackerServer> trackerServerPool;
 
@@ -92,7 +91,9 @@ class TrackerServerPool {
      * @param trackerServer the tracker server instance
      */
     protected static void returnObject(TrackerServer trackerServer){
-    	trackerServerPool.returnObject(trackerServer);
+    	if (trackerServer != null) {
+    		trackerServerPool.returnObject(trackerServer);
+		}
     }
 
 }

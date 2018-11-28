@@ -27,6 +27,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
+        <!-- apache commons codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
 		<!-- fast dfs client -->
 		<dependency>
 			<groupId>net.oschina.zcx7878</groupId>

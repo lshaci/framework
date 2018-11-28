@@ -1,5 +1,8 @@
 package top.lshaci.framework.fastdfs;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -11,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
@@ -21,33 +25,24 @@ import org.csource.fastdfs.TrackerServer;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 import top.lshaci.framework.fastdfs.exception.ErrorCode;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
 
 @Slf4j
 public class FastDFSClient {
 	/**
-	 * 路径分隔符
-	 */
-	protected static final String SEPARATOR = "/";
-	/**
-	 * Point
-	 */
-	protected static final String POINT = ".";
-	/**
 	 * ContentType
 	 */
 	protected static final Map<String, String> EXT_MAPS = new HashMap<>();
-
-	/**
-	 * 文件名称Key
-	 */
-	protected static final String FILENAME = "filename";
-
 	/**
 	 * The max file size
 	 */
 	protected static int maxFileSize;
+	/**
+	 * The file server address
+	 */
+	protected static String fileServerAddr;
 
 	public FastDFSClient() {
 		initExt();
@@ -80,23 +75,25 @@ public class FastDFSClient {
 	}
 
 	/**
-	 * Upload MultipartFile
+	 * Upload with MultipartFile
 	 * 
 	 * @param file the multipart file
-	 * @return The file path after uploading successfully
+	 * @return The file path after uploading successfully<br>
+	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
 	 */
-	public static String uploadMultipartFile(MultipartFile file) {
-		return uploadMultipartFile(file, null);
+	public static String uploadWithMultipart(MultipartFile file) {
+		return uploadWithMultipart(file, null);
 	}
 
 	/**
-	 * Upload MultipartFile
+	 * Upload with MultipartFile
 	 * 
 	 * @param file         the multipart file
 	 * @param descriptions the file descriptions
-	 * @return The file path after uploading successfully
+	 * @return The file path after uploading successfully<br>
+	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
 	 */
-	public static String uploadMultipartFile(MultipartFile file, Map<String, String> descriptions) {
+	public static String uploadWithMultipart(MultipartFile file, Map<String, String> descriptions) {
 		if (file == null || file.isEmpty()) {
 			throw new FastDFSException(ErrorCode.FILE_IS_EMPTY);
 		}
@@ -107,7 +104,87 @@ public class FastDFSClient {
 			throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
 		}
 	}
+	
+	/**
+	 * Upload with file path
+	 * 
+	 * @param filepath the file path
+	 * @return The file path after uploading successfully<br>
+	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
+	 */
+	public static String uploadWithFilepath(String filepath) {
+        return uploadWithFilepath(filepath, null);
+    }
+	
+	/**
+	 * Upload with file path
+	 * 
+	 * @param filepath the file path
+	 * @param descriptions the file descriptions
+	 * @return The file path after uploading successfully<br>
+	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
+	 */
+	public static String uploadWithFilepath(String filepath, Map<String, String> descriptions) {
+		if(StringUtils.isBlank(filepath)){
+            throw new FastDFSException(ErrorCode.FILE_PATH_IS_NULL);
+        }
+        File file = new File(filepath.trim());
+        String path = null;
+        try (
+        		InputStream is = new FileInputStream(file);
+        ) {
+            // 获取文件名
+            filepath = toLocal(filepath);
+            String filename = filepath.substring(filepath.lastIndexOf("/") + 1);
 
+            path = upload(is, filename, descriptions);
+        } catch (IOException e) {
+            log.error(ErrorCode.FILE_NOT_EXIST.getCode(), e);
+            throw new FastDFSException(ErrorCode.FILE_NOT_EXIST);
+        } 
+
+        return path;
+    }
+	
+	/**
+	 * Upload with base64 string
+	 * 
+	 * @param base64 the base64 string
+	 * @return The file path after uploading successfully<br>
+	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
+	 */
+	public static String uploadWithBase64(String base64) {
+        return uploadWithBase64(base64, null, null);
+    }
+	
+	/**
+	 * Upload with base64 string
+	 * 
+	 * @param base64 the base64 string
+	 * @param filename the file name
+	 * @return The file path after uploading successfully<br>
+	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
+	 */
+	public static String uploadWithBase64(String base64, String filename) {
+        return uploadWithBase64(base64, filename, null);
+    }
+	
+	/**
+	 * Upload with base64 string
+	 * 
+	 * @param base64 the base64 string
+	 * @param filename the file name
+	 * @param descriptions the file descriptions
+	 * @return The file path after uploading successfully<br>
+	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
+	 */
+	public static String uploadWithBase64(String base64, String filename, Map<String, String> descriptions) {
+        if(StringUtils.isBlank(base64)){
+            throw new FastDFSException(ErrorCode.FILE_IS_EMPTY);
+        }
+        return upload(new ByteArrayInputStream(Base64.decodeBase64(base64)), filename, descriptions);
+    }
+	
 	/**
 	 * Upload
 	 * 
@@ -117,66 +194,71 @@ public class FastDFSClient {
 	 * @return The file path after uploading successfully<br>
 	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
 	 */
-	private static String upload(InputStream is, String filename, Map<String, String> descriptions) {
+	public static String upload(InputStream is) {
+		return upload(is, null);
+	}
+	
+	/**
+	 * Upload
+	 * 
+	 * @param is           the file input stream
+	 * @param filename     the file name
+	 * @return The file path after uploading successfully<br>
+	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
+	 */
+	public static String upload(InputStream is, String filename) {
+		return upload(is, filename, null);
+	}
+	
+	/**
+	 * Upload
+	 * 
+	 * @param is           the file input stream
+	 * @param filename     the file name
+	 * @param descriptions the file descriptions
+	 * @return The file path after uploading successfully<br>
+	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
+	 */
+	public static String upload(InputStream is, String filename, Map<String, String> descriptions) {
 		verifyInputStream(is);
-
+		// the converted file name
 		filename = toLocal(filename);
-		// 返回路径
+		// the return path
 		String path = null;
-		// 文件描述
-		NameValuePair[] nvps = null;
-		List<NameValuePair> nvpsList = new ArrayList<>();
-		// 文件名后缀
+		// the file descriptions
+		NameValuePair[] nvps = createFileDescriptions(filename, descriptions);
+		// the file name suffix
 		String suffix = getFilenameSuffix(filename);
-
-		// 文件名
-		if (StringUtils.isNotBlank(filename)) {
-			nvpsList.add(new NameValuePair(FILENAME, filename));
-		}
-		// 描述信息
-		if (descriptions != null && descriptions.size() > 0) {
-			descriptions.forEach((key, value) -> {
-				nvpsList.add(new NameValuePair(key, value));
-			});
-		}
-		if (nvpsList.size() > 0) {
-			nvps = new NameValuePair[nvpsList.size()];
-			nvpsList.toArray(nvps);
-		}
 
 		TrackerServer trackerServer = null;
 		try {
 			trackerServer = TrackerServerPool.borrowObject();
 			StorageClient1 storageClient = new StorageClient1(trackerServer, null);
-			// 读取流
+			// read available bytes
 			byte[] fileBuff = new byte[is.available()];
 			is.read(fileBuff, 0, fileBuff.length);
 
-			// 上传
+			// upload
 			path = storageClient.upload_file1(fileBuff, suffix, nvps);
 
 			if (StringUtils.isBlank(path)) {
-				throw new FastDFSException("上传失败");
+				throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
 			}
 
 			log.debug("upload file success, return path is {}", path);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new FastDFSException("");
-		} catch (MyException e) {
-			e.printStackTrace();
-			throw new FastDFSException("");
+		} catch (IOException | MyException e) {
+			log.error(ErrorCode.FILE_UPLOAD_FAILED.getCode());
+			throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
 		} finally {
-			// 关闭流
+			// close input stream
 			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.warn("Close input streat exception.", e);
 				}
 			}
 		}
-		// 返还对象
 		TrackerServerPool.returnObject(trackerServer);
 
 		return path;
@@ -199,6 +281,35 @@ public class FastDFSClient {
 			log.warn("Invoke available method error.", e);
 		}
 	}
+	
+	/**
+	 * Create file descriptions
+	 * 
+	 * @param filename the file name
+	 * @param descriptions the file descriptions
+	 * @return the file descriptions with {@link NameValuePair} array
+	 */
+	private static NameValuePair[] createFileDescriptions(String filename, Map<String, String> descriptions) {
+		NameValuePair[] nvps = null;
+		List<NameValuePair> nvpsList = new ArrayList<>();
+
+		// the file name
+		if (StringUtils.isNotBlank(filename)) {
+			nvpsList.add(new NameValuePair(FastDFSConstant.FILE_DESCRIPTION_FILE_NAME, filename));
+		}
+		// the file descriptions
+		if (descriptions != null && descriptions.size() > 0) {
+			descriptions.forEach((key, value) -> {
+				nvpsList.add(new NameValuePair(key, value));
+			});
+		}
+		if (nvpsList.size() > 0) {
+			nvps = new NameValuePair[nvpsList.size()];
+			nvpsList.toArray(nvps);
+		}
+		
+		return nvps;
+	}
 
 	/**
 	 * 删除文件
@@ -206,7 +317,7 @@ public class FastDFSClient {
 	 * @param filepath 文件路径
 	 * @return 删除成功返回 0, 失败返回其它
 	 */
-	public int deleteFile(String filepath) throws FastDFSException {
+	public static int deleteFile(String filepath) throws FastDFSException {
 		if (StringUtils.isBlank(filepath)) {
 			throw new FastDFSException("");
 		}
@@ -311,52 +422,51 @@ public class FastDFSClient {
 	 */
 	public String getOriginalFilename(String filepath) throws FastDFSException {
 		Map<String, Object> descriptions = getFileDescriptions(filepath);
-		if (descriptions.get(FILENAME) != null) {
-			return (String) descriptions.get(FILENAME);
+		if (descriptions.get(FastDFSConstant.FILE_DESCRIPTION_FILE_NAME) != null) {
+			return (String) descriptions.get(FastDFSConstant.FILE_DESCRIPTION_FILE_NAME);
 		}
 		return null;
 	}
 
 	/**
-	 * 获取文件名称的后缀
-	 *
-	 * @param filename 文件名 或 文件路径
-	 * @return 文件后缀
+	 * Get the file name suffix
+	 * 
+	 * @param filename the file name
+	 * @return The file name suffix
 	 */
 	public static String getFilenameSuffix(String filename) {
 		String suffix = null;
-		String originalFilename = filename;
 		if (StringUtils.isNotBlank(filename)) {
-			if (filename.contains(SEPARATOR)) {
-				filename = filename.substring(filename.lastIndexOf(SEPARATOR) + 1);
-			}
-			if (filename.contains(POINT)) {
-				suffix = filename.substring(filename.lastIndexOf(POINT) + 1);
+			if (filename.contains(FastDFSConstant.POINT)) {
+				suffix = filename.substring(filename.lastIndexOf(FastDFSConstant.POINT) + 1);
 			} else {
-				log.error("filename error without suffix : {}", originalFilename);
+				log.error("The filename error without suffix : {}", filename);
 			}
 		}
 		return suffix;
 	}
 
 	/**
-	 * 转换路径中的 '\' 为 '/' <br>
-	 * 并把文件后缀转为小写
-	 *
-	 * @param path 路径
-	 * @return
+	 * Convert '\\\\' to '/' in the path, and convert the suffix name to lowercase
+	 * 
+	 * @param path the file path
+	 * @return The converted path
 	 */
 	public static String toLocal(String path) {
-//        if (StringUtils.isNotBlank(path)) {
-//            path = path.replaceAll("\\", SEPARATOR);
-//
-//            if (path.contains(POINT)) {
-//                String pre = path.substring(0, path.lastIndexOf(POINT) + 1);
-//                String suffix = path.substring(path.lastIndexOf(POINT) + 1).toLowerCase();
-//                path = pre + suffix;
-//            }
-//        }
+        if (StringUtils.isNotBlank(path)) {
+            path = path.replaceAll("\\\\", FastDFSConstant.SEPARATOR);
+
+            if (path.contains(FastDFSConstant.POINT)) {
+                String pre = path.substring(0, path.lastIndexOf(FastDFSConstant.POINT) + 1);
+                String suffix = path.substring(path.lastIndexOf(FastDFSConstant.POINT) + 1).toLowerCase();
+                path = pre + suffix;
+            }
+        }
 		return path;
+	}
+	
+	public static void main(String[] args) {
+		toLocal("D:/abc.png");
 	}
 
 	/**
@@ -398,6 +508,31 @@ public class FastDFSClient {
 		sb.append("token=").append(token);
 		sb.append("&ts=").append(ts);
 
+		return sb.toString();
+	}
+	
+	/**
+	 * Get the file server address
+	 * 
+	 * @return the file server address
+	 */
+	public static String getFileServerAddr() {
+		return fileServerAddr;
+	}
+
+	/**
+	 * The client information
+	 * 
+	 * @return The client information
+	 */
+	public static String info() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("The file server address is: ")
+		  .append(fileServerAddr)
+		  .append("; ")
+		  .append("The max file size is: ")
+		  .append(maxFileSize)
+		  .append(".");
 		return sb.toString();
 	}
 }

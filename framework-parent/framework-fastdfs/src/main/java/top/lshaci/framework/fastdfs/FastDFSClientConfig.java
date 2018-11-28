@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -55,17 +56,23 @@ public class FastDFSClientConfig {
     }
     
     /**
-     * Set fast dfs client max file size
+     * Set fast dfs client information
+     * @throws Exception 
      */
     @PostConstruct
-    public void setMaxFileSize() {
-    	log.debug("Set fast dfs client max file size.");
+    public void setMaxFileSize() throws Exception {
+    	log.debug("Set fast dfs client.");
     	int maxFileSize = properties.getMaxFileSize();
     	if (maxFileSize < 0) {
 			maxFileSize = FastDFSConstant.DEFAULT_MAX_FILE_SIZE;
 		}
+    	String fileServerAddr = properties.getFileServerAddr();
+    	if (StringUtils.isBlank(fileServerAddr)) {
+			throw new Exception("The file server address must not be empty!");
+		}
     	FastDFSClient.maxFileSize = maxFileSize;
-    	log.debug("The fast dfs client max file size is:{}", maxFileSize);
+    	FastDFSClient.fileServerAddr = fileServerAddr.trim();
+    	log.debug("The fast dfs client info: {}", FastDFSClient.info());
     }
 
 }

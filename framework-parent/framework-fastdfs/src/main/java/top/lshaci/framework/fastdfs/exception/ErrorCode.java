@@ -3,7 +3,7 @@ package top.lshaci.framework.fastdfs.exception;
 import lombok.Getter;
 
 /**
- * 上传文件错误信息
+ * The upload file error message
  * 
  * @author lshaci
  * @since 0.0.4
@@ -18,17 +18,24 @@ public enum ErrorCode {
 	/**
 	 * File uploading failed.
 	 */
-	FILE_UPLOAD_FAILED("File uploading failed.", "上传文件发生错误"),
+	FILE_UPLOAD_FAILED("File uploading failed.", "上传文件失败"),
+	/**
+	 * Error uploading file.
+	 */
+	FILE_UPLOAD_ERROR("Error uploading file.", "上传文件发生错误"),
 	/**
 	 * The file size exceeds the limit.
 	 */
 	FILE_OUT_SIZE("The file size exceeds the limit.", "文件大小超过限制"),
-	
-	FILE_PATH_ISNULL("error.fastdfs.file_path_isnull", "文件路径为空"),
-
+	/**
+	 * The file path is null.
+	 */
+	FILE_PATH_IS_NULL("The file path is null.", "文件路径为空"),
+	/**
+	 * The file not exist.
+	 */
+	FILE_NOT_EXIST("The file not exist.", "文件不存在"),
     FILE_ISNULL("error.fastdfs.file_isnull", "文件为空"),
-
-    FILE_NOT_EXIST("error.fastdfs.file_not_exist", "文件不存在"),
 
     FILE_DOWNLOAD_FAILED("error.fastdfs.file_download_failed", "文件下载失败"),
 
@@ -46,9 +53,9 @@ public enum ErrorCode {
 
     FILE_TYPE_ERROR_COMPRESS("error.file.type.compress", "压缩文件类型错误");
 	
-	public String code;
+	private String code;
 
-    public String message;
+	private String message;
     
     private ErrorCode(String code, String message){
         this.code = code;

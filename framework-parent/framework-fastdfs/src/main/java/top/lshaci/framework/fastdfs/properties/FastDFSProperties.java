@@ -9,7 +9,7 @@ import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 @ConfigurationProperties(FastDFSConstant.FAST_DFS_PREFIX)
 public class FastDFSProperties {
 	
-	private String fileServer;
+	private String fileServerAddr;
 	
 	private String config = FastDFSConstant.DEFAULT_CONFIG;
 	
