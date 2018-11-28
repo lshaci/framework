@@ -11,8 +11,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 import lombok.extern.slf4j.Slf4j;
-import top.lshaci.framework.fastdfs.FastDFSClient;
-import top.lshaci.framework.fastdfs.TrackerServerPool;
 import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 import top.lshaci.framework.fastdfs.properties.FastDFSProperties;
 
@@ -45,12 +43,13 @@ public class FastDFSClientConfig {
     
     @PostConstruct
     public void setMaxFileSize() {
-    	log.debug("Set fastdfs client max file size.");
+    	log.debug("Set fast dfs client max file size.");
     	int maxFileSize = properties.getMaxFileSize();
     	if (maxFileSize < 0) {
 			maxFileSize = FastDFSConstant.DEFAULT_MAX_FILE_SIZE;
 		}
     	FastDFSClient.maxFileSize = maxFileSize;
+    	log.debug("The fast dfs client max file size is:{}", maxFileSize);
     }
 
 }

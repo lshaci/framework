@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -25,6 +26,7 @@
 		<module>framework-permission</module>
 		<module>framework-swagger</module>
 		<module>framework-thread</module>
+		<module>framework-fastdfs</module>
 	</modules>
 
 	<name>framework-parent</name>
@@ -52,6 +54,7 @@
 		<fastjson.version>1.2.47</fastjson.version>
 		<commons.lang3.version>3.7</commons.lang3.version>
 		<commons.collections4.version>4.1</commons.collections4.version>
+		<fastdfs.client.version>1.27.0.0</fastdfs.client.version>
 
 		<spring.boot.version>2.0.1.RELEASE</spring.boot.version>
 		<spring.cloud.version>Finchley.RELEASE</spring.cloud.version>
@@ -160,6 +163,12 @@
 				<artifactId>framework-thread</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
+			<!-- framework fastdfs module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-fastdfs</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
 			<!-- framework test module -->
 			<dependency>
 				<groupId>top.lshaci</groupId>
@@ -243,6 +252,12 @@
 				<groupId>org.xhtmlrenderer</groupId>
 				<artifactId>flying-saucer-pdf-itext5</artifactId>
 				<version>${flying.saucer.pdf.itext5.version}</version>
+			</dependency>
+			<!-- fast dfs client -->
+			<dependency>
+				<groupId>net.oschina.zcx7878</groupId>
+				<artifactId>fastdfs-client-java</artifactId>
+				<version>${fastdfs.client.version}</version>
 			</dependency>
 			<!-- spring boot dependencies -->
 			<dependency>
