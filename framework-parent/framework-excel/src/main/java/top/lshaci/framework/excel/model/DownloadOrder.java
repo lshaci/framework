@@ -17,9 +17,15 @@ public class DownloadOrder implements Comparable<DownloadOrder> {
 	private String title;
 	private Field field;
 	private int columnWidth;
+
+	public DownloadOrder(Field field) {
+		super();
+		this.field = field;
+	}
 	
 	@Override
 	public int compareTo(DownloadOrder downloadOrder) {
 		return this.order - downloadOrder.getOrder();
 	}
+
 }

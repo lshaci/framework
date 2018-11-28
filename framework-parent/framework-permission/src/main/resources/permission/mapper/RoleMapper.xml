@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.lshaci.framework.permission.mapper.RoleMapper">
+	<resultMap id="BaseResultMap" type="top.lshaci.framework.permission.model.Role">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="description" property="description" />
+	</resultMap>
+
+	<select id="createTable">
+		create table if not exists `p_role` (
+			`id` bigint(20) not null auto_increment,
+			`name` varchar(50) not null comment '角色名称',
+			`description` varchar(255) default null comment '角色描述',
+			primary key (`id`)
+		) engine=innodb default charset=utf8;
+	</select>
+
+	<insert id="insertList" parameterType="list">
+		insert into p_role (name, description) values
+		<foreach collection="list" item="r" separator=",">
+			( #{r.name}, #{r.description} )
+		</foreach>
+	</insert>
+
+	<select id="selectByUser" parameterType="string" resultMap="BaseResultMap">
+		select distinct r.*
+		from p_user_role ur
+		right join p_role r on ur.role_id = r.id
+		where ur.user = #{_parameter}
+	</select>
+</mapper>

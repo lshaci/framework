@@ -2,7 +2,6 @@ package top.lshaci.framework.web.handler.exception;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,12 +26,17 @@ import top.lshaci.framework.web.model.JsonResponse;
 @Slf4j
 @RestController
 @ControllerAdvice
-@ConditionalOnProperty(value = "globalExceptionHandler.enabled", havingValue = "true", matchIfMissing = false)
 public class GlobalExceptionHandler {
 	
-	private final static String ARGUMENT_EXCEPTION = "参数异常: ";
+    /**
+     * System exception log message
+     */
+    private static final String SYSTEM_EXCEPTION = "System be happend exception!";
 	
-	private final static String FIELD = "字段";
+    /**
+     * Argument exception log message
+     */
+	private final static String FIELD = "字段:";
 
 	/**
 	 * Base exception handler
@@ -42,8 +46,8 @@ public class GlobalExceptionHandler {
 	 * @return json response
 	 */
     @ExceptionHandler(BaseException.class)
-    public JsonResponse baseExceptionHandler(HttpServletRequest req, Exception e) {
-    	log.error("System be happend exception!", e);
+    public JsonResponse<Object> baseExceptionHandler(HttpServletRequest req, Exception e) {
+    	log.error(SYSTEM_EXCEPTION, e);
     	
         return JsonResponse
         		.failure(e.getMessage())
@@ -58,10 +62,10 @@ public class GlobalExceptionHandler {
 	 * @return json response
 	 */
     @ExceptionHandler(value = { BindException.class, MethodArgumentNotValidException.class })
-    public JsonResponse argumentExceptionHandler(HttpServletRequest req, Exception e) {
-    	log.error("System be happend exception!", e);
+    public JsonResponse<Object> argumentExceptionHandler(HttpServletRequest req, Exception e) {
+    	log.error(SYSTEM_EXCEPTION, e);
     	
-        StringBuilder message = new StringBuilder(ARGUMENT_EXCEPTION);
+        StringBuilder message = new StringBuilder();
         FieldError fieldError = null;
         
         if (e instanceof BindException) {
@@ -74,8 +78,9 @@ public class GlobalExceptionHandler {
         
         if (fieldError != null) {
         	String field = fieldError.getField();
+        	log.warn(FIELD + field);
         	String msg = fieldError.getDefaultMessage();
-        	message.append(field + FIELD + msg);
+        	message.append(msg);
 		}
 
         return JsonResponse.failure(message.toString());
@@ -89,15 +94,15 @@ public class GlobalExceptionHandler {
 	 * @return json response
 	 */
     @ExceptionHandler(Exception.class)
-    public JsonResponse defaultExceptionHandler(HttpServletRequest req, Exception e) {
-    	log.error("System be happend exception!", e);
+    public JsonResponse<Object> defaultExceptionHandler(HttpServletRequest req, Exception e) {
+    	log.error(SYSTEM_EXCEPTION, e);
     	
     	ErrorCode errorCode = ErrorCode.getByException(e);
     	
     	return JsonResponse
     			.failure(errorCode.getMsg())
     			.setCode(errorCode.getCode())
-    			.addParam("detail", e.getMessage());
+    			.addOtherData("detail", e.getMessage());
     }
     
 }

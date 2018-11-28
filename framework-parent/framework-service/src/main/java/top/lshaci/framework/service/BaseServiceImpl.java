@@ -2,9 +2,9 @@ package top.lshaci.framework.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -13,20 +13,25 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import top.lshaci.framework.common.constants.Constants;
+import top.lshaci.framework.common.model.PageResult;
 import top.lshaci.framework.mybatis.mapper.TKMapper;
-import top.lshaci.framework.mybatis.model.PageResult;
+import top.lshaci.framework.mybatis.model.MybatisPageResult;
 import top.lshaci.framework.service.exception.BaseServiceException;
 
 /**
- * Base common service implement
+ * Base common service implement<br><br>
+ * 
+ * <b>0.0.4:</b>Add method: insertSelective, updateSelective; 
+ *              Modify transactional isolation and propagation level to default(history: READ_COMMITTED)
  * 
  * @author lshaci
  * @since 0.0.1
+ * @version 0.0.4
  *
  * @param <T>	The entity type
  * @param <M>	The mapper type
  */
-@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+@Transactional(rollbackFor = Exception.class)
 public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseService<T, M> {
 	
 	@Autowired
@@ -36,6 +41,12 @@ public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseS
 	public int insert(T entity) {
 		Objects.requireNonNull(entity, "The entity must not be null!");
 		return mapper.insert(entity);
+	}
+	
+	@Override
+	public int insertSelective(T entity) {
+		Objects.requireNonNull(entity, "The entity must not be null!");
+		return mapper.insertSelective(entity);
 	}
 
 	@Override
@@ -50,6 +61,12 @@ public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseS
 	public int update(T entity) {
 		Objects.requireNonNull(entity, "The entity must not be null!");
 		return mapper.updateByPrimaryKey(entity);
+	}
+	
+	@Override
+	public int updateSelective(T entity) {
+		Objects.requireNonNull(entity, "The entity must not be null!");
+		return mapper.updateByPrimaryKeySelective(entity);
 	}
 
 	@Override
@@ -132,7 +149,7 @@ public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseS
 		if (CollectionUtils.isEmpty(page)) {
 			return new PageResult<>(pageNum, pageSize);
 		}
-		return new PageResult<>(page);
+		return new MybatisPageResult<>(page);
 	}
 	
 	/**
@@ -142,11 +159,7 @@ public abstract class BaseServiceImpl<T, M extends TKMapper<T>> implements BaseS
 	 * @return the string of the primary keys
 	 */
 	private String repalceList2String(List<? extends Object> primarykeys) {
-        StringBuilder sb = new StringBuilder();
-        for (Object primarykey : primarykeys) {
-			sb.append("," + primarykey.toString());
-		}
-        return sb.substring(1);
+		return primarykeys.stream().map(Object::toString).collect(Collectors.joining(","));
     }
-
+	
 }

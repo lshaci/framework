@@ -41,6 +41,18 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<!--mybatis generator -->
+		<dependency>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- tk mybatis generator -->
+		<dependency>
+			<groupId>tk.mybatis</groupId>
+			<artifactId>mapper-generator</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

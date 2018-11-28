@@ -34,6 +34,25 @@ public class ItextPdfUtils {
 	private final static String FONT_PATH = "fonts/";
 
 	/**
+	 * Export PDF with html string, use the default fontPath(./font) <br>
+	 * The html freemarker template need set body style,<br>
+	 * 				For example: <b>&lt;body style = "font-family: SimSun;"&gt;</b> <br>
+	 * 				<b>The sample code: </b><br><br>
+	 * 				Map&lt;String, Object&gt; data = new HashMap&lt;&gt;();<br>
+	 * 				String htmlStr = FreemarkerUtils.build(Test.class, "/pdf").setTemplate("test.ftl").generate(data);<br>
+	 * 				ByteArrayOutputStream pdfOs = ItextPdfUtils.export(htmlStr);<br><br>
+	 * 				resp.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("测试", "UTF-8") + ".pdf");<br>
+	 * 				resp.setContentType("application/pdf");<br><br>
+	 * 				ServletOutputStream outputStream = resp.getOutputStream();<br>
+	 * 				outputStream.write(pdfOs.toByteArray());<br>
+	 * @param htmlStr html string
+	 * @return the pdf ByteArrayOutputStream
+	 */
+	public static ByteArrayOutputStream export(String htmlStr) {
+		return export(htmlStr, "./font");
+	}
+
+	/**
 	 * Export PDF with html string <br>
 	 * The html freemarker template need set body style,<br>
 	 * 				For example: <b>&lt;body style = "font-family: SimSun;"&gt;</b> <br>
@@ -59,12 +78,12 @@ public class ItextPdfUtils {
 			// Solve the problem of Chinese support.
 			ITextFontResolver fontResolver = renderer.getFontResolver();
 			String sysPath = createSimsunFont(fontPath);
-	        if("linux".equals(getCurrentOperatingSystem())){  
-	            fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);    
-	        }else{  
-	            fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);  
-	        } 
-			
+	        if("linux".equals(getCurrentOperatingSystem())){
+	            fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+	        }else{
+	            fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+	        }
+
 			renderer.layout();
 			renderer.createPDF(os, true);
 			return os;

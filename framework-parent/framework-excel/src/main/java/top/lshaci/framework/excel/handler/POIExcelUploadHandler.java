@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -33,6 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.UploadConvert;
 import top.lshaci.framework.excel.annotation.UploadExcelTitle;
+import top.lshaci.framework.excel.annotation.UploadVerify;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.model.ExcelRelationModel;
 import top.lshaci.framework.utils.DateUtils;
@@ -44,6 +45,7 @@ import top.lshaci.framework.utils.enums.FileType;
 
 /**
  * POI excel upload handler
+ * <b>0.0.4: </b>Change exception message to chinese
  * 
  * @author lshaci
  * @since 0.0.1
@@ -69,13 +71,8 @@ public abstract class POIExcelUploadHandler {
      * @param entityClass the entity class
      * @return the entity list
      */
-    public static <E> List<E> excel2Entities(File excelFile, Class<E> entityClass) {
-        checkParams(excelFile, entityClass);
-        
-        FileType fileType = getFileType(excelFile);
-        Workbook workBook = getWorkBook(excelFile, fileType);
-        
-        return workBook2Entities(workBook, 0, entityClass);
+    public static <E> List<E> excel2Entities(File excelFile, Class<E> entityClass) throws ExcelHandlerException {
+        return excel2Entities(excelFile, 0, entityClass);
     }
     
     /**
@@ -86,8 +83,8 @@ public abstract class POIExcelUploadHandler {
      * @param entityClass the entity class
      * @return the entity list
      */
-    public static <E> List<E> excel2Entities(File excelFile, int titleRow, Class<E> entityClass) {
-        checkParams(excelFile, entityClass);
+    public static <E> List<E> excel2Entities(File excelFile, int titleRow, Class<E> entityClass) throws ExcelHandlerException {
+        checkParams(titleRow, excelFile, entityClass);
         
         FileType fileType = getFileType(excelFile);
         Workbook workBook = getWorkBook(excelFile, fileType);
@@ -102,14 +99,8 @@ public abstract class POIExcelUploadHandler {
      * @param entityClass the entity class
      * @return the entity list
      */
-    public static <E> List<E> excel2Entities(InputStream is, Class<E> entityClass) {
-        checkParams(is, entityClass);
-        ByteArrayOutputStream buffer = StreamUtils.copyInputStream(is);
-        
-        FileType fileType = getFileType(new ByteArrayInputStream(buffer.toByteArray()));
-        Workbook workBook = getWorkBook(new ByteArrayInputStream(buffer.toByteArray()), fileType);
-        
-        return workBook2Entities(workBook, 0, entityClass);
+    public static <E> List<E> excel2Entities(InputStream is, Class<E> entityClass) throws ExcelHandlerException {
+        return excel2Entities(is, 0, entityClass);
     }
     
     /**
@@ -120,8 +111,8 @@ public abstract class POIExcelUploadHandler {
      * @param entityClass the entity class
      * @return the entity list
      */
-    public static <E> List<E> excel2Entities(InputStream is, int titleRow, Class<E> entityClass) {
-        checkParams(is, entityClass);
+    public static <E> List<E> excel2Entities(InputStream is, int titleRow, Class<E> entityClass) throws ExcelHandlerException {
+        checkParams(titleRow, is, entityClass);
         ByteArrayOutputStream buffer = StreamUtils.copyInputStream(is);
         
         FileType fileType = getFileType(new ByteArrayInputStream(buffer.toByteArray()));
@@ -133,7 +124,6 @@ public abstract class POIExcelUploadHandler {
     /**
      * Change excel work book to entity list
      * 
-     * @param is the excel file input stream
      * @param titleRow the title row number
      * @param entityClass the entity class
      * @return the entity list
@@ -141,110 +131,103 @@ public abstract class POIExcelUploadHandler {
     private static <E> List<E> workBook2Entities(Workbook workBook, int titleRow, Class<E> entityClass) {
         Map<String[], ExcelRelationModel> relations = handlerRelations(entityClass);
         
-        try {
-            // The number of sheet
-            int sheets = workBook.getNumberOfSheets();
+        // The number of sheet
+        int sheets = workBook.getNumberOfSheets();
+        
+        List<E> result = new ArrayList<>();
+        for (int i = 0; i < sheets; i++) {
+            Sheet sheet = workBook.getSheetAt(i);
             
-            List<E> result = new ArrayList<>();
-            for (int i = 0; i < sheets; i++) {
-                Sheet sheet = workBook.getSheetAt(i);
-                
-                // If the sheet is null, continue loop
-                if (sheet == null) {
-                    continue;
-                }
-                
-                int lastRowNum = sheet.getLastRowNum();
-                
-                // if the sheet not has any data, continue loop
-                if (lastRowNum < 1) {
-                    continue;
-                }
-                
-                String[] titles = getTitles(sheet, titleRow);
-                List<E> rowDatas = getRowDatas(sheet, titleRow, lastRowNum, titles.length, titles, entityClass, relations);
-                
-                if (CollectionUtils.isEmpty(rowDatas)) {
-                    continue;
-                }
-                
-                result.addAll(rowDatas);
+            // If the sheet is null, continue loop
+            if (sheet == null) {
+                continue;
             }
             
-            return result;
-        } catch (Exception e) {
-            log.error("Parse excel error", e);
-            throw new ExcelHandlerException("Convert excel file to entity list is error!", e);
+            int lastRowNum = sheet.getLastRowNum();
+            
+            // if the sheet not has any data, continue loop
+            if (lastRowNum <= titleRow) {
+            	log.warn("The sheet last row number is {}.", lastRowNum);
+                continue;
+            }
+            
+            String[] titles = getTitles(sheet, titleRow);
+            verifyTitle(relations.keySet(), titles, entityClass);
+            
+            List<E> rowDatas = getRowDatas(sheet, titleRow, lastRowNum, titles, entityClass, relations);
+            
+            if (CollectionUtils.isEmpty(rowDatas)) {
+                continue;
+            }
+            
+            result.addAll(rowDatas);
         }
+        
+        return result;
     }
     
     /**
+     * Verify the excel title
+     * 
+     * @param fieldTitles the set of title defined by annotations on the field
+     * @param excelTitles the excel title array
+     * @param entityClass the entity class
+     */
+    private static <E> void verifyTitle(Set<String[]> fieldTitles, String[] excelTitles, Class<E> entityClass) {
+    	UploadVerify uploadVerify = entityClass.getAnnotation(UploadVerify.class);
+    	if (uploadVerify != null && uploadVerify.verifyTitleLength()) {
+    		Set<String> fieldTitleSet = fieldTitles.stream().flatMap(Arrays::stream).collect(Collectors.toSet());
+    		Set<String> excelTitleSet = Arrays.stream(excelTitles).collect(Collectors.toSet());
+    		fieldTitleSet.retainAll(excelTitleSet);
+    		
+    		if (CollectionUtils.isEmpty(fieldTitleSet) || fieldTitleSet.size() != excelTitleSet.size()) {
+    			throw new ExcelHandlerException("Excel文件未使用正确的模板");
+    		}
+		}
+	}
+
+	/**
      * Get the row data and change to entity list of the sheet
      *
      * @param sheet the sheet
      * @param titleRow the title row number
      * @param lastRowNum the all row number
-     * @param rowLength the row length
      * @param titles the excel title array
      * @param entityClass the entity class
      * @param relations the excel relation model map, key is excel title, value is relation model
      * @return the entity list
      */
-    private static <E> List<E> getRowDatas(Sheet sheet, int titleRow, int lastRowNum, int rowLength, 
-            String[] titles, Class<E> entityClass, Map<String[], ExcelRelationModel> relations) {
+    private static <E> List<E> getRowDatas(Sheet sheet, int titleRow, int lastRowNum, String[] titles, 
+    		Class<E> entityClass, Map<String[], ExcelRelationModel> relations) {
         List<E> rowDatas = new ArrayList<>();
+        
+        UploadVerify uploadVerify = entityClass.getAnnotation(UploadVerify.class);
+        boolean requireCellValue = uploadVerify != null && uploadVerify.requireCellValue();
+        boolean requireRowValue = uploadVerify != null && uploadVerify.requireRowValue();
+        
         // Loop the sheet get row
         for (int i = titleRow + 1; i <= lastRowNum; i++) {
             Row row = sheet.getRow(i);
             
             // If the row is null, continue loop
             if (row == null) {
+            	log.warn("The row[{}] is null!", i + 1);
+		    	if (requireRowValue) {
+					throw new ExcelHandlerException("表格中, 行[" + (i + 1) + "]为空");
+				}
                 continue;
             }
             
             // Loop the row get cell
-            E entity = ReflectionUtils.newInstance(entityClass);
-            
-            if (entity == null) {
-                String msg = "New instance is error!";
-                log.error(msg);
-                throw new ExcelHandlerException(msg);
-            }
             
             final Set<Object> targetValues = new HashSet<>();
-            Map<String, String> cellValueMap = new HashMap<>();
-            
-            for (Cell cell : row) {
-                if (cell == null) {
-                    continue;
-                }
-                
-                int columnIndex = cell.getColumnIndex();
-                String cellValue = getCellValue(cell);
-                if (StringUtils.isEmpty(cellValue)) {
-                    continue;
-                }
-                
-                String title = titles[columnIndex];
-                cellValueMap.put(title, cellValue);
-            }
+            Map<String, String> cellValueMap = getCellValues(titles, row, requireCellValue);
             
             if (cellValueMap.isEmpty()) {
                 continue;
             }
             
-            relations.forEach((titleArray, relationModel) -> {
-                Object[] cellValues = Arrays.stream(titleArray)
-                        .map(t -> cellValueMap.get(t))
-                        .collect(Collectors.toList())
-                        .toArray(new Object[titleArray.length]);
-                Object targetValue = getTargetValue(relationModel, cellValues);
-                if (targetValue != null) {
-                    targetValues.add(targetValue);
-                    // set field value and get the target value
-                    ReflectionUtils.setFieldValue(entity, relationModel.getTargetField(), targetValue);
-                }
-            });
+            E entity = createEntity(entityClass, relations, targetValues, cellValueMap);
 
             // all field value is not null, add the new entity to row datas
             if (CollectionUtils.isNotEmpty(targetValues)) {
@@ -253,8 +236,93 @@ public abstract class POIExcelUploadHandler {
         }
         return rowDatas;
     }
-    
+
     /**
+     * Create entity and set the field value
+     * 
+     * @param entityClass the entity class
+     * @param relations the excel relation model map, key is excel title, value is relation model
+     * @param targetValues the cell target values
+     * @param cellValueMap the cell value map
+     * @return the entity
+     */
+	private static <E> E createEntity(Class<E> entityClass, Map<String[], ExcelRelationModel> relations,
+			final Set<Object> targetValues, Map<String, String> cellValueMap) {
+		E entity = ReflectionUtils.newInstance(entityClass);
+		
+		if (entity == null) {
+			log.error("New instance is error! {}", entityClass.getSimpleName());
+			throw new ExcelHandlerException("创建上传对象出错");
+		}
+		
+		relations.forEach((titleArray, relationModel) -> {
+		    Object[] cellValues = Arrays.stream(titleArray)
+		            .map(t -> cellValueMap.get(t))
+		            .collect(Collectors.toList())
+		            .toArray(new Object[titleArray.length]);
+		    
+		    Object targetValue = verifyTargetValue(titleArray, relationModel, cellValues);
+		    
+		    if (targetValue != null) {
+		        targetValues.add(targetValue);
+		        // set field value and get the target value
+		        ReflectionUtils.setFieldValue(entity, relationModel.getTargetField(), targetValue);
+		    }
+		});
+		return entity;
+	}
+
+    /**
+     * Get cell values
+     * 
+     * @param titles the excel title array
+     * @param row the excel row
+     * @param requireCellValue verify the cell value
+     * @return the cell value map
+     */
+	private static Map<String, String> getCellValues(String[] titles, Row row, boolean requireCellValue) {
+		Map<String, String> cellValueMap = new HashMap<>();
+		
+		for (int j = 0; j < titles.length; j++) {
+			Cell cell = row.getCell(j);
+		    if (cell == null) {
+		    	log.warn("The cell is null! row:{} column:{}", row.getRowNum() + 1, j + 1);
+		    	if (requireCellValue) {
+					throw new ExcelHandlerException("单元格为空! 行:" + (row.getRowNum() + 1) + " 列:" + (j + 1));
+				}
+		        continue;
+		    }
+		    
+		    int columnIndex = cell.getColumnIndex();
+		    String cellValue = getCellValue(cell);
+		    if (StringUtils.isEmpty(cellValue)) {
+		        continue;
+		    }
+		    
+		    String title = titles[columnIndex];
+		    cellValueMap.put(title, cellValue);
+		}
+		return cellValueMap;
+	}
+    
+	/**
+     * Verify and get the target value with cell value
+     *
+     * @param titleArray the excel title array
+     * @param relationModel the excel relation model
+     * @param cellValues the cell value array
+     * @return the convert value
+     */
+    private static Object verifyTargetValue(String[] titleArray, ExcelRelationModel relationModel, Object[] cellValues) {
+    	Object targetValue = getTargetValue(relationModel, cellValues);
+    	if (relationModel.isRequire() && targetValue == null) {
+            String titles = Arrays.toString(titleArray);
+            throw new ExcelHandlerException(titles + "解析为空");
+		}
+		return targetValue;
+	}
+
+	/**
      * Get the target value with cell value
      * 
      * @param relationModel the excel relation model
@@ -271,7 +339,17 @@ public abstract class POIExcelUploadHandler {
             return getConvertValue(relationModel, cellValues);
         }
         
-        return StringConverterUtils.getTargetValue(relationModel.getTargetField().getType(), cellValues[0].toString());
+        Object value = cellValues[0];
+        if (value == null) {
+            return null;
+        }
+        
+        try {
+            return StringConverterUtils.getTargetValue(relationModel.getTargetField().getType(), value.toString());
+        } catch (Exception e) {
+            log.warn("StringConverterUtils converter value is error!", e);
+            return null;
+        }
     }
     
     /**
@@ -322,7 +400,7 @@ public abstract class POIExcelUploadHandler {
         short lastCellNum = row.getLastCellNum();
         
         if (lastCellNum < 0) {
-            throw new ExcelHandlerException("This excel sheet's title row not has cell!");
+            throw new ExcelHandlerException("该Excel中无标题行");
         }
         
         String[] titles = new String[lastCellNum];
@@ -331,6 +409,7 @@ public abstract class POIExcelUploadHandler {
             if (cell == null) {
                 continue;
             }
+            cell.setCellType(CellType.STRING);
             titles[i] = cell.getStringCellValue().trim();
         }
         
@@ -350,8 +429,8 @@ public abstract class POIExcelUploadHandler {
         ) {
             return getWorkBook(is, fileType);
         } catch (Exception e) {
-            log.error("Create excle work book is error!", e);
-            throw new ExcelHandlerException("Create excle work book is error!");
+            log.error("Create excel work book is error!", e);
+            throw new ExcelHandlerException("获取Excel工作簿出错");
         }
     }
     
@@ -374,9 +453,9 @@ public abstract class POIExcelUploadHandler {
             if (FileType.XLS_DOC.equals(fileType) || FileType.WPS.equals(fileType)) {
                 workbook = new HSSFWorkbook(is);
             }
-        } catch (IOException e) {
-            log.error("Create excle work book is error!", e);
-            throw new ExcelHandlerException("Create excle work book is error!");
+        } catch (Exception e) {
+            log.error("Create excel work book is error!", e);
+            throw new ExcelHandlerException("获取Excel工作簿出错");
         } finally {
             try {
                 is.close();
@@ -384,9 +463,11 @@ public abstract class POIExcelUploadHandler {
                 log.warn("Close excel file input stream error, ignore this exception!");
             }
         }
-        
-        Objects.requireNonNull(workbook, "The excle work book is must not be null!");
-        
+
+        if (workbook == null) {
+            throw new ExcelHandlerException("未获取到Excel工作簿");
+        }
+
         return workbook;
     }
 
@@ -397,14 +478,11 @@ public abstract class POIExcelUploadHandler {
      * @return the file type{@link FileType}
      */
     private static FileType getFileType(InputStream is) {
-        Objects.requireNonNull(is, "The excel file input stream must not be null!");
-        
-        
         FileType fileType = FileTypeUtil.getType(is);
         if (ALLOW_FILE_TYPES.contains(fileType)) {
             return fileType;
         }
-        throw new ExcelHandlerException("The file type is not excel!");
+        throw new ExcelHandlerException("上传的文件不是Excel格式");
     }
     
     /**
@@ -414,20 +492,18 @@ public abstract class POIExcelUploadHandler {
      * @return the file type{@link FileType}
      */
     private static FileType getFileType(File excelFile) {
-        Objects.requireNonNull(excelFile, "The excel file is must not be null!");
-        
         String fileName = excelFile.getName();
         String fileSuffix = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
         
         if (!ALLOW_FILE_SUFFIX.contains(fileSuffix)) {
-            throw new ExcelHandlerException("The file suffix name is not excel!");
+            throw new ExcelHandlerException("上传的文件不是Excel格式");
         }
         
         FileType fileType = FileTypeUtil.getType(excelFile);
         if (ALLOW_FILE_TYPES.contains(fileType)) {
             return fileType;
         }
-        throw new ExcelHandlerException("The file type is not excel!");
+        throw new ExcelHandlerException("上传的文件不是Excel格式");
     }
     
     /**
@@ -440,16 +516,22 @@ public abstract class POIExcelUploadHandler {
         Field[] fields = entityClass.getDeclaredFields();
         
         if (ArrayUtils.isEmpty(fields)) {
-            throw new ExcelHandlerException("The entity not has any field!");
+            throw new ExcelHandlerException("上传对象中未定义字段");
         }
         
         Map<Class<?>, Object> convertClassCache = new HashMap<>();
         
-        return Arrays.stream(fields)
+        Map<String[], ExcelRelationModel> relations = Arrays.stream(fields)
+                .filter(f -> f.getAnnotation(UploadExcelTitle.class) != null)
                 .collect(Collectors.toMap(
                     f -> getFieldTitleName(f), 
                     f -> createExcelRelationModel(f, convertClassCache)
                 ));
+        if (MapUtils.isEmpty(relations)) {
+        	throw new ExcelHandlerException("上传对象中未标记需要的字段");
+		}
+        
+        return relations;
     }
     
     /**
@@ -460,33 +542,7 @@ public abstract class POIExcelUploadHandler {
      */
     private static String[] getFieldTitleName(Field field) {
         UploadExcelTitle excelTitle = field.getAnnotation(UploadExcelTitle.class);
-        if (excelTitle != null) {
-            return excelTitle.value();
-        }
-        return new String [] {field.getName()};
-    }
-    
-    /**
-     * Get the field convert instance
-     * 
-     * @param convertClassCache the convert class cache
-     * @param convert the field convert annotation
-     * @return the convert instance
-     */
-    private static Object getConvertInstance(Map<Class<?>, Object> convertClassCache, UploadConvert convert) {
-        Class<?> convertClass = convert.clazz();
-        
-        if (convertClass == null) {
-            throw new ExcelHandlerException("The convert class must not be null!");
-        }
-        
-        Object convertInstance = convertClassCache.get(convertClass);
-        if (convertInstance == null) {
-            convertInstance = ReflectionUtils.newInstance(convertClass);
-            convertClassCache.put(convertClass, convertInstance);
-        }
-        
-        return convertInstance;
+        return excelTitle.value();
     }
     
     /**
@@ -501,7 +557,7 @@ public abstract class POIExcelUploadHandler {
         Class<?> convertClass = convert.clazz();
         
         if (StringUtils.isBlank(methodName)) {
-            throw new ExcelHandlerException("The convert method name must not be empty!");
+            throw new ExcelHandlerException("目标类型转换方法名为空");
         }
         
         try {
@@ -513,7 +569,7 @@ public abstract class POIExcelUploadHandler {
         } catch (NoSuchMethodException | SecurityException e) {
             String msg = "Get the convert method is error!";
             log.error(msg, e);
-            throw new ExcelHandlerException(msg);
+            throw new ExcelHandlerException("获取目标类型转换方法错误");
         }
     }
     
@@ -528,14 +584,15 @@ public abstract class POIExcelUploadHandler {
         ExcelRelationModel model = new ExcelRelationModel(field);
         
         UploadConvert convert = field.getAnnotation(UploadConvert.class);
+        UploadExcelTitle uploadExcelTitle = field.getAnnotation(UploadExcelTitle.class);
+        model.setRequire(uploadExcelTitle.require());
         
         if (convert != null) {
             int argSize = 1;
-            UploadExcelTitle uploadExcelTitle = field.getAnnotation(UploadExcelTitle.class);
             if (uploadExcelTitle != null) {
                 argSize = uploadExcelTitle.value().length;
             }
-            Object convertInstance = getConvertInstance(convertClassCache, convert);
+            Object convertInstance = POIExcelBaseHandler.getConvertInstance(convertClassCache, convert.clazz());
             Method convertMethod = getConvertMethod(convert, argSize);
             model.setConvertInstance(convertInstance);
             model.setConvertMethod(convertMethod);
@@ -547,22 +604,44 @@ public abstract class POIExcelUploadHandler {
     /**
      * Check the parameter
      * 
+     * @param titleRow the title row number
      * @param excelFile the excel file
      * @param entityClass the entity class
      */
-    private static <E> void checkParams(File excelFile, Class<E> entityClass) {
-        Objects.requireNonNull(excelFile, "The excel file must not be null!");
-        Objects.requireNonNull(entityClass, "The entity class must not be null!");
+    private static <E> void checkParams(int titleRow, File excelFile, Class<E> entityClass) {
+        checkParams(titleRow, entityClass);
+        if (excelFile == null) {
+            throw new ExcelHandlerException("上传的文件为空");
+        }
     }
     
     /**
      * Check the parameter
      * 
+     * @param titleRow the title row number
      * @param is the excel file input stream
      * @param entityClass the entity class
      */
-    private static <E> void checkParams(InputStream is, Class<E> entityClass) {
-        Objects.requireNonNull(is, "The excel file input stream must not be null!");
-        Objects.requireNonNull(entityClass, "The entity class must not be null!");
+    private static <E> void checkParams(int titleRow, InputStream is, Class<E> entityClass) {
+        checkParams(titleRow, entityClass);
+        if (is == null) {
+            throw new ExcelHandlerException("上传的文件流为空");
+        }
+    }
+    
+    /**
+     * Check the parameter
+     * @param <E>
+     * 
+     * @param titleRow the title row number
+     * @param entityClass the entity class
+     */
+    private static <E> void checkParams(int titleRow, Class<E> entityClass) {
+        if (titleRow < 0) {
+            throw new ExcelHandlerException("标题行小于0");
+        }
+        if (entityClass == null) {
+            throw new ExcelHandlerException("上传对象类型为空");
+        }
     }
 }

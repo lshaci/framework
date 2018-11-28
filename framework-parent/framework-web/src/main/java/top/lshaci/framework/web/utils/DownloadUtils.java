@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import javax.servlet.ServletOutputStream;
@@ -15,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.common.exception.BaseException;
+import top.lshaci.framework.web.enums.ResponseContentType;
 import top.lshaci.framework.web.exception.WebBaseException;
 
 /**
@@ -33,47 +33,43 @@ public class DownloadUtils {
 	public static int cacheSize;
 
 	/**
-     * Download excel file
+     * Download file
      * 
-     * @param fileName the download file name
+     * @param downloadName the download file name<b>(Must include suffixes)</b>
+     * @param contentType the http servlet response content type
      * @param outputStream the byte array output stream of the file
      * @param response the http servlet response
      */
-    public static void downloadExcel(String fileName, ByteArrayOutputStream outputStream, HttpServletResponse response) {
-        if (StringUtils.isBlank(fileName)) {
-            throw new BaseException("Excel文件文件名不能为空");
-        }
-
+    public static void download(String downloadName, ResponseContentType contentType, 
+            ByteArrayOutputStream outputStream, HttpServletResponse response) {
         try (
                 InputStream fileInputStream = new ByteArrayInputStream(outputStream.toByteArray());
                 ServletOutputStream os = response.getOutputStream();
-        ) {
-            writeExcelFile(fileName, response, fileInputStream, os);
+                ) {
+            writeFile(downloadName, contentType, response, fileInputStream, os);
         } catch (Exception e) {
-            log.error("导出[" + fileName + "]失败", e);
-            throw new WebBaseException("导出[" + fileName + "]失败", e);
+            log.error("导出[" + downloadName + "]失败", e);
+            throw new WebBaseException("导出[" + downloadName + "]失败", e);
         }
     }
 
     /**
-     * Download excel file
+     * Download file
      * 
-     * @param fileName the download file name
+     * @param downloadName the download file name<b>(Must include suffixes)</b>
+     * @param contentType the http servlet response content type
      * @param fileInputStream the file input stream
      * @param response the http servlet response
      */
-    public static void downloadExcel(String fileName, FileInputStream fileInputStream, HttpServletResponse response) {
-        if (StringUtils.isBlank(fileName)) {
-            throw new BaseException("Excel文件文件名不能为空");
-        }
-        
+    public static void download(String downloadName, ResponseContentType contentType, 
+            FileInputStream fileInputStream, HttpServletResponse response) {
         try (
                 ServletOutputStream os = response.getOutputStream();
         ) {
-            writeExcelFile(fileName, response, fileInputStream, os);
+            writeFile(downloadName, contentType, response, fileInputStream, os);
         } catch (Exception e) {
-            log.error("导出[" + fileName + "]失败", e);
-            throw new WebBaseException("导出[" + fileName + "]失败", e);
+            log.error("导出[" + downloadName + "]失败", e);
+            throw new WebBaseException("导出[" + downloadName + "]失败", e);
         } finally {
             try {
                 fileInputStream.close();
@@ -84,42 +80,45 @@ public class DownloadUtils {
     }
     
     /**
-     * Download excel file
+     * Download file
      * 
-     * @param fileName the download file name
+     * @param downloadName the download file name<b>(Must include suffixes)</b>
+     * @param contentType the http servlet response content type
      * @param filePath the path of the file
      * @param response the http servlet response
      */
-    public static void downloadExcel(String fileName, String filePath, HttpServletResponse response) {
-        if (StringUtils.isBlank(fileName)) {
-            throw new BaseException("Excel文件文件名不能为空");
-        }
-        
+    public static void download(String downloadName, ResponseContentType contentType, 
+            String filePath, HttpServletResponse response) {
         try (
                 InputStream fileInputStream = new FileInputStream(filePath);
                 ServletOutputStream os = response.getOutputStream();
         ) {
-            writeExcelFile(fileName, response, fileInputStream, os);
+            writeFile(downloadName, contentType, response, fileInputStream, os);
         } catch (Exception e) {
-            log.error("导出[" + fileName + "]失败", e);
-            throw new WebBaseException("导出[" + fileName + "]失败", e);
+            log.error("导出[" + downloadName + "]失败", e);
+            throw new WebBaseException("导出[" + downloadName + "]失败", e);
         }
     }
     
     /**
-     * Write out excel file
+     * Write out file
      * 
-     * @param fileName the excel file name
+     * @param downloadName the download file name
+     * @param contentType the http servlet response content type
      * @param response the http servlet response
-     * @param fileInputStream the input stream of the excel file
+     * @param fileInputStream the input stream of the file
      * @param os the servlet output stream
-     * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    private static void writeExcelFile(String fileName, HttpServletResponse response, InputStream fileInputStream,
-            ServletOutputStream os) throws UnsupportedEncodingException, IOException {
-        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
-        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+    private static void writeFile(String downloadName, ResponseContentType contentType, 
+            HttpServletResponse response, InputStream fileInputStream, ServletOutputStream os) throws IOException {
+        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(downloadName, "UTF-8"));
+        if (StringUtils.isBlank(downloadName)) {
+            throw new BaseException("The download file name must not be empty!");
+        }
+        if (contentType != null) {
+            response.setContentType(contentType.getName());
+        }
 
         byte[] b = new byte[cacheSize];
         int length;
