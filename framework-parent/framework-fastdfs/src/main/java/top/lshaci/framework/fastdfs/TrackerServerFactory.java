@@ -26,7 +26,7 @@ class TrackerServerFactory extends BasePooledObjectFactory<TrackerServer>{
 
 	@Override
 	public PooledObject<TrackerServer> wrap(TrackerServer trackerServer) {
-		return new DefaultPooledObject<TrackerServer>(trackerServer);
+		return new DefaultPooledObject<>(trackerServer);
 	}
 
 }

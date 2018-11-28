@@ -14,6 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 import top.lshaci.framework.fastdfs.properties.FastDFSProperties;
 
+/**
+ * Fast dfs client config
+ * 
+ * @author lshaci
+ * @since 0.0.4
+ */
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(FastDFSProperties.class)
@@ -23,9 +29,15 @@ public class FastDFSClientConfig {
     @Autowired
     private FastDFSProperties properties;
     
+    /**
+     * Init tracker server pool config
+     * 
+     * @throws IOException
+     * @throws MyException
+     */
     @PostConstruct
     public void initPool() throws IOException, MyException {
-    	log.debug("Init tracker server pool config.");
+    	log.debug("Start tracker server pool config.");
     	TrackerServerPool.config = properties.getConfig();
     	int minStorageConnection = properties.getMinStorageConnection();
     	int maxStorageConnection = properties.getMaxStorageConnection();
@@ -39,8 +51,12 @@ public class FastDFSClientConfig {
     	TrackerServerPool.maxStorageConnection = maxStorageConnection;
     	
     	TrackerServerPool.initPool();
+    	log.debug("Tracker server pool config successfully.");
     }
     
+    /**
+     * Set fast dfs client max file size
+     */
     @PostConstruct
     public void setMaxFileSize() {
     	log.debug("Set fast dfs client max file size.");
