@@ -9,6 +9,7 @@ import org.csource.fastdfs.ClientGlobal;
 import org.csource.fastdfs.TrackerServer;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.fastdfs.enums.ErrorCode;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
 
 /**
@@ -78,11 +79,11 @@ class TrackerServerPool {
         try {
             trackerServer = trackerServerPool.borrowObject();
         } catch (Exception e) {
-        	log.error("Error fetching tracker server from pool.", e);
-            throw new FastDFSException("Error fetching tracker server from pool.", e);
+        	log.error(ErrorCode.FETCH_TRACKER_SERVER_FAILED.getCode(), e);
+            throw new FastDFSException(ErrorCode.FETCH_TRACKER_SERVER_FAILED);
         }
         if (trackerServer == null) {
-        	throw new FastDFSException("The fetching tracker server is null.");
+        	throw new FastDFSException(ErrorCode.FETCH_TRACKER_SERVER_FAILED);
 		}
         return trackerServer;
     }

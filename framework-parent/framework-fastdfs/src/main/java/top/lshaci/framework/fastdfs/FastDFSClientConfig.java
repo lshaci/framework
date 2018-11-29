@@ -57,6 +57,7 @@ public class FastDFSClientConfig {
     
     /**
      * Set fast dfs client information
+     * 
      * @throws Exception 
      */
     @PostConstruct
@@ -72,7 +73,7 @@ public class FastDFSClientConfig {
 		}
     	FastDFSClient.maxFileSize = maxFileSize;
     	FastDFSClient.fileServerAddr = fileServerAddr.trim();
-    	log.debug("The fast dfs client info: {}", FastDFSClient.info());
+    	log.debug("The fast dfs client info: \n\t{}", FastDFSClient.info());
     }
 
 }

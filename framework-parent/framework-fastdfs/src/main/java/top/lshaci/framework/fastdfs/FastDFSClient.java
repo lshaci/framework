@@ -1,20 +1,27 @@
 package top.lshaci.framework.fastdfs;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
@@ -26,15 +33,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
-import top.lshaci.framework.fastdfs.exception.ErrorCode;
+import top.lshaci.framework.fastdfs.enums.ErrorCode;
+import top.lshaci.framework.fastdfs.enums.FileSuffixContentType;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
 
 @Slf4j
 public class FastDFSClient {
-	/**
-	 * ContentType
-	 */
-	protected static final Map<String, String> EXT_MAPS = new HashMap<>();
 	/**
 	 * The max file size
 	 */
@@ -44,35 +48,9 @@ public class FastDFSClient {
 	 */
 	protected static String fileServerAddr;
 
-	public FastDFSClient() {
-		initExt();
+	private FastDFSClient() {
 	}
 
-	private void initExt() {
-		// image
-		EXT_MAPS.put("png", "image/png");
-		EXT_MAPS.put("gif", "image/gif");
-		EXT_MAPS.put("bmp", "image/bmp");
-		EXT_MAPS.put("ico", "image/x-ico");
-		EXT_MAPS.put("jpeg", "image/jpeg");
-		EXT_MAPS.put("jpg", "image/jpeg");
-		// 压缩文件
-		EXT_MAPS.put("zip", "application/zip");
-		EXT_MAPS.put("rar", "application/x-rar");
-		// doc
-		EXT_MAPS.put("pdf", "application/pdf");
-		EXT_MAPS.put("ppt", "application/vnd.ms-powerpoint");
-		EXT_MAPS.put("xls", "application/vnd.ms-excel");
-		EXT_MAPS.put("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-		EXT_MAPS.put("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
-		EXT_MAPS.put("doc", "application/msword");
-		EXT_MAPS.put("doc", "application/wps-office.doc");
-		EXT_MAPS.put("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-		EXT_MAPS.put("txt", "text/plain");
-		// 音频
-		EXT_MAPS.put("mp4", "video/mp4");
-		EXT_MAPS.put("flv", "video/x-flv");
-	}
 
 	/**
 	 * Upload with MultipartFile
@@ -250,6 +228,7 @@ public class FastDFSClient {
 			log.error(ErrorCode.FILE_UPLOAD_FAILED.getCode());
 			throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
 		} finally {
+			TrackerServerPool.returnObject(trackerServer);
 			// close input stream
 			if (is != null) {
 				try {
@@ -259,7 +238,6 @@ public class FastDFSClient {
 				}
 			}
 		}
-		TrackerServerPool.returnObject(trackerServer);
 
 		return path;
 	}
@@ -310,36 +288,164 @@ public class FastDFSClient {
 		
 		return nvps;
 	}
+	
+	/**
+	 * Download file
+	 * 
+	 * @param filepath the fastdfs file path
+	 * @param response the http servlet response
+	 */
+	public static void download(String filepath, HttpServletResponse response) {
+		download(filepath, null, response);
+	}
+	
+	/**
+	 * Download file
+	 * 
+	 * @param filepath the fastdfs file path
+	 * @param filename the download file name
+	 * @param response the http servlet response
+	 */
+	public static void download(String filepath, String filename, HttpServletResponse response) {
+		if (response == null) {
+			throw new FastDFSException(ErrorCode.RESPONSE_IS_NULL);
+		}
+
+        filepath = toLocal(filepath.trim());
+        // Get the file name
+        if (StringUtils.isBlank(filename)) {
+            filename = getOriginalFilename(filepath);
+        }
+        log.debug("Download file, the file path is: {}, filename: {}", filepath, filename);
+        
+        setResponseHeader(filename, response);
+        try {
+			write(filepath, response.getOutputStream());
+		} catch (IOException e) {
+			log.error(ErrorCode.FETCH_RESPONSE_STREAM_FAILED.getCode(), e);
+			throw new FastDFSException(ErrorCode.FETCH_RESPONSE_STREAM_FAILED);
+		}
+    }
+	
+	
+	/**
+	 * Set response header
+	 * 
+	 * @param filename the download file name
+	 * @param response the http servlet respons
+	 */
+	private static void setResponseHeader(String filename, HttpServletResponse response) {
+		if (StringUtils.isBlank(filename)) {
+			log.warn("Set response header failed, because the file name is blank.");
+			return;
+		}
+		
+		try {
+			String encoderName = URLEncoder.encode(filename, "UTF-8").replace("+", "%20").replace("%2B", "+");
+			String contentType = FileSuffixContentType.getContentType(getFilenameSuffix(filename));
+			if (StringUtils.isNotBlank(contentType)) {
+				response.setContentType(contentType + ";charset=UTF-8");
+			}
+		    response.setHeader("Accept-Ranges", "bytes");
+		    response.setHeader("Content-Disposition", "attachment;filename=\"" + encoderName + "\"");
+		} catch (UnsupportedEncodingException e) {
+			log.warn("Ignore.", e);
+		}
+	}
+	
+	/**
+	 * Write file
+	 * 
+	 * @param filepath the fastdfs file path
+	 * @param os the output stream
+	 */
+	public static void write(String filepath, OutputStream os) {
+		verifyParameters(filepath, os);
+		
+		filepath = toLocal(filepath.trim());
+		log.debug("Write file, the file path is: {}", filepath);
+		
+		TrackerServer trackerServer = TrackerServerPool.borrowObject();
+		StorageClient1 storageClient = new StorageClient1(trackerServer, null);
+		
+		byte[] fileByte = null;
+		try {
+			// download file from fastdfs
+			fileByte = storageClient.download_file1(filepath);
+		} catch (IOException | MyException e) {
+			log.error(ErrorCode.FILE_DOWNLOAD_FAILED.getCode(), e);
+			throw new FastDFSException(ErrorCode.FILE_DOWNLOAD_FAILED);
+		} finally {
+			TrackerServerPool.returnObject(trackerServer);
+		}
+		
+		
+		// file not exist, throw exception
+		if(fileByte == null){
+			log.error(ErrorCode.FILE_NOT_EXIST.getCode() + ": {}", filepath);
+			throw new FastDFSException(ErrorCode.FILE_NOT_EXIST);
+		}
+		
+		try (
+				OutputStream _os = os;
+				InputStream is = new ByteArrayInputStream(fileByte);
+		) {
+			
+			byte[] buffer = new byte[1024 * 5];
+			int len = 0;
+			while ((len = is.read(buffer)) > 0) {
+				_os.write(buffer, 0, len);
+			}
+			_os.flush();
+		} catch (IOException e) {
+			log.error(ErrorCode.FILE_WRITE_FAILED.getCode(), e);
+			throw new FastDFSException(ErrorCode.FILE_WRITE_FAILED);
+		}
+	}
 
 	/**
-	 * 删除文件
-	 *
-	 * @param filepath 文件路径
-	 * @return 删除成功返回 0, 失败返回其它
+	 * Verify download parameters
+	 * 
+	 * @param filepath the fastdfs file path
+	 * @param os the output stream
 	 */
-	public static int deleteFile(String filepath) throws FastDFSException {
-		if (StringUtils.isBlank(filepath)) {
-			throw new FastDFSException("");
+	private static void verifyParameters(String filepath, OutputStream os) {
+		verifyFilepath(filepath);
+		if (os == null) {
+			throw new FastDFSException(ErrorCode.OUTPUT_STREAM_IS_NULL);
 		}
+	}
+	
+	/**
+	 * Verify fastdfs file path
+	 * 
+	 * @param filepath the fastdfs file path
+	 */
+	private static void verifyFilepath(String filepath) {
+		if(StringUtils.isBlank(filepath)){
+			throw new FastDFSException(ErrorCode.FILE_PATH_IS_NULL);
+		}
+	}
+	
+	/**
+	 * Delete file from fastdfs by file path
+	 * 
+	 * @param filepath the fastdfs file path
+	 * @return 0 for success, none zero for fail
+	 */
+	public static int deleteFile(String filepath) {
+		verifyFilepath(filepath);
 
 		TrackerServer trackerServer = TrackerServerPool.borrowObject();
 		StorageClient1 storageClient = new StorageClient1(trackerServer, null);
-		int success = 0;
 		try {
-			success = storageClient.delete_file1(filepath);
-			if (success != 0) {
-				throw new FastDFSException("");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (MyException e) {
-			e.printStackTrace();
-			throw new FastDFSException("");
+			return storageClient.delete_file1(filepath);
+		} catch (IOException | MyException e) {
+			log.error(ErrorCode.FILE_DELETE_FAILED.getCode(), e);
+			throw new FastDFSException(ErrorCode.FILE_DELETE_FAILED);
+		} finally {
+			TrackerServerPool.returnObject(trackerServer);
 		}
-		// 返还对象
-		TrackerServerPool.returnObject(trackerServer);
-
-		return success;
 	}
 
 	/**
@@ -357,73 +463,85 @@ public class FastDFSClient {
 	 *  }  <br>
 	 *         </pre>
 	 */
-	public Map<String, Object> getFileInfo(String filepath) throws FastDFSException {
+	public static FileInfo getFileInfo(String filepath) {
 		TrackerServer trackerServer = TrackerServerPool.borrowObject();
 		StorageClient1 storageClient = new StorageClient1(trackerServer, null);
-		FileInfo fileInfo = null;
 		try {
-			fileInfo = storageClient.get_file_info1(filepath);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (MyException e) {
-			e.printStackTrace();
+			return storageClient.get_file_info1(filepath);
+		} catch (IOException | MyException e) {
+			log.error(ErrorCode.FETCH_FILE_INFO_FAILED.getCode(), e);
+			throw new FastDFSException(ErrorCode.FETCH_FILE_INFO_FAILED);
+		} finally {
+			TrackerServerPool.returnObject(trackerServer);
 		}
-		// 返还对象
-		TrackerServerPool.returnObject(trackerServer);
-
-		Map<String, Object> infoMap = new HashMap<>(4);
-
-		infoMap.put("SourceIpAddr", fileInfo.getSourceIpAddr());
-		infoMap.put("FileSize", fileInfo.getFileSize());
-		infoMap.put("CreateTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(fileInfo.getCreateTimestamp()));
-		infoMap.put("CRC32", fileInfo.getCrc32());
-
-		return infoMap;
 	}
+	
+    /**
+     * Get token to access the server and concatenate it after the address
+     *
+     * @param filepath the fastdfs file path
+     * @param httpSecretKey the http secret key
+     * @return token, example： token=078d370098b03e9020b82c829c205e1f&ts=1508141521
+     */
+    public static String getToken(String filepath, String httpSecretKey){
+        // unix seconds
+        int ts = (int) Instant.now().getEpochSecond();
+        // token
+        String token = "null";
+        try {
+            token = ProtoCommon.getToken(getFilename(filepath), ts, httpSecretKey);
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException | MyException e) {
+			log.error(ErrorCode.FETCH_TOKEN_FAILED.getCode(), e);
+			throw new FastDFSException(ErrorCode.FETCH_TOKEN_FAILED);
+		}
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("token=")
+          .append(token)
+          .append("&ts=")
+          .append(ts);
+
+        return sb.toString();
+    }
 
 	/**
-	 * 获取文件描述信息
+	 * Get the file descriptions from fastdfs
 	 * 
-	 * @param filepath 文件路径
-	 * @return 文件描述信息
+	 * @param filepath the fastdfs file path
+	 * @return the file descriptions
 	 */
-	public Map<String, Object> getFileDescriptions(String filepath) throws FastDFSException {
+	public static Map<String, String> getFileDescriptions(String filepath) {
 		TrackerServer trackerServer = TrackerServerPool.borrowObject();
 		StorageClient1 storageClient = new StorageClient1(trackerServer, null);
 		NameValuePair[] nvps = null;
 		try {
 			nvps = storageClient.get_metadata1(filepath);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (MyException e) {
-			e.printStackTrace();
+		} catch (IOException | MyException e) {
+			log.warn("Error getting file description: {}", filepath);
+		} finally {
+			TrackerServerPool.returnObject(trackerServer);
 		}
-		// 返还对象
-		TrackerServerPool.returnObject(trackerServer);
 
-		Map<String, Object> infoMap = null;
-
-		if (nvps != null && nvps.length > 0) {
-			infoMap = new HashMap<>(nvps.length);
-
-			for (NameValuePair nvp : nvps) {
-				infoMap.put(nvp.getName(), nvp.getValue());
-			}
+		Map<String, String> infoMap = null;
+		
+		if (ArrayUtils.isNotEmpty(nvps)) {
+			infoMap = Arrays.stream(nvps)
+					.collect(toMap(NameValuePair::getName, NameValuePair::getValue, (k1, k2) -> k1));
 		}
 
 		return infoMap;
 	}
 
 	/**
-	 * 获取源文件的文件名称
+	 * Get the original file name
 	 * 
-	 * @param filepath 文件路径
-	 * @return 文件名称
+	 * @param filepath the fastdfs file path
+	 * @return the original file name
 	 */
-	public String getOriginalFilename(String filepath) throws FastDFSException {
-		Map<String, Object> descriptions = getFileDescriptions(filepath);
-		if (descriptions.get(FastDFSConstant.FILE_DESCRIPTION_FILE_NAME) != null) {
-			return (String) descriptions.get(FastDFSConstant.FILE_DESCRIPTION_FILE_NAME);
+	private static String getOriginalFilename(String filepath) {
+		Map<String, String> descriptions = getFileDescriptions(filepath);
+		if (MapUtils.isNotEmpty(descriptions)) {
+			return descriptions.get(FastDFSConstant.FILE_DESCRIPTION_FILE_NAME);
 		}
 		return null;
 	}
@@ -434,7 +552,7 @@ public class FastDFSClient {
 	 * @param filename the file name
 	 * @return The file name suffix
 	 */
-	public static String getFilenameSuffix(String filename) {
+	private static String getFilenameSuffix(String filename) {
 		String suffix = null;
 		if (StringUtils.isNotBlank(filename)) {
 			if (filename.contains(FastDFSConstant.DOT)) {
@@ -452,7 +570,7 @@ public class FastDFSClient {
 	 * @param path the file path
 	 * @return The converted path
 	 */
-	public static String toLocal(String path) {
+	private static String toLocal(String path) {
         if (StringUtils.isNotBlank(path)) {
             path = path.replaceAll("\\\\", FastDFSConstant.SEPARATOR);
 
@@ -464,53 +582,20 @@ public class FastDFSClient {
         }
 		return path;
 	}
-	
-	public static void main(String[] args) {
-		toLocal("D:/abc.png");
-	}
 
 	/**
-	 * 获取FastDFS文件的名称，如：M00/00/00/wKgzgFnkTPyAIAUGAAEoRmXZPp876.jpeg
-	 *
-	 * @param fileId 包含组名和文件名，如：group1/M00/00/00/wKgzgFnkTPyAIAUGAAEoRmXZPp876.jpeg
-	 * @return FastDFS 返回的文件名：M00/00/00/wKgzgFnkTPyAIAUGAAEoRmXZPp876.jpeg
+	 * Get fastdfs file name, example: M00/00/00/wKgDwFv-UHqAbX4nAAUC5Uh8n8c03.jpeg
+	 * 
+	 * @param fileId the file id, example: group1/M00/00/00/wKgDwFv-UHqAbX4nAAUC5Uh8n8c03.jpeg
+	 * @return the fastdfs file name
 	 */
-	public static String getFilename(String fileId) {
+	private static String getFilename(String fileId) {
 		String[] results = new String[2];
 		StorageClient1.split_file_id(fileId, results);
 
 		return results[1];
 	}
 
-	/**
-	 * 获取访问服务器的token，拼接到地址后面
-	 *
-	 * @param filepath      文件路径 group1/M00/00/00/wKgzgFnkTPyAIAUGAAEoRmXZPp876.jpeg
-	 * @param httpSecretKey 秘钥
-	 * @return 返回token，如： token=078d370098b03e9020b82c829c205e1f&ts=1508141521
-	 */
-	public static String getToken(String filepath, String httpSecretKey) {
-		// unix seconds
-		int ts = (int) Instant.now().getEpochSecond();
-		// token
-		String token = "null";
-		try {
-			token = ProtoCommon.getToken(getFilename(filepath), ts, httpSecretKey);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("token=").append(token);
-		sb.append("&ts=").append(ts);
-
-		return sb.toString();
-	}
-	
 	/**
 	 * Get the file server address
 	 * 
@@ -529,7 +614,7 @@ public class FastDFSClient {
 		StringBuilder sb = new StringBuilder();
 		sb.append("The file server address is: ")
 		  .append(fileServerAddr)
-		  .append("; ")
+		  .append("; \n\t")
 		  .append("The max file size is: ")
 		  .append(maxFileSize)
 		  .append(".");

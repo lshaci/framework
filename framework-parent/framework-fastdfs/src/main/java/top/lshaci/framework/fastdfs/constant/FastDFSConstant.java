@@ -44,7 +44,7 @@ public interface FastDFSConstant {
 	int DEFAULT_MAX_STORAGE_CONNECTION = 8;
 	
 	/**
-	 * The default upload file max size 
+	 * The default upload file max size(1MB) 
 	 */
 	int DEFAULT_MAX_FILE_SIZE = 1024 * 1024;
 }

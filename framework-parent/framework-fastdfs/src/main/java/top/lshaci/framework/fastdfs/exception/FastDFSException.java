@@ -2,7 +2,14 @@ package top.lshaci.framework.fastdfs.exception;
 
 import lombok.Getter;
 import top.lshaci.framework.common.exception.BaseException;
+import top.lshaci.framework.fastdfs.enums.ErrorCode;
 
+/**
+ * FastDFSException
+ * 
+ * @author lshaci
+ * @since 0.0.4
+ */
 @Getter
 public class FastDFSException extends BaseException {
 
