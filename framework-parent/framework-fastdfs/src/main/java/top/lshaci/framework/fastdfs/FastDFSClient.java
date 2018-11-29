@@ -437,8 +437,8 @@ public class FastDFSClient {
 	public static String getFilenameSuffix(String filename) {
 		String suffix = null;
 		if (StringUtils.isNotBlank(filename)) {
-			if (filename.contains(FastDFSConstant.POINT)) {
-				suffix = filename.substring(filename.lastIndexOf(FastDFSConstant.POINT) + 1);
+			if (filename.contains(FastDFSConstant.DOT)) {
+				suffix = filename.substring(filename.lastIndexOf(FastDFSConstant.DOT) + 1);
 			} else {
 				log.error("The filename error without suffix : {}", filename);
 			}
@@ -456,9 +456,9 @@ public class FastDFSClient {
         if (StringUtils.isNotBlank(path)) {
             path = path.replaceAll("\\\\", FastDFSConstant.SEPARATOR);
 
-            if (path.contains(FastDFSConstant.POINT)) {
-                String pre = path.substring(0, path.lastIndexOf(FastDFSConstant.POINT) + 1);
-                String suffix = path.substring(path.lastIndexOf(FastDFSConstant.POINT) + 1).toLowerCase();
+            if (path.contains(FastDFSConstant.DOT)) {
+                String pre = path.substring(0, path.lastIndexOf(FastDFSConstant.DOT) + 1);
+                String suffix = path.substring(path.lastIndexOf(FastDFSConstant.DOT) + 1).toLowerCase();
                 path = pre + suffix;
             }
         }

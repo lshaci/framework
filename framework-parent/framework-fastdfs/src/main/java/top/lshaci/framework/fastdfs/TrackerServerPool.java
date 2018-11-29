@@ -43,7 +43,9 @@ class TrackerServerPool {
     /**
      * Privatization construction method
      */
-    private TrackerServerPool(){};
+    private TrackerServerPool(){
+    	
+    }
 
     /**
      * Init tracker server pool
