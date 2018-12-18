@@ -2,6 +2,7 @@ package top.lshaci.framework.excel.handler;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import top.lshaci.framework.utils.ReflectionUtils;
 /**
  * POI excel download handler<br><br>
  * 
- * <b>0.0.4: </b>Add method setColumnWidth; Change exception message to chinese
+ * <b>0.0.4: </b>Add method setColumnWidth; Change exception message to chinese; Add incoming output stream
  *
  * @author lshaci
  * @since 0.0.3
@@ -66,13 +67,25 @@ public abstract class POIExcelDownloadHandler {
 	 */
 	private final static String DEFAULT_FONT_NAME = "宋体";
 
+    /**
+     * Change excel file to entity list
+     *
+     * @param entities the entity list
+     * @return the excel work book output stream
+     */
+    public static <E> ByteArrayOutputStream entities2Excel(List<E> entities) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        entities2Excel(entities, os);
+        return os;
+    }
+
 	/**
 	 * Change excel file to entity list
 	 * 
 	 * @param entities the entity list
-	 * @return the excel work book output stream
+     * @param os the output stream
 	 */
-	public static <E> ByteArrayOutputStream entities2Excel(List<E> entities) {
+	public static <E> void entities2Excel(List<E> entities, OutputStream os) {
 		checkParams(entities);
 		
 		Class<?> entityClass = entities.get(0).getClass();
@@ -82,7 +95,7 @@ public abstract class POIExcelDownloadHandler {
 		List<String[]> rowDatas = entities2StringArrays(entities, titleOrders, entityClass);
 
 		try (
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				OutputStream os_ = os;
 				XSSFWorkbook workbook = new XSSFWorkbook();
 		) {
 			String sheetName = getSheetName(entityClass);
@@ -103,8 +116,7 @@ public abstract class POIExcelDownloadHandler {
 			// set sheet content
 			setSheetRows(workbook, sheet, rowDatas);
 			
-			workbook.write(os);
-			return os;
+			workbook.write(os_);
 		} catch (Exception e) {
 			log.error("Parse entity list error", e);
 			throw new ExcelHandlerException("Convert entity list to excel file is error!", e);
@@ -558,3 +570,4 @@ public abstract class POIExcelDownloadHandler {
 		}
 	}
 }
+

@@ -51,6 +51,23 @@ public class ItextPdfUtils {
 	public static ByteArrayOutputStream export(String htmlStr) {
 		return export(htmlStr, "./font");
 	}
+	
+	/**
+	 * Export PDF with html string, use the default fontPath(./font) <br>
+	 * The html freemarker template need set body style,<br>
+	 * 				For example: <b>&lt;body style = "font-family: SimSun;"&gt;</b> <br>
+	 * 				<b>The sample code: </b><br><br>
+	 * 				Map&lt;String, Object&gt; data = new HashMap&lt;&gt;();<br>
+	 * 				resp.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("测试", "UTF-8") + ".pdf");<br>
+	 * 				resp.setContentType("application/pdf");<br><br>
+	 * 				String htmlStr = FreemarkerUtils.build(Test.class, "/pdf").setTemplate("test.ftl").generate(data);<br>
+	 * 				ItextPdfUtils.export(htmlStr, resp.getOutputStream());<br><br>
+	 * @param htmlStr html string
+	 * @param os the output stream
+	 */
+	public static void export(String htmlStr, OutputStream os) {
+		export(htmlStr, "./font", os);
+	}
 
 	/**
 	 * Export PDF with html string <br>
@@ -59,7 +76,7 @@ public class ItextPdfUtils {
 	 * 				<b>The sample code: </b><br><br>
 	 * 				Map&lt;String, Object&gt; data = new HashMap&lt;&gt;();<br>
 	 * 				String htmlStr = FreemarkerUtils.build(Test.class, "/pdf").setTemplate("test.ftl").generate(data);<br>
-	 * 				ByteArrayOutputStream pdfOs = ItextPdfUtils.export(htmlStr);<br><br>
+	 * 				ByteArrayOutputStream pdfOs = ItextPdfUtils.export(htmlStr, fontPath);<br><br>
 	 * 				resp.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("测试", "UTF-8") + ".pdf");<br>
 	 * 				resp.setContentType("application/pdf");<br><br>
 	 * 				ServletOutputStream outputStream = resp.getOutputStream();<br>
@@ -69,24 +86,43 @@ public class ItextPdfUtils {
 	 * @return the pdf ByteArrayOutputStream
 	 */
 	public static ByteArrayOutputStream export(String htmlStr, String fontPath) {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		export(htmlStr, fontPath, os);
+		return os;
+	}
+	
+	/**
+	 * Export PDF with html string <br>
+	 * The html freemarker template need set body style,<br>
+	 * 				For example: <b>&lt;body style = "font-family: SimSun;"&gt;</b> <br>
+	 * 				<b>The sample code: </b><br><br>
+	 * 				Map&lt;String, Object&gt; data = new HashMap&lt;&gt;();<br>
+	 * 				String htmlStr = FreemarkerUtils.build(Test.class, "/pdf").setTemplate("test.ftl").generate(data);<br>
+	 * 				resp.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("测试", "UTF-8") + ".pdf");<br>
+	 * 				resp.setContentType("application/pdf");<br><br>
+	 * 				ItextPdfUtils.export(htmlStr, fontPath, resp.getOutputStream());<br><br>
+	 * @param htmlStr html string
+	 * @param fontPath Save the file path for the font
+	 * @param os the output stream
+	 */
+	public static void export(String htmlStr, String fontPath, OutputStream os) {
 		try (
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
+				OutputStream os_ = os;
 		) {
 			ITextRenderer renderer = new ITextRenderer();
 			renderer.setDocumentFromString(htmlStr);
-
+			
 			// Solve the problem of Chinese support.
 			ITextFontResolver fontResolver = renderer.getFontResolver();
 			String sysPath = createSimsunFont(fontPath);
-	        if("linux".equals(getCurrentOperatingSystem())){
-	            fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-	        }else{
-	            fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-	        }
-
+			if("linux".equals(getCurrentOperatingSystem())){
+				fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+			}else{
+				fontResolver.addFont(sysPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+			}
+			
 			renderer.layout();
-			renderer.createPDF(os, true);
-			return os;
+			renderer.createPDF(os_, true);
 		} catch (Exception e) {
 			log.error("Error exporting PDF!", e);
 			throw new BaseException("Error exporting PDF!", e);
