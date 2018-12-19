@@ -167,8 +167,6 @@ public class FastDFSClient {
 	 * Upload
 	 * 
 	 * @param is           the file input stream
-	 * @param filename     the file name
-	 * @param descriptions the file descriptions
 	 * @return The file path after uploading successfully<br>
 	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
 	 */
@@ -481,7 +479,7 @@ public class FastDFSClient {
      *
      * @param filepath the fastdfs file path
      * @param httpSecretKey the http secret key
-     * @return token, example： token=078d370098b03e9020b82c829c205e1f&ts=1508141521
+     * @return token, example： token=078d370098b03e9020b82c829c205e1f&amp;ts=1508141521
      */
     public static String getToken(String filepath, String httpSecretKey){
         // unix seconds

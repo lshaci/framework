@@ -33,11 +33,10 @@ public class FastDFSClientConfig {
     /**
      * Init tracker server pool config
      * 
-     * @throws IOException
-     * @throws MyException
+     * @throws Exception if tracker server pool config error throw this
      */
     @PostConstruct
-    public void initPool() throws IOException, MyException {
+    public void initPool() throws Exception {
     	log.debug("Start tracker server pool config.");
     	TrackerServerPool.config = properties.getConfig();
     	int minStorageConnection = properties.getMinStorageConnection();
@@ -58,7 +57,7 @@ public class FastDFSClientConfig {
     /**
      * Set fast dfs client information
      * 
-     * @throws Exception 
+     * @throws Exception if server address is empty throw this
      */
     @PostConstruct
     public void setMaxFileSize() throws Exception {
