@@ -19,11 +19,6 @@
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-utils</artifactId>
 		</dependency>
-		<!-- framework permission module -->
-		<dependency>
-			<groupId>top.lshaci</groupId>
-			<artifactId>framework-permission</artifactId>
-		</dependency>
 		<!-- spring boot configuration -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

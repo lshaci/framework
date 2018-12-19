@@ -11,6 +11,7 @@ import org.springframework.web.context.request.RequestContextListener;
 
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.web.aspect.PreventRepeatSubmitAspect;
+import top.lshaci.framework.web.aspect.UserRoleAspect;
 import top.lshaci.framework.web.aspect.WebLogAspect;
 import top.lshaci.framework.web.handler.exception.GlobalExceptionHandler;
 import top.lshaci.framework.web.utils.DownloadUtils;
@@ -78,6 +79,18 @@ public class WebMvcConfig {
     public PreventRepeatSubmitAspect preventRepeatSubmitAspect() {
         log.debug("Config prevent repeat submit aspect...");
         return new PreventRepeatSubmitAspect();
+    }
+    
+    /**
+     * Config user role aspect
+     * 
+     * @return the user role aspect bean
+     */
+    @Bean
+    @ConditionalOnProperty(value = "web.userRole.enabled", havingValue = "true")
+    public UserRoleAspect userRoleAspect() {
+    	log.debug("Config user role aspect...");
+    	return new UserRoleAspect();
     }
     
     /**

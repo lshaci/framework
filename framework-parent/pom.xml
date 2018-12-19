@@ -23,7 +23,6 @@
 		<module>framework-archetype</module>
 		<module>framework-redis</module>
 		<module>framework-pdfUtils</module>
-		<module>framework-permission</module>
 		<module>framework-swagger</module>
 		<module>framework-thread</module>
 		<module>framework-fastdfs</module>
@@ -131,12 +130,6 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-websocket</artifactId>
-				<version>${framework.version}</version>
-			</dependency>
-			<!-- framework permission module -->
-			<dependency>
-				<groupId>top.lshaci</groupId>
-				<artifactId>framework-permission</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework utils module -->
