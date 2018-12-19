@@ -31,11 +31,7 @@ import top.lshaci.framework.web.utils.SessionUserUtils;
 @Aspect
 @Order(3)
 public class UserRoleAspect {
-	/**
-	 * No role prompt message
-	 */
-	private static final String NO_ROLE_MESSAGE = "当前登录用户未选择角色";
-	
+
 	/**
 	 * The user role point cut
 	 */
@@ -58,7 +54,7 @@ public class UserRoleAspect {
 		
 		String userRole = SessionUserUtils.getUserRoleInSession();
 		if (StringUtils.isBlank(userRole)) {
-			throw new WebBaseException(NO_ROLE_MESSAGE);
+			throw new RolePermissionException();
 		}
 		
 		// Get the target controller class
