@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.web.annotation.IgnoreRole;
 import top.lshaci.framework.web.annotation.NeedRole;
 import top.lshaci.framework.web.exception.RolePermissionException;
-import top.lshaci.framework.web.exception.WebBaseException;
 import top.lshaci.framework.web.utils.HttpRequestUtils;
 import top.lshaci.framework.web.utils.SessionUserUtils;
 
