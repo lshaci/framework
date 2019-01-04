@@ -1,11 +1,8 @@
 package top.lshaci.framework.fastdfs;
 
-import java.io.IOException;
-
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
-import org.csource.common.MyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
