@@ -99,8 +99,6 @@ public class ResourceUtils {
 			throw new UtilException("SQL generation error.", e);
 		}
 	}
-    
-    
 
     /**
      * Handle the resource class
