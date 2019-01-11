@@ -71,18 +71,11 @@ public enum ErrorCode {
 	 * File deletion failed.
 	 */
     FILE_DELETE_FAILED("File deletion failed.", "删除文件失败"),
-
-    FILE_SERVER_CONNECTION_FAILED("error.fastdfs.file_server_connection_failed", "文件服务器连接失败"),
-
-    
-
-    FILE_TYPE_ERROR_IMAGE("error.file.type.image", "图片类型错误"),
-
-    FILE_TYPE_ERROR_DOC("error.file.type.doc", "文档类型错误"),
-
-    FILE_TYPE_ERROR_VIDEO("error.file.type.video", "音频类型错误"),
-
-    FILE_TYPE_ERROR_COMPRESS("error.file.type.compress", "压缩文件类型错误");
+    /**
+     * Fastdfs file server connection failed.
+     */
+    FILE_SERVER_CONNECTION_FAILED("Fastdfs file server connection failed.", "文件服务器连接失败"),
+	;
 	
 	private String code;
 	private String message;

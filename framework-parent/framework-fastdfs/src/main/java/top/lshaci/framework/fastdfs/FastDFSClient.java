@@ -42,7 +42,7 @@ public class FastDFSClient {
 	/**
 	 * The max file size
 	 */
-	protected static int maxFileSize;
+	protected static long maxFileSize;
 	/**
 	 * The file server address
 	 */

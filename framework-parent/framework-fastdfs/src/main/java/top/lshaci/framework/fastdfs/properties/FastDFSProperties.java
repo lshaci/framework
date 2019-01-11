@@ -32,8 +32,8 @@ public class FastDFSProperties {
 	 */
 	private int maxStorageConnection = FastDFSConstant.DEFAULT_MAX_STORAGE_CONNECTION;
 	/**
-	 * The upload max file size
+	 * The upload max file size(byte)
 	 */
-	private int maxFileSize = FastDFSConstant.DEFAULT_MAX_FILE_SIZE;
+	private long maxFileSize = FastDFSConstant.DEFAULT_MAX_FILE_SIZE;
 
 }

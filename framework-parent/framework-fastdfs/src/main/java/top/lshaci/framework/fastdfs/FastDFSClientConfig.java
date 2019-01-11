@@ -59,16 +59,15 @@ public class FastDFSClientConfig {
     @PostConstruct
     public void setMaxFileSize() throws Exception {
     	log.debug("Set fast dfs client.");
-    	int maxFileSize = properties.getMaxFileSize();
+    	long maxFileSize = properties.getMaxFileSize();
     	if (maxFileSize < 0) {
 			maxFileSize = FastDFSConstant.DEFAULT_MAX_FILE_SIZE;
 		}
     	String fileServerAddr = properties.getFileServerAddr();
-    	if (StringUtils.isBlank(fileServerAddr)) {
-			throw new Exception("The file server address must not be empty!");
+    	if (StringUtils.isNotBlank(fileServerAddr)) {
+    		FastDFSClient.fileServerAddr = fileServerAddr.trim();
 		}
     	FastDFSClient.maxFileSize = maxFileSize;
-    	FastDFSClient.fileServerAddr = fileServerAddr.trim();
     	log.debug("The fast dfs client info: \n\t{}", FastDFSClient.info());
     }
 
