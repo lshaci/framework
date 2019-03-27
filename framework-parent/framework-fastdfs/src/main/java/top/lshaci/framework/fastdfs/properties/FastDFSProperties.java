@@ -16,7 +16,7 @@ import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 public class FastDFSProperties {
 	
 	/**
-	 * The file server address
+	 * The file server reverse proxy address
 	 */
 	private String fileServerAddr;
 	/**

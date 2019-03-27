@@ -21,7 +21,7 @@ public class FastDFSException extends BaseException {
 	}
 
 	public FastDFSException(ErrorCode errorCode) {
-		super(errorCode.getCode());
+		super(errorCode.getMessage());
 		this.errorCode = errorCode;
 	}
 	

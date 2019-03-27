@@ -1,5 +1,11 @@
 package top.lshaci.framework.web.exception;
 
+/**
+ * Permission Exception
+ *
+ * @author lshaci
+ * @since 1.0.0
+ */
 public class RolePermissionException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;

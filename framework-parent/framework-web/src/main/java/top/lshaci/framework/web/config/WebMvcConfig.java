@@ -30,9 +30,6 @@ import top.lshaci.framework.web.utils.DownloadUtils;
 @PropertySource("classpath:web.properties")
 public class WebMvcConfig {
     
-    @Value("${web.dowanload.cacheSize}")
-    private int downloadCacheSize;
-
     /**
      * Config request context listener
      * 
@@ -51,7 +48,7 @@ public class WebMvcConfig {
      */
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "web.globalExceptionHandler.enabled", havingValue = "true")
+    @ConditionalOnProperty(value = "web.enabled.globalExceptionHandler", havingValue = "true")
     public GlobalExceptionHandler globalExceptionHandler() {
         log.debug("Config global exception handler...");
         return new GlobalExceptionHandler();
@@ -63,7 +60,8 @@ public class WebMvcConfig {
      * @return the web log aspect bean
      */
     @Bean
-    @ConditionalOnProperty(value = "web.webLogAspect.enabled", havingValue = "true")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(value = "web.enabled.webLogAspect", havingValue = "true")
     public WebLogAspect webLogAspect() {
         log.debug("Config web log aspect...");
         return new WebLogAspect();
@@ -75,7 +73,8 @@ public class WebMvcConfig {
      * @return the prevent repeat submit aspect bean
      */
     @Bean
-    @ConditionalOnProperty(value = "web.preventRepeatSubmitAspect.enabled", havingValue = "true")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(value = "web.enabled.preventRepeatSubmitAspect", havingValue = "true")
     public PreventRepeatSubmitAspect preventRepeatSubmitAspect() {
         log.debug("Config prevent repeat submit aspect...");
         return new PreventRepeatSubmitAspect();
@@ -87,7 +86,8 @@ public class WebMvcConfig {
      * @return the user role aspect bean
      */
     @Bean
-    @ConditionalOnProperty(value = "web.userRole.enabled", havingValue = "true")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(value = "web.enabled.userRole", havingValue = "true")
     public UserRoleAspect userRoleAspect() {
     	log.debug("Config user role aspect...");
     	return new UserRoleAspect();
@@ -97,11 +97,11 @@ public class WebMvcConfig {
      * Set download utils cache size
      */
     @Autowired
-    public void setDownloadCacheSize() {
-        if (this.downloadCacheSize <= 0) {
-            this.downloadCacheSize = 2048;
+    public void setDownloadCacheSize(@Value("${web.download.cacheSize}") int downloadCacheSize) {
+        if (downloadCacheSize <= 0) {
+            downloadCacheSize = 2048;
         }
-        log.debug("Set DownloadUtils cacheSize: {} bytes", this.downloadCacheSize);
-        DownloadUtils.cacheSize = this.downloadCacheSize;
+        log.debug("Set DownloadUtils cacheSize: {} bytes", downloadCacheSize);
+        DownloadUtils.cacheSize = downloadCacheSize;
     }
 }

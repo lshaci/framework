@@ -6,11 +6,12 @@ import lombok.Getter;
  * Error code enum<br><br>
  * <b>0.0.4: </b>Add org.springframework.http.converter.HttpMessageNotReadableException<br>
  * org.springframework.web.HttpRequestMethodNotSupportedException<br>
- * top.lshaci.framework.web.exception.RolePermissionException
+ * top.lshaci.framework.web.exception.RolePermissionException <br>
+ * <b>1.0.1: </b>Add top.lshaci.framework.web.exception.RepeatSubmitException
  * 
  * @author lshaci
  * @since 0.0.3
- * @version 0.0.4
+ * @version 1.0.1
  */
 @Getter
 public enum ErrorCode {
@@ -23,6 +24,10 @@ public enum ErrorCode {
      * top.lshaci.framework.web.exception.RolePermissionException
      */
     ROLE_PERMISSION_EXCEPTION(40002, "无权限进行此操作", "top.lshaci.framework.web.exception.RolePermissionException"),
+    /**
+     * top.lshaci.framework.web.exception.RepeatSubmitException
+     */
+    REPEAT_SUBMIT_EXCEPTION(40003, "上次操作未完成，请勿重复操作", "top.lshaci.framework.web.exception.RepeatSubmitException"),
 	/**
 	 * com.xdbigdata.framework.common.exception.BaseException
 	 */

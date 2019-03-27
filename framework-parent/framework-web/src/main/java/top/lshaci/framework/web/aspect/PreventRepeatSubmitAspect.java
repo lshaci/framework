@@ -5,32 +5,27 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.springframework.core.annotation.Order;
 
 import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.web.exception.RepeatSubmitException;
 import top.lshaci.framework.web.exception.WebBaseException;
 import top.lshaci.framework.web.utils.HttpRequestUtils;
 import top.lshaci.framework.web.utils.HttpSessionUtils;
 
 /**
  * Prevent repeat submit aspect<br><br>
+ * <b>1.0.1: </b>Change After aspect to AfterReturning aspect; Add AfterThrowing aspect
  * 
  * @author lshaci
  * @since 0.0.4
+ * @version 1.0.1
  */
 @Slf4j
 @Aspect
 @Order(2)
 public class PreventRepeatSubmitAspect {
-	
-	/**
-	 * Repeat operation prompt message
-	 */
-	private final static String REPEAT_SUBMIT_MESSAGE = "上次操作未完成，请勿重复操作";
 	
 	/**
 	 * Submit token prefix
@@ -50,14 +45,14 @@ public class PreventRepeatSubmitAspect {
 	}
 
 	@Before("preventRepeatSubmit()")
-	public void doBefore(JoinPoint joinPoint) throws Throwable {
+	public void doBefore() {
 		HttpServletRequest request = HttpRequestUtils.get();
 		String requestUrl = request.getRequestURI();
-		log.info("The request url is: {}.", requestUrl);
+		log.info("PreventRepeatSubmitAspect: the request url is: {}.", requestUrl);
 		Object tokenKey = HttpSessionUtils.getAttribute(requestUrl);
 		if (tokenKey != null) {
-		    log.warn("In operation...");
-			throw new WebBaseException(REPEAT_SUBMIT_MESSAGE);
+			log.warn("In operation...");
+			throw new RepeatSubmitException();
 		}
 		String token = new StringBuilder()
 				.append(SUBMIT_TOKEN_PREFIX)
@@ -69,8 +64,19 @@ public class PreventRepeatSubmitAspect {
 		HttpSessionUtils.setAttribute(requestUrl, token);
 	}
 
-	@After("preventRepeatSubmit()")
-	public void doAfterReturning() throws Throwable {
+	@AfterReturning("preventRepeatSubmit()")
+	public void doAfterReturning() {
+		String requestUrl = HttpRequestUtils.get().getRequestURI();
+		HttpSessionUtils.removeAttribute(requestUrl);
+		log.info("Remove submit token key from session is succeed.");
+	}
+
+	@AfterThrowing(value = "preventRepeatSubmit()", throwing = "e")
+	public void doAfterThrowing(Exception e) {
+		if (e instanceof RepeatSubmitException) {
+			log.warn("In operation...");
+			return;
+		}
 		String requestUrl = HttpRequestUtils.get().getRequestURI();
 		HttpSessionUtils.removeAttribute(requestUrl);
 		log.info("Remove submit token key from session is succeed.");
