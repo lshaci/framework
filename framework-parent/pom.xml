@@ -52,6 +52,7 @@
 		<framework.version>1.0.1</framework.version>
 		<fastjson.version>1.2.47</fastjson.version>
 		<commons.lang3.version>3.7</commons.lang3.version>
+		<commons.compress.version>1.18</commons.compress.version>
 		<commons.collections4.version>4.1</commons.collections4.version>
 		<fastdfs.client.version>1.27.0.0</fastdfs.client.version>
 
@@ -239,6 +240,12 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-collections4</artifactId>
 				<version>${commons.collections4.version}</version>
+			</dependency>
+			<!-- apache common compress -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-compress</artifactId>
+				<version>${commons.compress.version}</version>
 			</dependency>
 			<!-- flying saucer pdf itext5 -->
 			<dependency>
