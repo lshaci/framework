@@ -1,0 +1,12 @@
+# spring
+spring:
+  # swagger
+  swagger:
+    enabled: false
+  # datasource
+  datasource:
+    # druid
+    druid:
+      url: jdbc:mysql://host:port/database?useUnicode=true&characterEncoding=utf8
+      username:
+      password: 

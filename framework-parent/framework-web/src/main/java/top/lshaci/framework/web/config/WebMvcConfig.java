@@ -29,7 +29,7 @@ import top.lshaci.framework.web.utils.DownloadUtils;
 @Configuration
 @PropertySource("classpath:web.properties")
 public class WebMvcConfig {
-    
+
     /**
      * Config request context listener
      * 

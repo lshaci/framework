@@ -1,9 +1,8 @@
 package top.lshaci.framework.swagger.autoconfigure;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -14,11 +13,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-
-import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -28,6 +22,10 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import top.lshaci.framework.swagger.properties.SwaggerProperties;
 import top.lshaci.framework.swagger.properties.SwaggerProperties.DocketInfo;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Swagger auto configuration<br><br>
@@ -83,7 +81,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 	 * Create swagger docket(grouping)
 	 * 
 	 * @param groupName group name
-	 * @param docket docket information
+	 * @param docketInfo docket information
 	 * @return swagger docket
 	 */
 	private Docket docket(String groupName, DocketInfo docketInfo) {

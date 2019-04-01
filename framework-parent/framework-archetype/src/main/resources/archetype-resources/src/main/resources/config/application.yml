@@ -1,0 +1,19 @@
+# spring
+spring:
+  # profiles
+  profiles:
+    active: local
+  # swagger
+  swagger:
+    enabled: true
+    base-package: ${groupId}.${artifactId}.web.controller
+# log
+logging:
+  config: classpath:config/logback-spring.xml
+  level:
+    root: warn
+    ${groupId}.${artifactId}: info
+# mybatis
+mybatis:
+  type-aliases-package: ${groupId}.${artifactId}.model.domain
+  mapper-locations: classpath*:mapper/*Mapper.xml

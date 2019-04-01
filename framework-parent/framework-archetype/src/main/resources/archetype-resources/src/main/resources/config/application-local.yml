@@ -1,0 +1,13 @@
+# spring
+spring:
+  # datasource
+  datasource:
+    # druid
+    druid:
+      url: jdbc:mysql://host:port/database?useUnicode=true&characterEncoding=utf8
+      username:
+      password:
+# log
+logging:
+  level:
+    ${groupId}.${artifactId}: debug

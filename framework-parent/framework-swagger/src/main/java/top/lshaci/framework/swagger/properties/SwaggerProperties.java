@@ -1,13 +1,12 @@
 package top.lshaci.framework.swagger.properties;
 
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import lombok.Data;
 
 /**
  * Swagger 2 config properties<br><br>
@@ -92,11 +91,11 @@ public class SwaggerProperties {
 		/**
 		 * url
 		 */
-		private String url = "http://www.xdbigdata.com";
+		private String url = "http://www.lshaci.top";
 		/**
 		 * email
 		 */
-		private String email = "liangxu@ebigdata.org";
+		private String email = "lshaci@qq.com";
 
 		public springfox.documentation.service.Contact get() {
 			return new springfox.documentation.service.Contact(name, url, email);
