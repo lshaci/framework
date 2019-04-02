@@ -1,5 +1,6 @@
 package top.lshaci.framework.fastdfs.properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.Assert;
 
@@ -47,7 +48,9 @@ public class FastDFSProperties {
     }
 
     private long parseSize(String size) {
-        Assert.hasLength(size, "Size must not be empty");
+        if (StringUtils.isBlank(size)) {
+            return FastDFSConstant.DEFAULT_MAX_FILE_SIZE;
+        }
         size = size.toUpperCase();
         if (size.endsWith("KB")) {
             return Long.valueOf(size.substring(0, size.length() - 2)) * 1024;
