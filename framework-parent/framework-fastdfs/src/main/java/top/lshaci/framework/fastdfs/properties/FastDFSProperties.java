@@ -2,7 +2,6 @@ package top.lshaci.framework.fastdfs.properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.Assert;
 
 import lombok.Data;
 import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
@@ -47,6 +46,12 @@ public class FastDFSProperties {
         this.maxFileSize = parseSize(maxFileSize);
     }
 
+    /**
+     * Parse file size
+     *
+     * @param size the size of the String type
+     * @return the size of the Long type
+     */
     private long parseSize(String size) {
         if (StringUtils.isBlank(size)) {
             return FastDFSConstant.DEFAULT_MAX_FILE_SIZE;
