@@ -1,19 +1,19 @@
 package top.lshaci.framework.mybatis.model;
 
-import java.util.List;
-
-import com.github.pagehelper.Page;
-
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.Getter;
 import lombok.Setter;
 import top.lshaci.framework.common.model.PageResult;
 
+import java.util.List;
+
 /**
  * Page query result
- * 
+ *
  * @author lshaci
  * @param <T>	The result entity type
  * @since 0.0.4
+ * @version 1.0.1
  */
 @Setter
 @Getter
@@ -59,8 +59,8 @@ public class MybatisPageResult<T> extends PageResult<T> {
 	 * 
 	 * @param page the page helper result
 	 */
-	public MybatisPageResult(Page<T> page) {
-	    this(page.getPageNum(), page.getPageSize(), (int) page.getTotal(), page.getResult());
+	public MybatisPageResult(IPage<T> page) {
+	    this((int) page.getPages(), (int) page.getSize(), (int) page.getTotal(), page.getRecords());
 	}
 
 }

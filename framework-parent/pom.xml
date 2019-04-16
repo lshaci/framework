@@ -13,7 +13,6 @@
 	<modules>
 		<module>framework-core</module>
 		<module>framework-mybatis</module>
-		<module>framework-service</module>
 		<module>framework-test</module>
 		<module>framework-utils</module>
 		<module>framework-excel</module>
@@ -26,6 +25,7 @@
 		<module>framework-swagger</module>
 		<module>framework-thread</module>
 		<module>framework-fastdfs</module>
+		<module>framework-fescar</module>
 	</modules>
 
 	<name>framework-parent</name>
@@ -46,22 +46,20 @@
 		<java.version>1.8</java.version>
 
 		<poi.version>3.17</poi.version>
-		<swagger.version>2.7.0</swagger.version>
-		<mybatis.generator.version>1.3.7</mybatis.generator.version>
+		<swagger.version>2.9.2</swagger.version>
 
 		<framework.version>1.0.1</framework.version>
 		<fastjson.version>1.2.47</fastjson.version>
 		<commons.lang3.version>3.7</commons.lang3.version>
 		<commons.compress.version>1.18</commons.compress.version>
-		<commons.collections4.version>4.1</commons.collections4.version>
 		<fastdfs.client.version>1.27.0.0</fastdfs.client.version>
+		<commons.collections4.version>4.1</commons.collections4.version>
+		<mybatis.plus.generator.version>3.1.0</mybatis.plus.generator.version>
 
-		<spring.boot.version>2.0.1.RELEASE</spring.boot.version>
-		<spring.cloud.version>Finchley.RELEASE</spring.cloud.version>
-		<druid.spring.boot.version>1.1.10</druid.spring.boot.version>
-		<tk.mybatis.generator.version>1.0.5</tk.mybatis.generator.version>
-		<tkmybatis.spring.boot.version>2.0.4</tkmybatis.spring.boot.version>
-		<pagehelper.spring.boot.version>1.2.5</pagehelper.spring.boot.version>
+		<spring.boot.version>2.1.4.RELEASE</spring.boot.version>
+		<spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
+		<druid.spring.boot.version>1.1.16</druid.spring.boot.version>
+		<mybatis.plus.spring.boot.version>3.1.0</mybatis.plus.spring.boot.version>
 		<flying.saucer.pdf.itext5.version>9.0.6</flying.saucer.pdf.itext5.version>
 	</properties>
 
@@ -72,11 +70,12 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- logback -->
+		<!-- logback core -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 		</dependency>
+		<!-- logback classic -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -113,12 +112,6 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-swagger</artifactId>
-				<version>${framework.version}</version>
-			</dependency>
-			<!-- framework service module -->
-			<dependency>
-				<groupId>top.lshaci</groupId>
-				<artifactId>framework-service</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework web module -->
@@ -181,29 +174,17 @@
 				<artifactId>druid-spring-boot-starter</artifactId>
 				<version>${druid.spring.boot.version}</version>
 			</dependency>
-			<!-- tk mybatis spring boot -->
+			<!-- spring boot mybatis plus -->
 			<dependency>
-				<groupId>tk.mybatis</groupId>
-				<artifactId>mapper-spring-boot-starter</artifactId>
-				<version>${tkmybatis.spring.boot.version}</version>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<version>${mybatis.plus.spring.boot.version}</version>
 			</dependency>
-			<!--mybatis generator -->
+			<!-- mybatis plus generator -->
 			<dependency>
-				<groupId>org.mybatis.generator</groupId>
-				<artifactId>mybatis-generator-core</artifactId>
-				<version>${mybatis.generator.version}</version>
-			</dependency>
-			<!-- tk mybatis generator -->
-			<dependency>
-				<groupId>tk.mybatis</groupId>
-				<artifactId>mapper-generator</artifactId>
-				<version>${tk.mybatis.generator.version}</version>
-			</dependency>
-			<!-- pagehelper spring boot -->
-			<dependency>
-				<groupId>com.github.pagehelper</groupId>
-				<artifactId>pagehelper-spring-boot-starter</artifactId>
-				<version>${pagehelper.spring.boot.version}</version>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-generator</artifactId>
+				<version>${mybatis.plus.generator.version}</version>
 			</dependency>
 			<!-- springfox swagger2 -->
 			<dependency>

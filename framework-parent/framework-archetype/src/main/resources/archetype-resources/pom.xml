@@ -14,10 +14,10 @@
     </properties>
 
     <dependencies>
-        <!-- top lshaci framework service module -->
+        <!-- top lshaci framework mybatis module -->
         <dependency>
             <groupId>top.lshaci</groupId>
-            <artifactId>framework-service</artifactId>
+            <artifactId>framework-mybatis</artifactId>
         </dependency>
         <!-- top lshaci framework web module -->
         <dependency>
@@ -41,16 +41,16 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--mybatis generator -->
+        <!-- mybatis plus generator -->
         <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-core</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- tk mybatis generator -->
+        <!-- freemarker -->
         <dependency>
-            <groupId>tk.mybatis</groupId>
-            <artifactId>mapper-generator</artifactId>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

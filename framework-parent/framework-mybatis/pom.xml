@@ -20,40 +20,49 @@
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-utils</artifactId>
 		</dependency>
-		<!-- spring boot druid -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid-spring-boot-starter</artifactId>
-		</dependency>
-		<!-- tk mybatis spring boot -->
-		<dependency>
-			<groupId>tk.mybatis</groupId>
-			<artifactId>mapper-spring-boot-starter</artifactId>
-		</dependency>
 		<!-- spring boot aop -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
-		<!-- pagehelper spring boot -->
+		<!-- spring boot druid -->
 		<dependency>
-			<groupId>com.github.pagehelper</groupId>
-			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+		</dependency>
+		<!-- spring boot mybatis plus -->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+		</dependency>
+		<!-- mybatis plus generator -->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-generator</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- freemarker -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- springfox swagger2 -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- springfox swagger ui -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<!-- mysql connector -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		<!--mybatis generator -->
-		<dependency>
-			<groupId>org.mybatis.generator</groupId>
-			<artifactId>mybatis-generator-core</artifactId>
-		</dependency>
-		<!-- tk mybatis generator -->
-		<dependency>
-			<groupId>tk.mybatis</groupId>
-			<artifactId>mapper-generator</artifactId>
 		</dependency>
 	</dependencies>
 

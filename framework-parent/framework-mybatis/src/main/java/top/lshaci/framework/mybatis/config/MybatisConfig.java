@@ -26,14 +26,13 @@ import top.lshaci.framework.mybatis.datasource.DynamicDataSource;
 @Slf4j
 @Configuration
 @AutoConfigureAfter(DynamicDataSourceConfig.class)
-@PropertySource("classpath:mybatis.properties")
 @ConditionalOnProperty(value = "datasource.dynamic", havingValue = "true")
 public class MybatisConfig {
 	
-	@Value("${mybatis.type-aliases-package}")
+	@Value("${mybatis-plus.type-aliases-package}")
 	private String mybatisTypeAliasesPackage;
 	
-	@Value("${mybatis.mapper-locations}")
+	@Value("${mybatis-plus.mapper-locations}")
 	private String mybatisMapperLocations;
 	
 	/**

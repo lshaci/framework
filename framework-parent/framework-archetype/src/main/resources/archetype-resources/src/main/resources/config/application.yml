@@ -13,7 +13,7 @@ logging:
   level:
     root: warn
     ${groupId}.${artifactId}: info
-# mybatis
-mybatis:
-  type-aliases-package: ${groupId}.${artifactId}.model.domain
-  mapper-locations: classpath*:mapper/*Mapper.xml
+# mybatis plus
+mybatis-plus:
+  type-aliases-package: ${groupId}.${artifactId}.entity,${groupId}.${artifactId}.model.*
+  mapper-locations: classpath:mappers/*Mapper.xml
