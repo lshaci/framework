@@ -81,6 +81,7 @@ public class CodeGenerator {
         gc.setServiceName("%sService");
         gc.setServiceImplName("%sServiceImpl");
         gc.setBaseResultMap(true);
+        gc.setActiveRecord(true);
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();

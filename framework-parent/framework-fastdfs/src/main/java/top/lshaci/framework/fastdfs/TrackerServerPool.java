@@ -61,7 +61,7 @@ class TrackerServerPool {
 		log.debug("ClientGlobal configInfo: {}", ClientGlobal.configInfo());
 
 		// pool config
-		GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
+		GenericObjectPoolConfig<TrackerServer> poolConfig = new GenericObjectPoolConfig<>();
 		poolConfig.setMinIdle(minStorageConnection);
 		poolConfig.setMaxTotal(maxStorageConnection);
 
