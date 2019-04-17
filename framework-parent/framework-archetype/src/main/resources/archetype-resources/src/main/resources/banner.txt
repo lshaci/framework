@@ -4,5 +4,4 @@
 | `--..-._} }| { } |/  /\  \\     }| |
 `----'`----' `-' `-'`-'  `-' `---' `-'
 
-::Spring Boot:: ${spring-boot.version}
-::Application:: ${application.version}
+::Spring Boot::      (${spring-boot.version})

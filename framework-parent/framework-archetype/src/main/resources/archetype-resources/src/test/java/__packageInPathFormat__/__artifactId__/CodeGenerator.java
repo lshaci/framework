@@ -49,7 +49,7 @@ public class CodeGenerator {
      */
     static {
         Properties properties = new Properties();
-        InputStream i = ClassLoader.getSystemResourceAsStream("generatorConfig.properties");
+        InputStream i = CodeGenerator.class.getResourceAsStream("/generatorConfig.properties");
         try {
             properties.load(i);
             url = properties.getProperty("generator.jdbc.url");
