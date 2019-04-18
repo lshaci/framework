@@ -50,10 +50,9 @@
 
 		<framework.version>1.0.1</framework.version>
 		<fastjson.version>1.2.47</fastjson.version>
-		<commons.lang3.version>3.7</commons.lang3.version>
 		<commons.compress.version>1.18</commons.compress.version>
 		<fastdfs.client.version>1.27.0.0</fastdfs.client.version>
-		<commons.collections4.version>4.1</commons.collections4.version>
+		<commons.collections4.version>4.3</commons.collections4.version>
 		<mybatis.plus.generator.version>3.1.0</mybatis.plus.generator.version>
 
 		<spring.boot.version>2.1.4.RELEASE</spring.boot.version>
@@ -209,12 +208,6 @@
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
 				<version>${poi.version}</version>
-			</dependency>
-			<!-- apache commons lang3 -->
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${commons.lang3.version}</version>
 			</dependency>
 			<!-- apache commons collections4 -->
 			<dependency>
