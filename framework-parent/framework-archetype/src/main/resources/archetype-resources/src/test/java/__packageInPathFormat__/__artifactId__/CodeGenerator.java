@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Project code genertor
+ * Project code generator
  * 
  * @author lshaci
  * @since 1.0.1
