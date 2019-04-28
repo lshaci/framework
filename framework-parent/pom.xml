@@ -6,7 +6,7 @@
 
 	<groupId>top.lshaci</groupId>
 	<artifactId>framework-parent</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 
 	<packaging>pom</packaging>
 
@@ -48,7 +48,7 @@
 		<poi.version>3.17</poi.version>
 		<swagger.version>2.9.2</swagger.version>
 
-		<framework.version>1.0.1</framework.version>
+		<framework.version>1.0.2</framework.version>
 		<fastjson.version>1.2.47</fastjson.version>
 		<commons.compress.version>1.18</commons.compress.version>
 		<fastdfs.client.version>1.27.0.0</fastdfs.client.version>
