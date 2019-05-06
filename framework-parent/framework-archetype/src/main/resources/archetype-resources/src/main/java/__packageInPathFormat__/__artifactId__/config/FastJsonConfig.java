@@ -22,7 +22,7 @@ public class FastJsonConfig {
      */
     @Bean
     public HttpMessageConverters fastJsonHttpMessageConverters() {
-        log.info("Config fast json http message converter.");
+        log.debug("Config fast json http message converter.");
         FastJsonHttpMessageConverter fastJsonHttpMessageConverter = FastJsonConverterFactory.build()
                 .addSerializerFeature(
                         SerializerFeature.WriteMapNullValue,

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Swagger auto configuration<br><br>
  * <b>1.0.1: </b>Add grouping configuration
- * 
+ *
  * @author lshaci
  * @since 0.0.4
  * @version 1.0.1
@@ -44,21 +44,21 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
 	@Autowired
 	private SwaggerProperties properties;
-	
+
 	private BeanFactory beanFactory;
 
 	/**
 	 * Config swagger docket bean
-	 * 
+	 *
 	 * @return swagger docket bean list
 	 * @throws Exception
 	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public List<Docket> docket() throws Exception {
-		log.info("Init Swagger UI Config...");
+		log.debug("Init Swagger UI Config...");
 		ConfigurableBeanFactory configurableBeanFactory = (ConfigurableBeanFactory) beanFactory;
-		
+
 		// No group
 		if (properties.getDocket().isEmpty()) {
 			Docket defaultDocket = defaultDocket();
@@ -74,12 +74,12 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 			});
 			return docketList;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Create swagger docket(grouping)
-	 * 
+	 *
 	 * @param groupName group name
 	 * @param docketInfo docket information
 	 * @return swagger docket
@@ -90,7 +90,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         if (docketInfo.getBasePath().isEmpty()) {
         	docketInfo.getBasePath().add("/**");
         }
-        
+
         List<Predicate<String>> basePath = new ArrayList<>();
         for (String path : docketInfo.getBasePath()) {
             basePath.add(PathSelectors.ant(path));
@@ -101,7 +101,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         for (String path : docketInfo.getExcludePath()) {
             excludePath.add(PathSelectors.ant(path));
         }
-        
+
 		return new Docket(DocumentationType.SWAGGER_2)
 				.apiInfo(apiInfo(docketInfo))
 				.groupName(groupName)
@@ -116,12 +116,12 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                 )
 				.build();
 	}
-	
+
 	/**
-	 * Create swagger api information 
-	 * 
+	 * Create swagger api information
+	 *
 	 * @param docketInfo docket information
-	 * @return swagger api information 
+	 * @return swagger api information
 	 */
 	private ApiInfo apiInfo(DocketInfo docketInfo) {
 		return new ApiInfoBuilder()
@@ -137,7 +137,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
 	/**
 	 * Create default docket
-	 * 
+	 *
 	 * @return swagger docket
 	 */
 	private Docket defaultDocket() {
@@ -146,7 +146,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         if (properties.getBasePath().isEmpty()) {
         	properties.getBasePath().add("/**");
         }
-        
+
         List<Predicate<String>> basePath = new ArrayList<>();
         for (String path : properties.getBasePath()) {
             basePath.add(PathSelectors.ant(path));
@@ -157,7 +157,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         for (String path : properties.getExcludePath()) {
             excludePath.add(PathSelectors.ant(path));
         }
-        
+
 		return new Docket(DocumentationType.SWAGGER_2)
 				.apiInfo(defaultApiInfo())
 				.directModelSubstitute(Byte.class, Integer.class)
@@ -174,7 +174,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
 	/**
 	 * Build default swagger api information
-	 * 
+	 *
 	 * @return default swagger api information
 	 */
 	private ApiInfo defaultApiInfo() {
