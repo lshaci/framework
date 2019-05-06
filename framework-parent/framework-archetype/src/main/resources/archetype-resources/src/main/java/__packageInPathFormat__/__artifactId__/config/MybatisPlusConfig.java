@@ -1,5 +1,6 @@
 package ${groupId}.${artifactId}.config;
 
+import lombok.extern.slf4j.Slf4j;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author lshaci
  */
+@Slf4j
 @Configuration
 public class MybatisPlusConfig {
 
@@ -17,6 +19,7 @@ public class MybatisPlusConfig {
      */
     @Bean
     public PaginationInterceptor paginationInterceptor() {
+        log.info("Config mybatis plus pagination interceptor.");
         return new PaginationInterceptor();
     }
 }
