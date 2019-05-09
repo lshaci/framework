@@ -1,26 +1,22 @@
 package top.lshaci.framework.web.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.context.request.RequestContextListener;
-
-import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.web.aspect.PreventRepeatSubmitAspect;
 import top.lshaci.framework.web.aspect.UserRoleAspect;
 import top.lshaci.framework.web.aspect.WebLogAspect;
 import top.lshaci.framework.web.handler.exception.GlobalExceptionHandler;
-import top.lshaci.framework.web.utils.DownloadUtils;
 
 /**
  * <p>Framework web config</p><br>
  *
  * <b>0.0.4: </b>Add setDownloadCacheSize method; Add config GlobalExceptionHandler, WebLogAspect, PreventRepeatSubmitAspect
- * <b>1.0.2: </b>修改配置属性前缀
+ * <b>1.0.2: </b>修改配置属性前缀；删除DownloadUtil cacheSize配置
  *
  * @author lshaci
  * @since 0.0.3
@@ -94,15 +90,4 @@ public class FrameworkWebConfig {
     	return new UserRoleAspect();
     }
 
-    /**
-     * Set download utils cache size
-     */
-    @Autowired
-    public void setDownloadCacheSize(@Value("${web.download.cacheSize}") int downloadCacheSize) {
-        if (downloadCacheSize <= 0) {
-            downloadCacheSize = 2048;
-        }
-        log.debug("Set DownloadUtils cacheSize: {} bytes", downloadCacheSize);
-        DownloadUtils.cacheSize = downloadCacheSize;
-    }
 }
