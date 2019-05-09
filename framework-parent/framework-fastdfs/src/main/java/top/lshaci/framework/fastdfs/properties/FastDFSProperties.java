@@ -8,14 +8,19 @@ import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 
 /**
  * FastDFSProperties
- * 
+ *
  * @author lshaci
  * @since 0.0.4
  */
 @Data
 @ConfigurationProperties(FastDFSConstant.FAST_DFS_PREFIX)
 public class FastDFSProperties {
-	
+
+	/**
+	 * 是否启用FastDfs配置(默认开启)
+	 */
+	private Boolean enabled = true;
+
 	/**
 	 * The file server reverse proxy address
 	 */
@@ -39,7 +44,7 @@ public class FastDFSProperties {
 
     /**
      * The upload max file size. Values can use the suffixed "MB" or "KB" to indicate a Megabyte or Kilobyte size.
-     * 
+     *
      * @param maxFileSize the maximum request size
      */
     public void setMaxFileSize(String maxFileSize) {

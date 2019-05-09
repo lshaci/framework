@@ -3,9 +3,10 @@ spring:
   # profiles
   profiles:
     active: local
+# framework
+framework:
   # swagger
   swagger:
-    enabled: true
     base-package: ${groupId}.${artifactId}.web.controller
 # log
 logging:

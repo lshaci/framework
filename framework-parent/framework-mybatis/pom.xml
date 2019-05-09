@@ -15,15 +15,16 @@
 	</parent>
 
 	<dependencies>
-		<!-- framework utils module -->
+		<!-- framework common module -->
 		<dependency>
 			<groupId>top.lshaci</groupId>
-			<artifactId>framework-utils</artifactId>
+			<artifactId>framework-common</artifactId>
 		</dependency>
-		<!-- spring boot aop -->
+		<!-- spring boot configuration -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-aop</artifactId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<!-- spring boot druid -->
 		<dependency>
@@ -35,6 +36,11 @@
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-boot-starter</artifactId>
 		</dependency>
+        <!-- spring boot baomidou dynamic datasource -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+        </dependency>
 		<!-- mybatis plus generator -->
 		<dependency>
 			<groupId>com.baomidou</groupId>

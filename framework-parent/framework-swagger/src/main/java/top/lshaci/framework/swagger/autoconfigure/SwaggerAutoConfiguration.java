@@ -20,8 +20,8 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import top.lshaci.framework.swagger.properties.SwaggerProperties;
-import top.lshaci.framework.swagger.properties.SwaggerProperties.DocketInfo;
+import top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties;
+import top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties.DocketInfo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -38,12 +38,12 @@ import java.util.List;
 @Slf4j
 @Configuration
 @EnableSwagger2
-@EnableConfigurationProperties(SwaggerProperties.class)
-@ConditionalOnProperty(prefix = SwaggerProperties.SWAGGER_PREFIX, value = "enabled", havingValue = "true")
+@EnableConfigurationProperties(FrameworkSwaggerProperties.class)
+@ConditionalOnProperty(prefix = FrameworkSwaggerProperties.SWAGGER_PREFIX, value = "enabled", havingValue = "true")
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
 	@Autowired
-	private SwaggerProperties properties;
+	private FrameworkSwaggerProperties properties;
 
 	private BeanFactory beanFactory;
 

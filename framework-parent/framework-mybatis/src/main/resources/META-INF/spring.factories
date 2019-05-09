@@ -1,4 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-top.lshaci.framework.mybatis.config.SingleDataSourceConfig,\
-top.lshaci.framework.mybatis.config.DynamicDataSourceConfig,\
-top.lshaci.framework.mybatis.config.MybatisConfig
+top.lshaci.framework.mybatis.config.MybatisPlusConfig

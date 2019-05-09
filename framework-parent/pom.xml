@@ -58,8 +58,9 @@
 		<spring.boot.version>2.1.4.RELEASE</spring.boot.version>
 		<spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
 		<druid.spring.boot.version>1.1.16</druid.spring.boot.version>
-		<mybatis.plus.spring.boot.version>3.1.0</mybatis.plus.spring.boot.version>
+		<mybatis.plus.spring.boot.version>3.1.1</mybatis.plus.spring.boot.version>
 		<flying.saucer.pdf.itext5.version>9.0.6</flying.saucer.pdf.itext5.version>
+		<baomidou.dynamic.datasource.spring.boot.version>2.5.4</baomidou.dynamic.datasource.spring.boot.version>
 	</properties>
 
 	<dependencies>
@@ -179,6 +180,12 @@
 				<artifactId>mybatis-plus-boot-starter</artifactId>
 				<version>${mybatis.plus.spring.boot.version}</version>
 			</dependency>
+            <!-- spring boot baomidou dynamic datasource -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${baomidou.dynamic.datasource.spring.boot.version}</version>
+            </dependency>
 			<!-- mybatis plus generator -->
 			<dependency>
 				<groupId>com.baomidou</groupId>
