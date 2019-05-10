@@ -16,7 +16,7 @@ import java.util.Properties;
 
 /**
  * Project code generator
- * 
+ *
  * @author lshaci
  * @since 1.0.1
  */
@@ -80,7 +80,7 @@ public class CodeGenerator {
         gc.setXmlName("%sMapper");
         gc.setServiceName("%sService");
         gc.setServiceImplName("%sServiceImpl");
-        gc.setBaseResultMap(true);
+//        gc.setBaseResultMap(true); // mapper.xml中生成BaseResultMap
         gc.setActiveRecord(true);
 
         // 数据源配置
