@@ -1,16 +1,17 @@
 package top.lshaci.framework.excel.handle;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import top.lshaci.framework.excel.annotation.export.ExportSheet;
 import top.lshaci.framework.excel.enums.ExcelType;
 import top.lshaci.framework.excel.service.ExportService;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Excel导出处理器
@@ -34,7 +35,7 @@ public class ExportHandler {
 	 */
 	public static <E> Workbook export(Class<E> cls, List<E> datas) {
 		Workbook workbook = getWorkbook(cls, CollectionUtils.isEmpty(datas) ? 0 : datas.size());
-		new ExportService(cls, datas, workbook).createSheet();
+		new ExportService(cls, datas, workbook).create();
 		return workbook;
 	}
 

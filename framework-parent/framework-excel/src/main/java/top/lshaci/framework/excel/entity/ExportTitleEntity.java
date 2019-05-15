@@ -1,18 +1,20 @@
 package top.lshaci.framework.excel.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import top.lshaci.framework.excel.annotation.export.ExportTitle;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.excel.annotation.export.ExportTitle;
+import top.lshaci.framework.excel1.exception.ExcelHandlerException;
 
 /**
  * 导出列定义的相关参数
@@ -138,12 +140,14 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 	 * 根据导出的字段创建序号列信息
 	 *
 	 * @param field 需要导出的字段
+	 * @param cls 需要导出的实体类
 	 */
-	public ExportTitleEntity(Field field) {
+	public ExportTitleEntity(Field field, Class<?> cls) {
 		this.field = field;
 		this.isField = true;
 		this.title = field.getName();
-
+		this.method = createByField(field, cls);
+		
 		ExportTitle exportTitle = field.getAnnotation(ExportTitle.class);
 		if (Objects.isNull(exportTitle)) {
 			return;
@@ -158,8 +162,31 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 				this.convertMethod = this.convertClass.getMethod(exportTitle.convertMethod(), this.field.getType());
 			} catch (NoSuchMethodException | SecurityException e) {
 				log.error("{}.{}转换方法不存在", exportTitle.convertClass(), exportTitle.convertMethod());
+				throw new ExcelHandlerException("转换方法不存在", e);
 			}
 		}
+	}
+	
+	/**
+	 * 根据字段和类创建字段的公共get方法
+	 * 
+	 * @param field 字段
+	 * @param cls 类
+	 * @return get方法
+	 */
+	private Method createByField(Field field, Class<?> cls) {
+		String name = field.getName();
+		if (field.getType() == boolean.class) {
+			throw new ExcelHandlerException("禁止使用boolean类型");
+		}
+		String methodName = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
+		try {
+			return cls.getMethod(methodName);
+		} catch (NoSuchMethodException | SecurityException e) {
+			log.error("字段{}.{}的get方法不存在", cls, name);
+			throw new ExcelHandlerException("Get方法不存在", e);
+		}
+		
 	}
 
 	/**
