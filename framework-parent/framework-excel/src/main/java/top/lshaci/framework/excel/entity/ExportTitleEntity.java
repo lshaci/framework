@@ -235,6 +235,18 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 			this.groupName = exportTitle.groupName();
 		}
 	}
+	
+	/**
+	 * 获取序号
+	 * 
+	 * @return 字符串类型的序号
+	 */
+	public String getIndexNumber() {
+		if (isIndex) {
+			return index.getAndIncrement() + "";
+		}
+		throw new ExcelHandlerException("当前列不是序号列");
+	}
 
 	@Override
 	public int compareTo(ExportTitleEntity exportTitleEntity) {
