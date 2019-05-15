@@ -25,8 +25,14 @@ public class ExportHandler {
 	 */
 	private static final int XLSX_MAX_SIZE = 100000;
 
-
-	public static Workbook export(Class<?> cls, List<?> datas) {
+	/**
+	 * 根据导出实体类信息和数据条数导出Excel WorkBook
+	 *
+	 * @param cls 导出实体类信息
+	 * @param datas 需要导出的数据
+	 * @return Excel WorkBook
+	 */
+	public static <E> Workbook export(Class<E> cls, List<E> datas) {
 		Workbook workbook = getWorkbook(cls, CollectionUtils.isEmpty(datas) ? 0 : datas.size());
 		new ExportService(cls, datas, workbook).createSheet();
 		return workbook;
