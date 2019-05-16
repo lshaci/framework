@@ -1,24 +1,10 @@
 package top.lshaci.framework.excel.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-
-import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.ExcelEntity;
 import top.lshaci.framework.excel.annotation.export.ExportEntity;
 import top.lshaci.framework.excel.annotation.export.ExportSheet;
@@ -27,6 +13,10 @@ import top.lshaci.framework.excel.entity.ExportSheetParam;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.utils.CellValueUtil;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 导出Excel业务类
@@ -160,7 +150,7 @@ public class ExportService {
 	 * 处理需要导出列的参数信息
 	 */
 	private void handleTitleParams() {
-		List<ExportTitleParam> titleParams = fetchExportTitleEntities(this.cls);
+		List<ExportTitleParam> titleParams = fetchExportTitleParams(this.cls);
 		titleParams.addAll(getEntities(this.cls));
 		if (this.sheetParam.isAddIndex()) {
 			titleParams.add(new ExportTitleParam(this.sheetParam));
@@ -205,7 +195,7 @@ public class ExportService {
 	 * @param cls 实体类型
 	 * @return 列参数集合
 	 */
-	private List<ExportTitleParam> fetchExportTitleEntities(Class<?> cls) {
+	private List<ExportTitleParam> fetchExportTitleParams(Class<?> cls) {
 		Map<String, ExportTitleParam> titleParamHashMap = new HashMap<>();
 		getFields(cls, titleParamHashMap);
 		getMethods(cls, titleParamHashMap);
@@ -380,7 +370,7 @@ public class ExportService {
 			return true;
 		}).flatMap(f -> {
 			ExportEntity exportEntity = f.getAnnotation(ExportEntity.class);
-			return this.fetchExportTitleEntities(f.getType())
+			return this.fetchExportTitleParams(f.getType())
 					.stream()
 					.map(e -> e.setEntityField(f)
 							.setGroupName(exportEntity.title())
