@@ -1,29 +1,21 @@
 package top.lshaci.framework.excel.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-
+import top.lshaci.framework.excel.annotation.ExcelEntity;
 import top.lshaci.framework.excel.annotation.export.ExportEntity;
 import top.lshaci.framework.excel.annotation.export.ExportSheet;
 import top.lshaci.framework.excel.annotation.export.ExportTitle;
 import top.lshaci.framework.excel.entity.ExportSheetParam;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
+import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.utils.CellValueUtil;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 导出Excel业务类
@@ -367,7 +359,13 @@ public class ExportService {
 	private List<ExportTitleParam> getEntities(Class<?> cls) {
 		return Arrays.stream(cls.getDeclaredFields())
 		.filter(f -> Objects.nonNull(f.getAnnotation(ExportEntity.class)))
-		.flatMap(f -> {
+		.filter(f -> {
+			ExcelEntity excelEntity = f.getType().getAnnotation(ExcelEntity.class);
+			if (Objects.isNull(excelEntity)) {
+				throw new ExcelHandlerException("导出实体未使用ExcelEntity注解标记");
+			}
+			return true;
+		}).flatMap(f -> {
 			ExportEntity exportEntity = f.getAnnotation(ExportEntity.class);
 			return this.fetchExportTitleEntities(f.getType())
 					.stream()
