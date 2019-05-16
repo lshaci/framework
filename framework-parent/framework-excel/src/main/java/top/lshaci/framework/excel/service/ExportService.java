@@ -1,9 +1,24 @@
 package top.lshaci.framework.excel.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.ExcelEntity;
 import top.lshaci.framework.excel.annotation.export.ExportEntity;
 import top.lshaci.framework.excel.annotation.export.ExportSheet;
@@ -13,16 +28,13 @@ import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.utils.CellValueUtil;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * 导出Excel业务类
  *
  * @author lshaci
  * @since 1.0.2
  */
+@Slf4j
 public class ExportService {
 
 	/**
@@ -362,6 +374,7 @@ public class ExportService {
 		.filter(f -> {
 			ExcelEntity excelEntity = f.getType().getAnnotation(ExcelEntity.class);
 			if (Objects.isNull(excelEntity)) {
+				log.error("{}未使用ExcelEntity注解标记", f.getType());
 				throw new ExcelHandlerException("导出实体未使用ExcelEntity注解标记");
 			}
 			return true;
