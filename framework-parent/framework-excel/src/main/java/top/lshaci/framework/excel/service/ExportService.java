@@ -114,9 +114,6 @@ public class ExportService {
 	 */
 	public void create() {
 		handleTitleParams();
-		titleParams.forEach(System.err::println);
-		System.err.println(this.sheetParam.getSize());
-		contentParams.forEach(System.err::println);
 
 		Stream.iterate(0, n -> n + 1).limit(sheetParam.getNumber()).forEach(n -> {
 			currentRowNumber = 0;
