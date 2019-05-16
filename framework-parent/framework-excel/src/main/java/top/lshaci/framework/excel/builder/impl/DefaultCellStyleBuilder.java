@@ -1,4 +1,4 @@
-package top.lshaci.framework.excel.style.impl;
+package top.lshaci.framework.excel.builder.impl;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -12,16 +12,16 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 
 import top.lshaci.framework.excel.entity.ExportSheetParam;
-import top.lshaci.framework.excel.style.CellStyleBuilder;
+import top.lshaci.framework.excel.builder.CellStyleBuilder;
 
 /**
  * 默认的单元格样式构建者
- * 
+ *
  * @author lshaci
  * @since 1.0.2
  */
 public class DefaultCellStyleBuilder implements CellStyleBuilder {
-	
+
 	@Override
 	public void setMergeCellBorder(CellRangeAddress region, Sheet sheet) {
 		RegionUtil.setBorderTop(BorderStyle.THIN, region, sheet);
@@ -36,7 +36,7 @@ public class DefaultCellStyleBuilder implements CellStyleBuilder {
 		style.setWrapText(true);
 		setBorder(style);
 		setCenter(style);
-		
+
 		Font font = createFont(workbook, IndexedColors.BLACK.index, (short) 10, false, exportSheetParam.getFontName());
 		style.setFont(font);
 
@@ -49,7 +49,7 @@ public class DefaultCellStyleBuilder implements CellStyleBuilder {
 		style.setWrapText(true);
 		setBorder(style);
 		setCenter(style);
-		
+
 		Font font = createFont(workbook, IndexedColors.BLACK.index, (short) 20, true, exportSheetParam.getFontName());
 		style.setFont(font);
 
@@ -61,16 +61,16 @@ public class DefaultCellStyleBuilder implements CellStyleBuilder {
 		CellStyle style = workbook.createCellStyle();
 		setBorder(style);
 		setCenter(style);
-		
+
 		Font font = createFont(workbook, IndexedColors.BLACK.index, (short) 12, true, exportSheetParam.getFontName());
 		style.setFont(font);
 
 		return style;
 	}
-	
+
 	/**
 	 * 创建字体
-	 * 
+	 *
 	 * @param workbook Excel工作簿
 	 * @param color 字体颜色
 	 * @param height 字体高度
@@ -89,17 +89,17 @@ public class DefaultCellStyleBuilder implements CellStyleBuilder {
 
 	/**
 	 * 设置水平和垂直居中
-	 * 
+	 *
 	 * @param style 单元格样式
 	 */
 	private void setCenter(CellStyle style) {
 		style.setAlignment(HorizontalAlignment.CENTER);
 		style.setVerticalAlignment(VerticalAlignment.CENTER);
 	}
-	
+
 	/**
 	 * 设置单元格边框
-	 * 
+	 *
 	 * @param style 单元格样式
 	 */
 	private void setBorder(CellStyle style) {

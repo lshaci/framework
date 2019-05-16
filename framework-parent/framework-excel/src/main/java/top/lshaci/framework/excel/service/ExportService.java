@@ -22,12 +22,12 @@ import top.lshaci.framework.excel.annotation.export.ExportEntity;
 import top.lshaci.framework.excel.annotation.export.ExportSheet;
 import top.lshaci.framework.excel.annotation.export.ExportTitle;
 import top.lshaci.framework.excel.entity.ExportSheetParam;
-import top.lshaci.framework.excel.entity.ExportTitleEntity;
+import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.excel.utils.CellValueUtil;
 
 /**
  * 导出Excel业务类
- * 
+ *
  * @author lshaci
  * @since 1.0.2
  */
@@ -56,33 +56,33 @@ public class ExportService {
 	/**
 	 * 用于生成列标题的参数
 	 */
-	private List<ExportTitleEntity> titleEntities;
+	private List<ExportTitleParam> titleParams;
 
 	/**
 	 * 用于生成内容的参数
 	 */
-	private List<ExportTitleEntity> contentEntities;
+	private List<ExportTitleParam> contentParams;
 
 	/**
 	 * 当前行号
 	 */
 	private int currentRowNumber;
-	
+
 	/**
 	 * 当前的Sheet
 	 */
 	private Sheet sheet;
-	
+
 	/**
 	 * Sheet标题样式
 	 */
 	private CellStyle sheetTitleStyle;
-	
+
 	/**
 	 * 列标题样式
 	 */
 	private CellStyle columnTitleStyle;
-	
+
 	/**
 	 * 内容单元格样式
 	 */
@@ -90,12 +90,12 @@ public class ExportService {
 
 	/**
 	 * 根据导出对象类型、数据和Excel工作簿创建一个导出业务类
-	 * 
+	 *
 	 * @param cls 导出对象类型
 	 * @param datas 导出数据集合
 	 * @param workbook Excel工作簿
 	 */
-	public ExportService(Class<?> cls, List<?> datas, Workbook workbook) {
+	public ExportService(Class<?> cls, List<?> datas, Workbook workbook, String sheetTitle) {
 		this.cls = cls;
 		this.datas = datas;
 		this.workbook = workbook;
@@ -104,19 +104,23 @@ public class ExportService {
 		this.sheetTitleStyle = sheetParam.getCellStyleBuilder().sheetTitleStyle(workbook, sheetParam);
 		this.columnTitleStyle = sheetParam.getCellStyleBuilder().columnTitleStyle(workbook, sheetParam);
 		this.contentStyle = sheetParam.getCellStyleBuilder().contentStyle(workbook, sheetParam);
+		if (StringUtils.isNotBlank(sheetTitle)) {
+			this.sheetParam.setTitle(sheetTitle);
+		}
 	}
 
 	/**
-	 * 创建Excel 
+	 * 创建Excel
 	 */
 	public void create() {
-		handleExportTitleEntities();
-		titleEntities.forEach(System.err::println);
+		handleTitleParams();
+		titleParams.forEach(System.err::println);
 		System.err.println(this.sheetParam.getSize());
-		contentEntities.forEach(System.err::println);
-		
+		contentParams.forEach(System.err::println);
+
 		Stream.iterate(0, n -> n + 1).limit(sheetParam.getNumber()).forEach(n -> {
 			currentRowNumber = 0;
+			sheetParam.getIndexBuilder().reset();
 			this.sheet = workbook.createSheet(sheetParam.getName() + "_" + (n + 1));
 			setColumnWidth();
 			setSheetTitle();
@@ -125,26 +129,26 @@ public class ExportService {
 			if (CollectionUtils.isEmpty(datas)) {
 				return;
 			}
-			
+
 			int size = sheetParam.getSize();
 			int end = (n + 1) * size;
 			end = end > datas.size() ? datas.size() : end;
 			datas.subList(n * size, end).forEach(this::setRowContent);
 		});
 	}
-	
+
 	/**
 	 * 设置行内容
-	 * 
+	 *
 	 * @param data 行数据
 	 */
 	private void setRowContent(Object data) {
 		Row row = sheet.createRow(currentRowNumber++);
-		for (int i = 0; i < this.contentEntities.size(); i++) {
-			ExportTitleEntity titleEntity = this.contentEntities.get(i);
+		for (int i = 0; i < this.contentParams.size(); i++) {
+			ExportTitleParam titleEntity = this.contentParams.get(i);
 			row.setHeight((short) (titleEntity.getHeight() * 20));
 			String cellValue = CellValueUtil.get(titleEntity, data);
-			
+
 			Cell cell = row.createCell(i);
 			cell.setCellValue(cellValue);
 			cell.setCellStyle(contentStyle);
@@ -154,37 +158,37 @@ public class ExportService {
 	/**
 	 * 处理需要导出列的参数信息
 	 */
-	private void handleExportTitleEntities() {
-		List<ExportTitleEntity> exportTitleEntities = fetchExportTitleEntities(this.cls);
-		exportTitleEntities.addAll(getEntities(this.cls));
+	private void handleTitleParams() {
+		List<ExportTitleParam> titleParams = fetchExportTitleEntities(this.cls);
+		titleParams.addAll(getEntities(this.cls));
 		if (this.sheetParam.isAddIndex()) {
-			exportTitleEntities.add(new ExportTitleEntity(this.sheetParam));
+			titleParams.add(new ExportTitleParam(this.sheetParam));
 		}
 
-		List<ExportTitleEntity> groupTitleEntities = new ArrayList<>();
-		exportTitleEntities.stream()
+		List<ExportTitleParam> groupTitleParams = new ArrayList<>();
+		titleParams.stream()
 				.filter(e -> StringUtils.isNotBlank(e.getGroupName()))
 				.sorted()
-				.collect(Collectors.groupingBy(ExportTitleEntity::getGroupName))
+				.collect(Collectors.groupingBy(ExportTitleParam::getGroupName))
 				.forEach((k, v) -> {
-					List<ExportTitleEntity> children = v.stream().sorted().collect(Collectors.toList());
-					ExportTitleEntity exportTitleEntity = new ExportTitleEntity()
+					List<ExportTitleParam> children = v.stream().sorted().collect(Collectors.toList());
+					ExportTitleParam titleParam = new ExportTitleParam()
 							.setTitle(k).setChildren(children)
 							.setOrder(v.get(0).getOrder());
-					groupTitleEntities.add(exportTitleEntity);
+					groupTitleParams.add(titleParam);
 				});
 
-		List<ExportTitleEntity> singleTitleEntities = exportTitleEntities.stream()
+		List<ExportTitleParam> singleTitleParams = titleParams.stream()
 				.filter(e -> StringUtils.isBlank(e.getGroupName()))
 				.collect(Collectors.toList());
 
-		singleTitleEntities.addAll(groupTitleEntities);
+		singleTitleParams.addAll(groupTitleParams);
 
-		this.titleEntities = singleTitleEntities.stream()
+		this.titleParams = singleTitleParams.stream()
 				.sorted()
 				.collect(Collectors.toList());
 
-		this.contentEntities = this.titleEntities.stream()
+		this.contentParams = this.titleParams.stream()
 				.flatMap(e -> {
 					if (CollectionUtils.isEmpty(e.getChildren())) {
 						return Arrays.asList(e).stream();
@@ -196,15 +200,15 @@ public class ExportService {
 
 	/**
 	 * 根据实体类型获取需要导出的列参数集合
-	 * 
+	 *
 	 * @param cls 实体类型
 	 * @return 列参数集合
 	 */
-	private List<ExportTitleEntity> fetchExportTitleEntities(Class<?> cls) {
-		Map<String, ExportTitleEntity> exportTitleEntityMap = new HashMap<>();
-		getFields(cls, exportTitleEntityMap);
-		getMethods(cls, exportTitleEntityMap);
-		return exportTitleEntityMap.values().stream().collect(Collectors.toList());
+	private List<ExportTitleParam> fetchExportTitleEntities(Class<?> cls) {
+		Map<String, ExportTitleParam> titleParamHashMap = new HashMap<>();
+		getFields(cls, titleParamHashMap);
+		getMethods(cls, titleParamHashMap);
+		return titleParamHashMap.values().stream().collect(Collectors.toList());
 	}
 
 	/**
@@ -214,9 +218,9 @@ public class ExportService {
 		// set default column width
 		this.sheet.setDefaultColumnWidth(12);
 		// set column width
-		for (int i = 0; i < this.contentEntities.size(); i++) {
-			ExportTitleEntity exportTitleEntity = this.contentEntities.get(i);
-			this.sheet.setColumnWidth(i, exportTitleEntity.getWidth() * 256);
+		for (int i = 0; i < this.contentParams.size(); i++) {
+			ExportTitleParam titleParam = this.contentParams.get(i);
+			this.sheet.setColumnWidth(i, titleParam.getWidth() * 256);
 		}
 	}
 
@@ -225,41 +229,82 @@ public class ExportService {
 	 */
 	private void setColumnTitles() {
 		Row row1 = sheet.createRow(currentRowNumber);
-		Row row2 = sheet.createRow(currentRowNumber + 1);
 		row1.setHeight(sheetParam.getColumnTitleHeight());
-		row2.setHeight(sheetParam.getColumnTitleHeight());
 
-		int cn = 0;
-		for (int i = 0; i < this.titleEntities.size(); i++) {
-			ExportTitleEntity titleEntity = this.titleEntities.get(i);
-			List<ExportTitleEntity> children = titleEntity.getChildren();
+		if (this.contentParams.size() > this.titleParams.size()) {
+			// 存在二级标题
+			Row row2 = sheet.createRow(currentRowNumber + 1);
+			row2.setHeight(sheetParam.getColumnTitleHeight());
+			setColumnTitles(row1, row2);
+			currentRowNumber += 2;
+		} else {
+			// 不存在二级标题
+			for (int i = 0; i < this.titleParams.size(); i++) {
+				columnTitleCell(row1, i, this.titleParams.get(i).getTitle());
+			}
+			currentRowNumber++;
+		}
+	}
+
+	/**
+	 * 设置第一行和第二行的标题信息
+	 *
+	 * @param row1 第一行标题的行信息
+	 * @param row2 第二行标题的行信息
+	 */
+	private void setColumnTitles(Row row1, Row row2) {
+		int cn = 0; // 列号
+		for (int i = 0; i < this.titleParams.size(); i++) {
+			ExportTitleParam titleParam = this.titleParams.get(i);
+			List<ExportTitleParam> children = titleParam.getChildren();
 
 			if (CollectionUtils.isEmpty(children)) {
-				CellRangeAddress region = new CellRangeAddress(currentRowNumber, currentRowNumber + 1, cn, cn);
-				sheet.addMergedRegion(region);
-				Cell cell = row1.createCell(cn++);
-				cell.setCellValue(titleEntity.getTitle());
-				cell.setCellStyle(columnTitleStyle);
-				sheetParam.getCellStyleBuilder().setMergeCellBorder(region, sheet);
+				// 合并行
+				titleCellMerge(row1, columnTitleStyle, titleParam.getTitle(), currentRowNumber, currentRowNumber + 1, cn, cn);
+				cn++;
 				continue;
 			}
-
-			CellRangeAddress region = new CellRangeAddress(currentRowNumber, currentRowNumber, cn, cn + children.size() - 1);
-			sheet.addMergedRegion(region);
-			Cell cell = row1.createCell(cn);
-			cell.setCellValue(titleEntity.getTitle());
-			cell.setCellStyle(columnTitleStyle);
-			sheetParam.getCellStyleBuilder().setMergeCellBorder(region, sheet);
-
+			// 合并列
+			titleCellMerge(row1, columnTitleStyle, titleParam.getTitle(), currentRowNumber, currentRowNumber, cn, cn + children.size() - 1);
+			// 设置二级标题
 			for (int j = 0; j < children.size(); j++) {
-				ExportTitleEntity childrenTitleEntity = children.get(j);
-				Cell childrenCell = row2.createCell(cn++);
-				childrenCell.setCellValue(childrenTitleEntity.getTitle());
-				childrenCell.setCellStyle(columnTitleStyle);
+				columnTitleCell(row2, cn++, children.get(j).getTitle());
 			}
-
 		}
-		currentRowNumber += 2;
+	}
+
+	/**
+	 * 设置列标题单元格信息
+	 *
+	 * @param row 标题行信息
+	 * @param cn 列号
+	 * @param title 列标题
+	 */
+	private void columnTitleCell(Row row, int cn, String title) {
+		Cell childrenCell = row.createCell(cn);
+		childrenCell.setCellValue(title);
+		childrenCell.setCellStyle(columnTitleStyle);
+	}
+
+	/**
+	 * 设置单元格合并
+	 *
+	 * @param row 标题行信息
+	 * @param cellStyle 单元格样式
+	 * @param title 标题
+	 * @param firstRow 起始行号
+	 * @param lastRow 终止行号
+	 * @param firstCol 起始列号
+	 * @param lastCol 终止列号
+	 */
+	private void titleCellMerge(Row row, CellStyle cellStyle, String title, int firstRow, int lastRow, int firstCol, int lastCol) {
+		CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+		sheet.addMergedRegion(region);
+		Cell cell = row.createCell(firstCol);
+		cell.setCellValue(title);
+		cell.setCellStyle(cellStyle);
+		// 设置合并单元格的边框
+		sheetParam.getCellStyleBuilder().setMergeCellBorder(region, sheet);
 	}
 
 	/**
@@ -272,75 +317,68 @@ public class ExportService {
 		}
 		Row row = sheet.createRow(currentRowNumber++);
 		row.setHeight(sheetParam.getTitleHeight());
-		int size = this.contentEntities.size();
-		CellRangeAddress region = new CellRangeAddress(0, 0, 0, size - 1);
-		sheet.addMergedRegion(region);
-		Cell cell = row.createCell(0);
-		cell.setCellValue(sheetParam.getTitle());
-		cell.setCellStyle(sheetTitleStyle);
-		// 设置合并单元格的边框
-		sheetParam.getCellStyleBuilder().setMergeCellBorder(region, sheet);
+		titleCellMerge(row, sheetTitleStyle, sheetParam.getTitle(), 0, 0, 0, this.contentParams.size() - 1);
 	}
 
 	/**
 	 * 获取字段上定义的需要导出的列信息
-	 * 
+	 *
 	 * @param cls 实体类型
-	 * @param exportTitleEntityMap 列信息Map
+	 * @param titleParamMap 列信息Map
 	 */
-	private void getFields(Class<?> cls, Map<String, ExportTitleEntity> exportTitleEntityMap) {
+	private void getFields(Class<?> cls, Map<String, ExportTitleParam> titleParamMap) {
 		if (cls == Object.class) {
 			return;
 		}
 		Arrays.stream(cls.getDeclaredFields())
 				.filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
 				.forEach(f -> {
-					if (exportTitleEntityMap.get(f.getName()) == null) {
-						exportTitleEntityMap.put(f.getName(), new ExportTitleEntity(f, cls));
+					if (titleParamMap.get(f.getName()) == null) {
+						titleParamMap.put(f.getName(), new ExportTitleParam(f, cls));
 					}
 				});
-		getFields(cls.getSuperclass(), exportTitleEntityMap);
+		getFields(cls.getSuperclass(), titleParamMap);
 	}
 
 	/**
 	 * 获取公共方法上定义的需要导出的列信息
-	 * 
+	 *
 	 * @param cls 实体类型
-	 * @param exportTitleEntityMap 列信息Map
+	 * @param titleParamMap 列信息Map
 	 */
-	private void getMethods(Class<?> cls, Map<String, ExportTitleEntity> exportTitleEntityMap) {
+	private void getMethods(Class<?> cls, Map<String, ExportTitleParam> titleParamMap) {
 		if (cls == Object.class) {
 			return;
 		}
-		
+
 		Arrays.stream(cls.getMethods())
 			.filter(m -> Objects.nonNull(m.getAnnotation(ExportTitle.class)))
 			.forEach(m -> {
-				if (exportTitleEntityMap.get(m.getName()) == null) {
-					exportTitleEntityMap.put(m.getName(), new ExportTitleEntity(m));
+				if (titleParamMap.get(m.getName()) == null) {
+					titleParamMap.put(m.getName(), new ExportTitleParam(m));
 				}
 			});
-		getMethods(cls.getSuperclass(), exportTitleEntityMap);
+		getMethods(cls.getSuperclass(), titleParamMap);
 	}
-	
+
 	/**
 	 * 获取内嵌实体中需要导出的列参数集合
-	 * 
+	 *
 	 * @param cls 导出类型
 	 * @return 内嵌实体中需要导出的列参数集合
 	 */
-	private List<ExportTitleEntity> getEntities(Class<?> cls) {
+	private List<ExportTitleParam> getEntities(Class<?> cls) {
 		return Arrays.stream(cls.getDeclaredFields())
 		.filter(f -> Objects.nonNull(f.getAnnotation(ExportEntity.class)))
 		.flatMap(f -> {
 			ExportEntity exportEntity = f.getAnnotation(ExportEntity.class);
 			return this.fetchExportTitleEntities(f.getType())
 					.stream()
-					.map(e -> e.setEntity(true).setEntityField(f)
+					.map(e -> e.setEntityField(f)
 							.setGroupName(exportEntity.title())
 							.setOrder(exportEntity.order() + e.getOrder() / 100.0)
 					);
-			
+
 		}).collect(Collectors.toList());
 	}
 }

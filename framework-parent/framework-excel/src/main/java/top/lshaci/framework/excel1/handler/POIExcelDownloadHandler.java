@@ -152,16 +152,16 @@ public abstract class POIExcelDownloadHandler {
 	}
 
 	/**
-	 * Create row content style
+	 * Create row content builder
 	 *
 	 * @param workbook the excel1 work book
-	 * @return the row content style
+	 * @return the row content builder
 	 */
 	private static XSSFCellStyle createContentStyle(XSSFWorkbook workbook) {
 		XSSFCellStyle style = workbook.createCellStyle();
 		// set fill fore ground color
 		style.setFillForegroundColor(new XSSFColor(Color.WHITE));
-		// style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		// builder.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		// set cell border
 		setBorder(style);
 		// set the horizontal and vertical center.
@@ -221,10 +221,10 @@ public abstract class POIExcelDownloadHandler {
 	}
 
 	/**
-	 * Create first title style
+	 * Create first title builder
 	 *
 	 * @param workbook the excel1 work book
-	 * @return the row content style
+	 * @return the row content builder
 	 */
 	private static XSSFCellStyle createFirstTitleStyle(XSSFWorkbook workbook) {
 		XSSFCellStyle style = workbook.createCellStyle();
@@ -273,10 +273,10 @@ public abstract class POIExcelDownloadHandler {
 	}
 
 	/**
-	 * Create column title style
+	 * Create column title builder
 	 *
 	 * @param workbook the excel1 work book
-	 * @return the column title style
+	 * @return the column title builder
 	 */
 	private static XSSFCellStyle createColumnTitleStyle(XSSFWorkbook workbook) {
 		XSSFCellStyle style = workbook.createCellStyle();
@@ -300,9 +300,9 @@ public abstract class POIExcelDownloadHandler {
 	}
 
 	/**
-	 * Set cell style border
+	 * Set cell builder border
 	 *
-	 * @param style the cell style
+	 * @param style the cell builder
 	 */
 	private static void setBorder(XSSFCellStyle style) {
 		style.setBorderBottom(BorderStyle.THIN);

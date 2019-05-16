@@ -34,8 +34,20 @@ public class ExportHandler {
 	 * @return Excel WorkBook
 	 */
 	public static <E> Workbook export(Class<E> cls, List<E> datas) {
+		return export(cls, datas, null);
+	}
+	
+	/**
+	 * 根据导出实体类信息和数据条数导出Excel WorkBook
+	 *
+	 * @param cls 导出实体类信息
+	 * @param datas 需要导出的数据
+	 * @param sheetTitle sheet中的标题, 会覆盖注解{@code @ExportSheet}中的title属性
+	 * @return Excel WorkBook
+	 */
+	public static <E> Workbook export(Class<E> cls, List<E> datas, String sheetTitle) {
 		Workbook workbook = getWorkbook(cls, CollectionUtils.isEmpty(datas) ? 0 : datas.size());
-		new ExportService(cls, datas, workbook).create();
+		new ExportService(cls, datas, workbook, sheetTitle).create();
 		return workbook;
 	}
 

@@ -3,10 +3,13 @@ package top.lshaci.framework.excel.entity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Data;
@@ -14,6 +17,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.export.ExportTitle;
+import top.lshaci.framework.excel.builder.IndexBuilder;
+import top.lshaci.framework.excel.builder.impl.DefaultIndexBuilder;
 import top.lshaci.framework.excel1.exception.ExcelHandlerException;
 
 /**
@@ -26,7 +31,7 @@ import top.lshaci.framework.excel1.exception.ExcelHandlerException;
 @Slf4j
 @NoArgsConstructor
 @Accessors(chain = true)
-public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
+public class ExportTitleParam implements Comparable<ExportTitleParam> {
 
 	/**
 	 * 列标题
@@ -56,17 +61,17 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 	/**
 	 * 导出数据需要拼接的前缀
 	 */
-	private String prefix;
+	private String prefix = "";
 
 	/**
 	 * 导出数据需要拼接的后缀
 	 */
-	private String suffix;
+	private String suffix = "";
 
 	/**
 	 * 分组下的二级标题信息
 	 */
-	private List<ExportTitleEntity> children;
+	private List<ExportTitleParam> children;
 
 	/**
 	 * 是否为序号列
@@ -74,19 +79,9 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 	private boolean isIndex;
 
 	/**
-	 * 该列数据是否从字段获取
-	 */
-	private boolean isField;
-
-	/**
-	 * 列数据字段
+	 * 列数据字段(内嵌对象为内嵌对象中的字段)
 	 */
 	private Field field;
-
-	/**
-	 * 该列数据是否从方法获取
-	 */
-	private boolean isMethod;
 
 	/**
 	 * 列数据方法
@@ -94,24 +89,9 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 	private Method method;
 
 	/**
-	 * 该列数据是否从实体获取
-	 */
-	private boolean isEntity;
-
-	/**
-	 * 该列数据的实体字段
+	 * 该列数据的实体字段(实体中的内嵌对象字段, 标记有{@code @ExportEntity}注解的字段)
 	 */
 	private Field entityField;
-
-	/**
-	 * 该列数据是否需要转换
-	 */
-	private boolean needConvert;
-
-	/**
-	 * 生成序号的对象
-	 */
-	private AtomicInteger index;
 
 	/**
 	 * 数据转换类
@@ -124,16 +104,50 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 	private Method convertMethod;
 
 	/**
+	 * 生成序号的对象
+	 */
+	private IndexBuilder indexBuilder = new DefaultIndexBuilder();
+
+	/**
+	 * 枚举方法
+	 */
+	private Method enumMethod;
+
+	/**
+	 * 列数据替换信息映射
+	 */
+	private Map<String, String> replaceMap;
+
+	/**
 	 * 根据Sheet参数创建序号列信息
 	 *
 	 * @param sheetParam Sheet参数
 	 */
-	public ExportTitleEntity(ExportSheetParam sheetParam) {
+	public ExportTitleParam(ExportSheetParam sheetParam) {
 		this.isIndex = true;
 		this.title = sheetParam.getIndexName();
 		this.order = Integer.MIN_VALUE;
-		this.width = 8;
-		this.index = new AtomicInteger(1);
+		this.width = sheetParam.getIndexWidth();
+		this.indexBuilder = sheetParam.getIndexBuilder();
+	}
+
+	/**
+	 * 根据导出的方法创建序号列信息
+	 *
+	 * @param method 需要导出的方法
+	 */
+	public ExportTitleParam(Method method) {
+		this.method = method;
+		this.title = method.getName();
+
+		ExportTitle exportTitle = method.getAnnotation(ExportTitle.class);
+		if (Objects.isNull(exportTitle)) {
+			return;
+		}
+
+		build(exportTitle);
+		buildConvertMethod(exportTitle);
+		buildEnumMethod(method, exportTitle);
 	}
 
 	/**
@@ -142,34 +156,73 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 	 * @param field 需要导出的字段
 	 * @param cls 需要导出的实体类
 	 */
-	public ExportTitleEntity(Field field, Class<?> cls) {
+	public ExportTitleParam(Field field, Class<?> cls) {
 		this.field = field;
-		this.isField = true;
 		this.title = field.getName();
 		this.method = createByField(field, cls);
-		
+
 		ExportTitle exportTitle = field.getAnnotation(ExportTitle.class);
 		if (Objects.isNull(exportTitle)) {
 			return;
 		}
 
 		build(exportTitle);
+		buildConvertMethod(exportTitle);
+		buildEnumMethod(field, exportTitle);
+	}
 
+	/**
+	 * 创建转换方法
+	 *
+	 * @param exportTitle 字段或方法上标记的列信息
+	 */
+	private void buildConvertMethod(ExportTitle exportTitle) {
 		if (Void.class != exportTitle.convertClass() && StringUtils.isNotBlank(exportTitle.convertMethod())) {
-			this.needConvert = true;
-			this.convertClass = exportTitle.convertClass();
 			try {
-				this.convertMethod = this.convertClass.getMethod(exportTitle.convertMethod(), this.field.getType());
+				this.convertClass = exportTitle.convertClass();
+				this.convertMethod = this.convertClass.getMethod(exportTitle.convertMethod(), this.method.getReturnType());
 			} catch (NoSuchMethodException | SecurityException e) {
 				log.error("{}.{}转换方法不存在", exportTitle.convertClass(), exportTitle.convertMethod());
 				throw new ExcelHandlerException("转换方法不存在", e);
 			}
 		}
 	}
-	
+
+	/**
+	 * 创建枚举字段需要执行的枚举中的方法
+	 *
+	 * @param exportTitle 字段上标记的列信息
+	 */
+	private void buildEnumMethod(Field field, ExportTitle exportTitle) {
+		if (field.getType().isEnum() && StringUtils.isNotBlank(exportTitle.enumMethod())) {
+			try {
+				this.enumMethod = field.getType().getMethod(exportTitle.enumMethod());
+			} catch (NoSuchMethodException | SecurityException e) {
+				log.error("{}中的{}方法不存在", field.getType(), exportTitle.enumMethod());
+				throw new ExcelHandlerException("枚举中方法不存在", e);
+			}
+		}
+	}
+
+	/**
+	 * 创建返回为枚举的方法需要执行的枚举中的方法
+	 *
+	 * @param exportTitle 方法上标记的列信息
+	 */
+	private void buildEnumMethod(Method method, ExportTitle exportTitle) {
+		if (method.getReturnType().isEnum() && StringUtils.isNotBlank(exportTitle.enumMethod())) {
+			try {
+				this.enumMethod = method.getReturnType().getMethod(exportTitle.enumMethod());
+			} catch (NoSuchMethodException | SecurityException e) {
+				log.error("{}中的{}方法不存在", method.getReturnType(), exportTitle.enumMethod());
+				throw new ExcelHandlerException("枚举中方法不存在", e);
+			}
+		}
+	}
+
 	/**
 	 * 根据字段和类创建字段的公共get方法
-	 * 
+	 *
 	 * @param field 字段
 	 * @param cls 类
 	 * @return get方法
@@ -186,25 +239,7 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 			log.error("字段{}.{}的get方法不存在", cls, name);
 			throw new ExcelHandlerException("Get方法不存在", e);
 		}
-		
-	}
 
-	/**
-	 * 根据导出的方法创建序号列信息
-	 *
-	 * @param method 需要导出的方法
-	 */
-	public ExportTitleEntity(Method method) {
-		this.method = method;
-		this.isMethod = true;
-		this.title = method.getName();
-
-		ExportTitle exportTitle = method.getAnnotation(ExportTitle.class);
-		if (Objects.isNull(exportTitle)) {
-			return;
-		}
-
-		build(exportTitle);
 	}
 
 	/**
@@ -234,23 +269,37 @@ public class ExportTitleEntity implements Comparable<ExportTitleEntity> {
 		if (StringUtils.isNotBlank(exportTitle.groupName())) {
 			this.groupName = exportTitle.groupName();
 		}
+		if (ArrayUtils.isNotEmpty(exportTitle.replaces())) {
+			this.replaceMap = Arrays.stream(exportTitle.replaces())
+					.filter(r -> r.contains("__"))
+					.map(r -> r.split("__"))
+					.filter(a -> a.length > 1)
+					.collect(Collectors.toMap(a -> a[0], a -> a[1], (k1, k2) -> k2));
+		}
 	}
-	
+
 	/**
 	 * 获取序号
-	 * 
+	 *
 	 * @return 字符串类型的序号
 	 */
 	public String getIndexNumber() {
 		if (isIndex) {
-			return index.getAndIncrement() + "";
+			return this.indexBuilder.get();
 		}
 		throw new ExcelHandlerException("当前列不是序号列");
 	}
 
+	/**
+	 * 重置序号
+	 */
+	public void resetIndexNumber() {
+		this.indexBuilder.reset();
+	}
+
 	@Override
-	public int compareTo(ExportTitleEntity exportTitleEntity) {
-		return new BigDecimal(this.order).compareTo(new BigDecimal(exportTitleEntity.order));
+	public int compareTo(ExportTitleParam exportTitleParam) {
+		return new BigDecimal(this.order).compareTo(new BigDecimal(exportTitleParam.order));
 	}
 
 

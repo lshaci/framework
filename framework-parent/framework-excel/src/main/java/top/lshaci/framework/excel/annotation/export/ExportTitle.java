@@ -58,6 +58,15 @@ public @interface ExportTitle {
 	 * @return 需要拼接的后缀
 	 */
 	String suffix() default "";
+	
+	/**
+	 * 列数据替换信息, 使用两个下划线(<b>__</b>)进行分割
+	 * <p><b>source__target</b></p>
+	 * <i>例: 1__男</i>
+	 * 
+	 * @return 列数据替换信息
+	 */
+	String[] replaces() default {};
 
 	/**
 	 * 分组名称(相同组名会生成二级标题)
@@ -74,9 +83,16 @@ public @interface ExportTitle {
 	Class<?> convertClass() default Void.class;
 
 	/**
-	 * 导出数据转换对象类中的方法名称
+	 * 导出数据转换对象类中的方法名称, <b>优先级最高</b>
 	 *
 	 * @return 转换对象类中的方法名称
 	 */
 	String convertMethod() default "";
+	
+	/**
+	 * 字段或方法返回值为枚举类型可以指定调用枚举的方法, <b>优先级低于convertMethod</b>
+	 *
+	 * @return 字段或方法返回值为枚举类型需要调用枚举中的方法名称
+	 */
+	String enumMethod() default "";
 }

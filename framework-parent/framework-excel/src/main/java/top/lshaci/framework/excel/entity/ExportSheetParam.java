@@ -1,15 +1,18 @@
 package top.lshaci.framework.excel.entity;
 
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.excel.annotation.export.ExportSheet;
-import top.lshaci.framework.excel.style.CellStyleBuilder;
-import top.lshaci.framework.excel.style.impl.DefaultCellStyleBuilder;
+import top.lshaci.framework.excel.builder.CellStyleBuilder;
+import top.lshaci.framework.excel.builder.IndexBuilder;
+import top.lshaci.framework.excel.builder.impl.DefaultCellStyleBuilder;
+import top.lshaci.framework.excel.builder.impl.DefaultIndexBuilder;
 import top.lshaci.framework.utils.ReflectionUtils;
-
-import java.util.Objects;
 
 /**
  * 导出Excel中Sheet的参数
@@ -56,6 +59,11 @@ public class ExportSheetParam {
 	 * 序号列标题
 	 */
 	private String indexName = "序号";
+	
+	/**
+	 * 序号列宽度
+	 */
+	private int indexWidth = 8;
 
 	/**
 	 * Sheet中字体名称
@@ -73,6 +81,11 @@ public class ExportSheetParam {
 	private CellStyleBuilder cellStyleBuilder = new DefaultCellStyleBuilder();
 
 	/**
+	 * 序号列数据构造对象
+	 */
+	private IndexBuilder indexBuilder = new DefaultIndexBuilder();
+
+	/**
 	 * 根据实体类上的{@code @ExportSheet}注解和需要导出的数据总条数创建Sheet的参数
 	 *
 	 * @see ExportSheet
@@ -85,8 +98,8 @@ public class ExportSheetParam {
 			return;
 		}
 		this.addIndex = exportSheet.addIndex();
-		Class<? extends CellStyleBuilder> cellStyleBuilderClass = exportSheet.cellStyleBuilder();
-		this.cellStyleBuilder = ReflectionUtils.newInstance(cellStyleBuilderClass);
+		this.cellStyleBuilder = ReflectionUtils.newInstance(exportSheet.cellStyleBuilder());
+		this.indexBuilder = ReflectionUtils.newInstance(exportSheet.indexBuilder());
 
 		if (StringUtils.isNotBlank(exportSheet.fontName())) {
 			this.fontName = exportSheet.fontName();
@@ -99,6 +112,9 @@ public class ExportSheetParam {
 		}
 		if (StringUtils.isNotBlank(exportSheet.name())) {
 			this.name = exportSheet.name();
+		}
+		if (exportSheet.indexWidth() > 0) {
+			this.indexWidth = exportSheet.indexWidth();
 		}
 		if (exportSheet.number() > 0) {
 			this.number = exportSheet.number();

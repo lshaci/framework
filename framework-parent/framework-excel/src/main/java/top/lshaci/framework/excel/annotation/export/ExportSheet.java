@@ -1,8 +1,10 @@
 package top.lshaci.framework.excel.annotation.export;
 
+import top.lshaci.framework.excel.builder.CellStyleBuilder;
+import top.lshaci.framework.excel.builder.IndexBuilder;
+import top.lshaci.framework.excel.builder.impl.DefaultCellStyleBuilder;
+import top.lshaci.framework.excel.builder.impl.DefaultIndexBuilder;
 import top.lshaci.framework.excel.enums.ExcelType;
-import top.lshaci.framework.excel.style.CellStyleBuilder;
-import top.lshaci.framework.excel.style.impl.DefaultCellStyleBuilder;
 
 import java.lang.annotation.*;
 
@@ -53,9 +55,16 @@ public @interface ExportSheet {
 	String indexName() default "序号";
 
 	/**
+	 * 序号列的宽度
+	 *
+	 * @return 序号列的宽度
+	 */
+	int indexWidth() default 8;
+
+	/**
 	 * Sheet数量
 	 *
-	 * @return 生产Excel中Sheet的数量
+	 * @return 生成Excel中Sheet的数量
 	 */
 	int number() default 1;
 
@@ -86,5 +95,12 @@ public @interface ExportSheet {
 	 * @return Sheet中单元格样式构造类
 	 */
 	Class<? extends CellStyleBuilder> cellStyleBuilder() default DefaultCellStyleBuilder.class;
+
+	/**
+	 * Sheet中序号列数据构造类
+	 *
+	 * @return Sheet中序号列数据构造类
+	 */
+	Class<? extends IndexBuilder> indexBuilder() default DefaultIndexBuilder.class;
 
 }
