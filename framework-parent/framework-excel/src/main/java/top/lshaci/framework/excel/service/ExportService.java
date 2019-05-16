@@ -375,7 +375,6 @@ public class ExportService {
 							.setGroupName(exportEntity.title())
 							.setOrder(exportEntity.order() + e.getOrder() / 100.0)
 					);
-
 		}).collect(Collectors.toList());
 	}
 }
