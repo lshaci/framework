@@ -162,7 +162,7 @@ public class ExportService {
 						Object value = iterator.next();
 						Row nextRow = sheet.getRow(cn) == null ? sheet.createRow(cn) : sheet.getRow(cn);
 						String tempValue = Objects.isNull(value) ? "" : value.toString();
-						String cellValue = Objects.isNull(titleParam.getField()) ? tempValue : CellValueUtil.get(titleParam, value);
+						String cellValue = Objects.isNull(titleParam.getMethod()) ? tempValue : CellValueUtil.get(titleParam, value);
 						setContentCellValue(nextRow, titleParam.getHeight(), i, cellValue);
 						cn++;
 					}
@@ -508,7 +508,7 @@ public class ExportService {
 					return Arrays.asList(new ExportTitleParam(f, cls)
 							.setCollection(true)
 							.setEntityField(f)
-							.setField(null)
+							.setMethod(null)
 						).stream();
 				}).collect(Collectors.toList());
 
