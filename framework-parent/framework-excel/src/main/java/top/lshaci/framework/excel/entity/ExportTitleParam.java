@@ -78,6 +78,11 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	private boolean isIndex;
 	
 	/**
+	 * 是否合并
+	 */
+	private boolean merge;
+	
+	/**
 	 * 是否为集合
 	 */
 	private boolean isCollection;
@@ -129,6 +134,7 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	 */
 	public ExportTitleParam(ExportSheetParam sheetParam) {
 		this.isIndex = true;
+		this.merge = sheetParam.isMergeIndex();
 		this.title = sheetParam.getIndexName();
 		this.order = Integer.MIN_VALUE;
 		this.width = sheetParam.getIndexWidth();
@@ -255,6 +261,7 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	 */
 	private void build(ExportTitle exportTitle) {
 		this.order = exportTitle.order();
+		this.merge = exportTitle.merge();
 		if (StringUtils.isNotBlank(exportTitle.prefix())) {
 			this.prefix = exportTitle.prefix();
 		}

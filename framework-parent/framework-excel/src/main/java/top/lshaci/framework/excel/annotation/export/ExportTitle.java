@@ -109,4 +109,11 @@ public @interface ExportTitle {
 	 * @return 字段是否为集合
 	 */
 	boolean isCollection() default false;
+	
+	/**
+	 * 是否合并列
+	 *
+	 * @return 行数据中有Collection是是否合并列
+	 */
+	boolean merge() default true;
 }

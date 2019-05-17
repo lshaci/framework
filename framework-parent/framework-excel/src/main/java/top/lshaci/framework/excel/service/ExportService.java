@@ -1,10 +1,26 @@
 package top.lshaci.framework.excel.service;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.ExcelEntity;
 import top.lshaci.framework.excel.annotation.export.ExportSheet;
 import top.lshaci.framework.excel.annotation.export.ExportTitle;
@@ -14,10 +30,6 @@ import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.utils.CellValueUtil;
 import top.lshaci.framework.utils.ClassUtils;
 import top.lshaci.framework.utils.ReflectionUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 导出Excel业务类
@@ -109,9 +121,6 @@ public class ExportService {
 	 */
 	public void create() {
 		handleTitleParams();
-		this.titleParams.forEach(System.err::println);
-		System.err.println();
-		this.contentParams.forEach(System.err::println);
 
 		Stream.iterate(0, n -> n + 1).limit(sheetParam.getNumber()).forEach(n -> {
 			currentRowNumber = 0;
@@ -139,31 +148,68 @@ public class ExportService {
 	 */
 	private void setRowContent(Object data) {
 		Row row = sheet.createRow(currentRowNumber);
+		int addRow = 1;
 		for (int i = 0; i < this.contentParams.size(); i++) {
-			ExportTitleParam titleEntity = this.contentParams.get(i);
-			if (titleEntity.isCollection()) {
-				Collection<?> collectionValue = (Collection<?>) ReflectionUtils.getFieldValue(data, titleEntity.getEntityField());
+			ExportTitleParam titleParam = this.contentParams.get(i);
+			if (titleParam.isCollection()) {
+				Collection<?> collectionValue = (Collection<?>) ReflectionUtils.getFieldValue(data, titleParam.getEntityField());
 				if (CollectionUtils.isEmpty(collectionValue)) {
-					setContentCellValue(row, titleEntity.getHeight(), i, "");
+					setContentCellValue(row, titleParam.getHeight(), i, "");
 				} else {
 					int cn = currentRowNumber;
 					Iterator<?> iterator = collectionValue.iterator();
 					while (iterator.hasNext()) {
 						Object value = iterator.next();
 						Row nextRow = sheet.getRow(cn) == null ? sheet.createRow(cn) : sheet.getRow(cn);
-
-						String cellValue = CellValueUtil.get(titleEntity, value);
-						setContentCellValue(nextRow, titleEntity.getHeight(), i, cellValue);
+						String tempValue = Objects.isNull(value) ? "" : value.toString();
+						String cellValue = Objects.isNull(titleParam.getField()) ? tempValue : CellValueUtil.get(titleParam, value);
+						setContentCellValue(nextRow, titleParam.getHeight(), i, cellValue);
 						cn++;
 					}
+					addRow = cn - currentRowNumber;
 				}
 				continue;
 			}
 
-			String cellValue = CellValueUtil.get(titleEntity, data);
-			setContentCellValue(row, titleEntity.getHeight(), i, cellValue);
+			String cellValue = CellValueUtil.get(titleParam, data);
+			setContentCellValue(row, titleParam.getHeight(), i, cellValue);
 		}
-		currentRowNumber+=2;
+		mergeContentCell(addRow);
+	}
+
+	/**
+	 * 设置合并单元格
+	 * 
+	 * @param addRow 当前行所需要增加的行数
+	 */
+	private void mergeContentCell(int addRow) {
+		if (addRow == 1) {
+			return;
+		}
+		for (int i = 0; i < this.contentParams.size(); i++) {
+			ExportTitleParam titleParam = this.contentParams.get(i);
+			if (titleParam.isCollection()) {
+				log.debug("第{}列为集合数据列", i);
+				continue;
+			}
+			
+			if (titleParam.isMerge()) {
+				Row row = sheet.getRow(currentRowNumber);
+				Cell cell = row.getCell(i);
+				String value = cell.getStringCellValue();
+				cellMerge(row, contentStyle, value, currentRowNumber, currentRowNumber + addRow - 1, i, i);
+			} else {
+				for (int j = 0; j < addRow; j++) {
+					Row row = sheet.getRow(currentRowNumber + j);
+					Cell cell = row.getCell(i);
+					if (cell == null) {
+						String value = titleParam.isIndex() ? CellValueUtil.get(titleParam, null) : "";
+						setContentCellValue(row, titleParam.getHeight(), i, value);
+					}
+				}
+			}
+		}
+		currentRowNumber += addRow;
 	}
 
 	/**
@@ -176,7 +222,6 @@ public class ExportService {
 	 */
 	private void setContentCellValue(Row row, int rowHeight, int columnNumber, String cellValue) {
 		row.setHeight((short) (rowHeight * 20));
-
 		Cell cell = row.createCell(columnNumber);
 		cell.setCellValue(cellValue);
 		cell.setCellStyle(contentStyle);
@@ -289,12 +334,12 @@ public class ExportService {
 
 			if (CollectionUtils.isEmpty(children)) {
 				// 合并行
-				titleCellMerge(row1, columnTitleStyle, titleParam.getTitle(), currentRowNumber, currentRowNumber + 1, cn, cn);
+				cellMerge(row1, columnTitleStyle, titleParam.getTitle(), currentRowNumber, currentRowNumber + 1, cn, cn);
 				cn++;
 				continue;
 			}
 			// 合并列
-			titleCellMerge(row1, columnTitleStyle, titleParam.getTitle(), currentRowNumber, currentRowNumber, cn, cn + children.size() - 1);
+			cellMerge(row1, columnTitleStyle, titleParam.getTitle(), currentRowNumber, currentRowNumber, cn, cn + children.size() - 1);
 			// 设置二级标题
 			for (int j = 0; j < children.size(); j++) {
 				columnTitleCell(row2, cn++, children.get(j).getTitle());
@@ -318,19 +363,19 @@ public class ExportService {
 	/**
 	 * 设置单元格合并
 	 *
-	 * @param row 标题行信息
+	 * @param row 行信息
 	 * @param cellStyle 单元格样式
-	 * @param title 标题
+	 * @param value 单元格的值
 	 * @param firstRow 起始行号
 	 * @param lastRow 终止行号
 	 * @param firstCol 起始列号
 	 * @param lastCol 终止列号
 	 */
-	private void titleCellMerge(Row row, CellStyle cellStyle, String title, int firstRow, int lastRow, int firstCol, int lastCol) {
+	private void cellMerge(Row row, CellStyle cellStyle, String value, int firstRow, int lastRow, int firstCol, int lastCol) {
 		CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
 		sheet.addMergedRegion(region);
 		Cell cell = row.createCell(firstCol);
-		cell.setCellValue(title);
+		cell.setCellValue(value);
 		cell.setCellStyle(cellStyle);
 		// 设置合并单元格的边框
 		sheetParam.getCellStyleBuilder().setMergeCellBorder(region, sheet);
@@ -346,7 +391,7 @@ public class ExportService {
 		}
 		Row row = sheet.createRow(currentRowNumber++);
 		row.setHeight(sheetParam.getTitleHeight());
-		titleCellMerge(row, sheetTitleStyle, sheetParam.getTitle(), 0, 0, 0, this.contentParams.size() - 1);
+		cellMerge(row, sheetTitleStyle, sheetParam.getTitle(), 0, 0, 0, this.contentParams.size() - 1);
 	}
 
 	/**
@@ -463,6 +508,7 @@ public class ExportService {
 					return Arrays.asList(new ExportTitleParam(f, cls)
 							.setCollection(true)
 							.setEntityField(f)
+							.setField(null)
 						).stream();
 				}).collect(Collectors.toList());
 

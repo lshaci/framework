@@ -1,12 +1,16 @@
 package top.lshaci.framework.excel.annotation.export;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import top.lshaci.framework.excel.builder.CellStyleBuilder;
 import top.lshaci.framework.excel.builder.IndexBuilder;
 import top.lshaci.framework.excel.builder.impl.DefaultCellStyleBuilder;
 import top.lshaci.framework.excel.builder.impl.DefaultIndexBuilder;
 import top.lshaci.framework.excel.enums.ExcelType;
-
-import java.lang.annotation.*;
 
 /**
  * 定义导出Excel单个Sheet的信息
@@ -81,6 +85,13 @@ public @interface ExportSheet {
 	 * @return Excel中Sheet是否添加序号列
 	 */
 	boolean addIndex() default true;
+	
+	/**
+	 * 是否合并序号列
+	 *
+	 * @return 行数据中有Collection是是否合并序号列
+	 */
+	boolean mergeIndex() default true;
 
 	/**
 	 * 生成的Excel类型

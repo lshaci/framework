@@ -54,6 +54,11 @@ public class ExportSheetParam {
 	 * 是否添加序号列
 	 */
 	private boolean addIndex = true;
+	
+	/**
+	 * 是否合并序号列
+	 */
+	private boolean mergeIndex = true;
 
 	/**
 	 * 序号列标题
@@ -98,6 +103,7 @@ public class ExportSheetParam {
 			return;
 		}
 		this.addIndex = exportSheet.addIndex();
+		this.mergeIndex = exportSheet.mergeIndex();
 		this.cellStyleBuilder = ReflectionUtils.newInstance(exportSheet.cellStyleBuilder());
 		this.indexBuilder = ReflectionUtils.newInstance(exportSheet.indexBuilder());
 

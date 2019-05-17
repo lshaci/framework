@@ -1,15 +1,14 @@
 package top.lshaci.framework.excel.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import top.lshaci.framework.excel.entity.ExportTitleParam;
+import top.lshaci.framework.utils.ReflectionUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
-import top.lshaci.framework.excel.entity.ExportTitleParam;
-import top.lshaci.framework.utils.ReflectionUtils;
 
 /**
  * 获取单元格值的工具类
@@ -63,7 +62,7 @@ public class CellValueUtil {
 			log.warn("单元格的值为空字符，不作其它处理");
 			return "";
 		}
-		
+
 		// 替换信息存在, 则对原始值进行替换处理
 		if (MapUtils.isNotEmpty(titleParam.getReplaceMap())) {
 			result = titleParam.getReplaceMap().get(result);
