@@ -24,7 +24,7 @@ public class ExportHandler {
 	/**
 	 * Excel类型为XLSX最大的数据量
 	 */
-	private static final int XLSX_MAX_SIZE = 100000;
+	private static final int XLSX_MAX_SIZE = 10000;
 
 	/**
 	 * 根据导出实体类信息和数据条数导出Excel WorkBook
