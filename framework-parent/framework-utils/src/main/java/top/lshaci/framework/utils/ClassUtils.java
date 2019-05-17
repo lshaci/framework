@@ -23,11 +23,12 @@ import top.lshaci.framework.utils.exception.UtilException;
 /**
  * <p>Class utils</p>
  * 
- * <b>0.0.4: </b> Add method to get super class and interfaces generic type
+ * <b>0.0.4:</b> Add method to get super class and interfaces generic type<br>
+ * <b>1.0.2:</b> 添加获取字段泛型类型的方法
  * 
  * @author lshaci
  * @since 0.0.1
- * @version 0.0.4
+ * @version 1.0.2
  */
 @Slf4j
 public abstract class ClassUtils {
@@ -59,21 +60,23 @@ public abstract class ClassUtils {
 	}
 	
 	/**
-	 * Get the field first generic type
+	 * 获取字段的第一个泛型类型
 	 * 
-	 * @param field the field
-	 * @return the first generic type
+	 * @param field 带有泛型的字段
+	 * @return 第一个泛型类型
+	 * @since 1.0.2
 	 */
 	public static Class<?> getFieldGenericType(Field field) {
 		return getFieldGenericType(field, 0);
 	}
 	
 	/**
-	 * Get the field generic type
+	 * 获取字段的泛型类型
 	 * 
-	 * @param field the field
-	 * @param genericTypeIndex the index of the generic type
-	 * @return the generic type
+	 * @param field 带有泛型的字段
+	 * @param genericTypeIndex 第几个泛型类型
+	 * @return 字段的泛型类型
+	 * @since 1.0.2
 	 */
 	public static Class<?> getFieldGenericType(Field field, int genericTypeIndex) {
 		Objects.requireNonNull(field, "The field is must not be null!");
@@ -85,62 +88,62 @@ public abstract class ClassUtils {
 	}
 	
 	/**
-	 * Get the class extends super class first generic type
+	 * 获取类继承的第一个泛型类型
 	 * 
-	 * @param clazz the class
-	 * @return the generic type
+	 * @param clazz 类
+	 * @return 第一个泛型类型
 	 */
 	public static Class<?> getSuperClassGenericType(Class<?> clazz) {
 		return getSuperClassGenericType(clazz, 0);
 	}
 	
 	/**
-	 * Get the class generic type
+	 * 获取类继承父类的泛型类型
 	 * 
-	 * @param clazz the class
-	 * @param genericTypeIndex the index of the generic type
-	 * @return the generic type
+	 * @param clazz 类
+	 * @param genericTypeIndex 第几个泛型类型
+	 * @return 类的泛型类型
 	 */
 	public static Class<?> getSuperClassGenericType(Class<?> clazz, int genericTypeIndex) {
 		Objects.requireNonNull(clazz, "The class is must not be null!");
 		
 		Type superclass = clazz.getGenericSuperclass();
+		if (superclass instanceof ParameterizedType) {
+			return (Class<?>) ((ParameterizedType) superclass).getActualTypeArguments()[genericTypeIndex];
+		}
 		
-		ParameterizedType type = (ParameterizedType) superclass;
-		
-		Type genericType = type.getActualTypeArguments()[genericTypeIndex];
-		
-		return (Class<?>) genericType;
+		throw new UtilException("This class has no generic type");
 	}
 	
 	/**
-	 * Get the class implements interfaces generic type(first interface and first generic type)
+	 * 获取类实现第一个接口的第一个泛型类型
 	 * 
-	 * @param clazz the class
-	 * @return the generic type
+	 * @param clazz 类
+	 * @return 第一个接口的第一个泛型类型
 	 */
 	public static Class<?> getInterfaceGenericType(Class<?> clazz) {
 		return getInterfaceGenericType(clazz, 0, 0);
 	}
 	
 	/**
-	 * Get the class generic type
+	 * 获取类实现接口的泛型类型
 	 * 
-	 * @param clazz the class
-	 * @param interfaceIndex the index of implements the interface
-	 * @param genericTypeIndex the index of the generic type
-	 * @return the generic type
+	 * @param clazz 类
+	 * @param interfaceIndex 实现的第几个接口
+	 * @param genericTypeIndex 实现接口的第几个泛型类型
+	 * @return 类的泛型类型
 	 */
 	public static Class<?> getInterfaceGenericType(Class<?> clazz, int interfaceIndex, int genericTypeIndex) {
 		Objects.requireNonNull(clazz, "The class is must not be null!");
 		
 		Type[] interfaces = clazz.getGenericInterfaces();
 		
-		ParameterizedType type = (ParameterizedType) interfaces[interfaceIndex];
+		Type type = (ParameterizedType) interfaces[interfaceIndex];
+		if (type instanceof ParameterizedType) {
+			return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[genericTypeIndex];
+		}
 		
-		Type genericType = type.getActualTypeArguments()[genericTypeIndex];
-		
-		return (Class<?>) genericType;
+		throw new UtilException("This class has no generic type");
 	}
 	
 	
