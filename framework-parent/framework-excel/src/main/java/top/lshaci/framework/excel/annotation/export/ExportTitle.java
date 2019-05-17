@@ -97,14 +97,14 @@ public @interface ExportTitle {
 	String enumMethod() default "";
 	
 	/**
-	 * 字段是否是一个实体{@code @ExcelEntity}, <b>仅可作用于字段</b>
+	 * 字段是否是一个实体{@code @ExcelEntity}, <b>仅可作用于字段, 在关联实体中不生效</b>
 	 * 
 	 * @return 字段是否为实体
 	 */
 	boolean isEntity() default false;
 	
 	/**
-	 * 字段是否是一个集合{@code @Collection}, <b>仅可作用于字段</b>
+	 * 字段是否是一个集合{@code @Collection}, <b>仅可作用于字段, 在关联实体中不生效</b>
 	 * 
 	 * @return 字段是否为集合
 	 */
