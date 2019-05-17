@@ -18,7 +18,6 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.export.ExportTitle;
 import top.lshaci.framework.excel.builder.IndexBuilder;
-import top.lshaci.framework.excel.builder.impl.DefaultIndexBuilder;
 import top.lshaci.framework.excel1.exception.ExcelHandlerException;
 
 /**
@@ -77,6 +76,11 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	 * 是否为序号列
 	 */
 	private boolean isIndex;
+	
+	/**
+	 * 是否为集合
+	 */
+	private boolean isCollection;
 
 	/**
 	 * 列数据字段(内嵌对象为内嵌对象中的字段)
@@ -106,7 +110,7 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	/**
 	 * 生成序号的对象
 	 */
-	private IndexBuilder indexBuilder = new DefaultIndexBuilder();
+	private IndexBuilder indexBuilder;
 
 	/**
 	 * 枚举方法

@@ -101,7 +101,7 @@ public class CellValueUtil {
 	 */
 	private static Object fetchOriginalValue(ExportTitleParam titleParam, Object data) {
 		Object value = null;
-		if (Objects.nonNull(titleParam.getEntityField())) {
+		if (Objects.nonNull(titleParam.getEntityField()) && !titleParam.isCollection()) {
 			log.debug("当前字段为内嵌对象的字段");
 			Object obj = ReflectionUtils.getFieldValue(data, titleParam.getEntityField());
 			if (Objects.nonNull(obj)) {

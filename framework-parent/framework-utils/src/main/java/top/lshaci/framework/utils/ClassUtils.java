@@ -2,6 +2,7 @@ package top.lshaci.framework.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.JarURLConnection;
@@ -20,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.utils.exception.UtilException;
 
 /**
- * Class utils<br><br>
+ * <p>Class utils</p>
  * 
  * <b>0.0.4: </b> Add method to get super class and interfaces generic type
  * 
@@ -55,6 +56,32 @@ public abstract class ClassUtils {
 			log.error(msg, e);
 			throw new UtilException(msg);
 		}
+	}
+	
+	/**
+	 * Get the field first generic type
+	 * 
+	 * @param field the field
+	 * @return the first generic type
+	 */
+	public static Class<?> getFieldGenericType(Field field) {
+		return getFieldGenericType(field, 0);
+	}
+	
+	/**
+	 * Get the field generic type
+	 * 
+	 * @param field the field
+	 * @param genericTypeIndex the index of the generic type
+	 * @return the generic type
+	 */
+	public static Class<?> getFieldGenericType(Field field, int genericTypeIndex) {
+		Objects.requireNonNull(field, "The field is must not be null!");
+		Type type = field.getGenericType();
+		if (type instanceof ParameterizedType) {
+			return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[genericTypeIndex];
+		}
+		throw new UtilException("This field has no generic type");
 	}
 	
 	/**

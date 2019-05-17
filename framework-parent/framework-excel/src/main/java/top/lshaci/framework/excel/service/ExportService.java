@@ -6,13 +6,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import top.lshaci.framework.excel.annotation.ExcelEntity;
-import top.lshaci.framework.excel.annotation.export.ExportEntity;
 import top.lshaci.framework.excel.annotation.export.ExportSheet;
 import top.lshaci.framework.excel.annotation.export.ExportTitle;
 import top.lshaci.framework.excel.entity.ExportSheetParam;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.utils.CellValueUtil;
+import top.lshaci.framework.utils.ClassUtils;
+import top.lshaci.framework.utils.ReflectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -108,6 +109,9 @@ public class ExportService {
 	 */
 	public void create() {
 		handleTitleParams();
+		this.titleParams.forEach(System.err::println);
+		System.err.println();
+		this.contentParams.forEach(System.err::println);
 
 		Stream.iterate(0, n -> n + 1).limit(sheetParam.getNumber()).forEach(n -> {
 			currentRowNumber = 0;
@@ -134,16 +138,48 @@ public class ExportService {
 	 * @param data 行数据
 	 */
 	private void setRowContent(Object data) {
-		Row row = sheet.createRow(currentRowNumber++);
+		Row row = sheet.createRow(currentRowNumber);
 		for (int i = 0; i < this.contentParams.size(); i++) {
 			ExportTitleParam titleEntity = this.contentParams.get(i);
-			row.setHeight((short) (titleEntity.getHeight() * 20));
-			String cellValue = CellValueUtil.get(titleEntity, data);
+			if (titleEntity.isCollection()) {
+				Collection<?> collectionValue = (Collection<?>) ReflectionUtils.getFieldValue(data, titleEntity.getEntityField());
+				if (CollectionUtils.isEmpty(collectionValue)) {
+					setContentCellValue(row, titleEntity.getHeight(), i, "");
+				} else {
+					int cn = currentRowNumber;
+					Iterator<?> iterator = collectionValue.iterator();
+					while (iterator.hasNext()) {
+						Object value = iterator.next();
+						Row nextRow = sheet.getRow(cn) == null ? sheet.createRow(cn) : sheet.getRow(cn);
 
-			Cell cell = row.createCell(i);
-			cell.setCellValue(cellValue);
-			cell.setCellStyle(contentStyle);
+						String cellValue = CellValueUtil.get(titleEntity, value);
+						setContentCellValue(nextRow, titleEntity.getHeight(), i, cellValue);
+						cn++;
+					}
+				}
+				continue;
+			}
+
+			String cellValue = CellValueUtil.get(titleEntity, data);
+			setContentCellValue(row, titleEntity.getHeight(), i, cellValue);
 		}
+		currentRowNumber+=2;
+	}
+
+	/**
+	 * 设置内容单元格的值
+	 *
+	 * @param row 单元格所在行
+	 * @param rowHeight 行高
+	 * @param columnNumber 单元格所在列
+	 * @param cellValue 单元格的值
+	 */
+	private void setContentCellValue(Row row, int rowHeight, int columnNumber, String cellValue) {
+		row.setHeight((short) (rowHeight * 20));
+
+		Cell cell = row.createCell(columnNumber);
+		cell.setCellValue(cellValue);
+		cell.setCellStyle(contentStyle);
 	}
 
 	/**
@@ -152,6 +188,8 @@ public class ExportService {
 	private void handleTitleParams() {
 		List<ExportTitleParam> titleParams = fetchExportTitleParams(this.cls);
 		titleParams.addAll(getEntities(this.cls));
+		titleParams.addAll(getCollections(this.cls));
+
 		if (this.sheetParam.isAddIndex()) {
 			titleParams.add(new ExportTitleParam(this.sheetParam));
 		}
@@ -323,7 +361,10 @@ public class ExportService {
 		}
 		Arrays.stream(cls.getDeclaredFields())
 				.filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
-				.forEach(f -> {
+				.filter(f -> {
+					ExportTitle exportTitle = f.getAnnotation(ExportTitle.class);
+					return !(exportTitle.isEntity() || exportTitle.isCollection());
+				}).forEach(f -> {
 					if (titleParamMap.get(f.getName()) == null) {
 						titleParamMap.put(f.getName(), new ExportTitleParam(f, cls));
 					}
@@ -344,7 +385,10 @@ public class ExportService {
 
 		Arrays.stream(cls.getMethods())
 			.filter(m -> Objects.nonNull(m.getAnnotation(ExportTitle.class)))
-			.forEach(m -> {
+			.filter(f -> {
+				ExportTitle exportTitle = f.getAnnotation(ExportTitle.class);
+				return !(exportTitle.isEntity() || exportTitle.isCollection());
+			}).forEach(m -> {
 				if (titleParamMap.get(m.getName()) == null) {
 					titleParamMap.put(m.getName(), new ExportTitleParam(m));
 				}
@@ -360,7 +404,8 @@ public class ExportService {
 	 */
 	private List<ExportTitleParam> getEntities(Class<?> cls) {
 		return Arrays.stream(cls.getDeclaredFields())
-				.filter(f -> Objects.nonNull(f.getAnnotation(ExportEntity.class)))
+				.filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
+				.filter(f -> f.getAnnotation(ExportTitle.class).isEntity())
 				.filter(f -> {
 					ExcelEntity excelEntity = f.getType().getAnnotation(ExcelEntity.class);
 					if (Objects.isNull(excelEntity)) {
@@ -369,13 +414,57 @@ public class ExportService {
 					}
 					return true;
 				}).flatMap(f -> {
-					ExportEntity exportEntity = f.getAnnotation(ExportEntity.class);
+					ExportTitle exportTitle = f.getAnnotation(ExportTitle.class);
 					return this.fetchExportTitleParams(f.getType())
 							.stream()
 							.map(e -> e.setEntityField(f)
-									.setGroupName(exportEntity.title())
-									.setOrder(exportEntity.order() + e.getOrder() / 100.0)
+									.setGroupName(exportTitle.title())
+									.setOrder(exportTitle.order() + e.getOrder() / 100.0)
 							);
 				}).collect(Collectors.toList());
+	}
+
+	/**
+	 * 获取集合字段中需要导出的列参数集合
+	 *
+	 * @param cls 导出类型
+	 * @return 集合字段中需要导出的列参数集合
+	 */
+	private List<ExportTitleParam> getCollections(Class<?> cls) {
+		long count = Arrays.stream(cls.getDeclaredFields())
+				.filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
+				.filter(f -> f.getAnnotation(ExportTitle.class).isCollection())
+				.count();
+		if (count > 1) {
+			throw new ExcelHandlerException("导出实体类仅允许标记一个集合类型字段");
+		}
+		return Arrays.stream(cls.getDeclaredFields())
+				.filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
+				.filter(f -> f.getAnnotation(ExportTitle.class).isCollection())
+				.filter(f -> {
+					if (!Collection.class.isAssignableFrom(f.getType())) {
+						log.error("使用ExportTitle注解标记的字段{}不是集合类型", f.getName());
+						throw new ExcelHandlerException("使用ExportTitle注解标记的字段不是集合类型");
+					}
+					return true;
+				}).flatMap(f -> {
+					ExportTitle exportTitle = f.getAnnotation(ExportTitle.class);
+					Class<?> fieldGenericType = ClassUtils.getFieldGenericType(f);
+					ExcelEntity excelEntity = fieldGenericType.getAnnotation(ExcelEntity.class);
+					if (Objects.nonNull(excelEntity)) {
+						return this.fetchExportTitleParams(fieldGenericType)
+								.stream()
+								.map(e -> e.setEntityField(f)
+										.setCollection(true)
+										.setGroupName(exportTitle.title())
+										.setOrder(exportTitle.order() + e.getOrder() / 100.0)
+								);
+					}
+					return Arrays.asList(new ExportTitleParam(f, cls)
+							.setCollection(true)
+							.setEntityField(f)
+						).stream();
+				}).collect(Collectors.toList());
+
 	}
 }

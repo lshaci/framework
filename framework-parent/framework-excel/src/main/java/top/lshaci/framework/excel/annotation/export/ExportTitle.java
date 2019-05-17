@@ -95,4 +95,18 @@ public @interface ExportTitle {
 	 * @return 字段或方法返回值为枚举类型需要调用枚举中的方法名称
 	 */
 	String enumMethod() default "";
+	
+	/**
+	 * 字段是否是一个实体{@code @ExcelEntity}, <b>仅可作用于字段</b>
+	 * 
+	 * @return 字段是否为实体
+	 */
+	boolean isEntity() default false;
+	
+	/**
+	 * 字段是否是一个集合{@code @Collection}, <b>仅可作用于字段</b>
+	 * 
+	 * @return 字段是否为集合
+	 */
+	boolean isCollection() default false;
 }
