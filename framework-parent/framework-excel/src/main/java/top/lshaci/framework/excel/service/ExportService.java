@@ -94,6 +94,11 @@ public class ExportService {
 	 * 内容单元格样式
 	 */
 	private CellStyle contentStyle;
+	
+	/**
+	 * 集合列信息, 用于获取集合字段数据
+	 */
+	private ExportTitleParam collectionTitleParam;
 
 	/**
 	 * 根据导出对象类型、数据和Excel工作簿创建一个导出业务类
@@ -147,71 +152,63 @@ public class ExportService {
 	 * @param data 行数据
 	 */
 	private void setRowContent(Object data) {
-		Row row = sheet.createRow(currentRowNumber);
-		int addRow = 1;
-		for (int i = 0; i < this.contentParams.size(); i++) {
-			ExportTitleParam titleParam = this.contentParams.get(i);
-			if (titleParam.isCollection()) {
-				Collection<?> collectionValue = (Collection<?>) ReflectionUtils.getFieldValue(data, titleParam.getEntityField());
-				if (CollectionUtils.isEmpty(collectionValue)) {
-					setContentCellValue(row, titleParam.getHeight(), i, "");
-				} else {
-					int cn = currentRowNumber;
-					Iterator<?> iterator = collectionValue.iterator();
-					while (iterator.hasNext()) {
-						Object value = iterator.next();
-						Row nextRow = sheet.getRow(cn) == null ? sheet.createRow(cn) : sheet.getRow(cn);
-						String tempValue = Objects.isNull(value) ? "" : value.toString();
-						String cellValue = Objects.isNull(titleParam.getMethod()) ? tempValue : CellValueUtil.get(titleParam, value);
-						setContentCellValue(nextRow, titleParam.getHeight(), i, cellValue);
-						cn++;
-					}
-					addRow = cn - currentRowNumber;
-				}
-				continue;
+		if (Objects.nonNull(this.collectionTitleParam)) {
+			handleHasCollection(data);
+		} else {
+			Row row = sheet.createRow(currentRowNumber++);
+			for (int i = 0; i < this.contentParams.size(); i++) {
+				ExportTitleParam titleParam = this.contentParams.get(i);
+				String cellValue = CellValueUtil.get(titleParam, data);
+				setContentCellValue(row, titleParam.getHeight(), i, cellValue);
 			}
-
-			String cellValue = CellValueUtil.get(titleParam, data);
-			setContentCellValue(row, titleParam.getHeight(), i, cellValue);
 		}
-		mergeContentCell(addRow);
 	}
 
 	/**
-	 * 设置合并单元格
+	 * 处理实体中有集合时单元格数据
 	 * 
-	 * @param addRow 当前行所需要增加的行数
+	 * @param data 行数据
 	 */
-	private void mergeContentCell(int addRow) {
-		if (addRow == 1) {
-			return;
-		}
+	private void handleHasCollection(Object data) {
+		Row row = sheet.createRow(currentRowNumber);
+		Collection<?> collectionValue = (Collection<?>) ReflectionUtils.getFieldValue(data, this.collectionTitleParam.getEntityField());
 		for (int i = 0; i < this.contentParams.size(); i++) {
 			ExportTitleParam titleParam = this.contentParams.get(i);
-			if (titleParam.isCollection()) {
-				log.debug("第{}列为集合数据列", i);
+			if (CollectionUtils.isEmpty(collectionValue)) {
+				String cellValue = titleParam.isCollection() ? "" : CellValueUtil.get(titleParam, data);
+				setContentCellValue(row, titleParam.getHeight(), i, cellValue);
 				continue;
 			}
-			
-			if (titleParam.isMerge()) {
-				Row row = sheet.getRow(currentRowNumber);
-				Cell cell = row.getCell(i);
-				String value = cell.getStringCellValue();
-				cellMerge(row, contentStyle, value, currentRowNumber, currentRowNumber + addRow - 1, i, i);
-			} else {
-				for (int j = 0; j < addRow; j++) {
-					Row row = sheet.getRow(currentRowNumber + j);
-					Cell cell = row.getCell(i);
-					if (cell == null) {
-						String value = titleParam.isIndex() ? CellValueUtil.get(titleParam, null) : "";
-						setContentCellValue(row, titleParam.getHeight(), i, value);
-					}
+			int crn = currentRowNumber;
+			Iterator<?> iterator = collectionValue.iterator();
+			while (iterator.hasNext()) {
+				Object value = iterator.next(); // 集合中的元素
+				String cellValue = "";
+				// 如果当前列是集合列
+				if (titleParam.isCollection()) {
+					cellValue = Objects.isNull(value) ? "" : value.toString();
+					// 如果集合列中的泛型未标记为@ExcelEntity, 则直接使用集合中元素的值
+					cellValue = Objects.isNull(titleParam.getMethod()) ? cellValue : CellValueUtil.get(titleParam, value);
+				} else {
+					cellValue = CellValueUtil.get(titleParam, data);
 				}
+				Row nextRow = sheet.getRow(crn) == null ? sheet.createRow(crn) : sheet.getRow(crn);
+				// 非集合列, 集合数据大于1条, 指定合并行
+				if (!titleParam.isCollection() && collectionValue.size() > 1 && titleParam.isMerge()) {
+					cellMerge(row, contentStyle, cellValue, currentRowNumber, currentRowNumber + collectionValue.size() - 1, i, i);
+					break;
+				}
+				// 非集合列, 不合并行, 不填充相同数据, 单元格设置值为指定的填充数据
+				if (!titleParam.isCollection() && !titleParam.isFillSame() && crn != currentRowNumber) {
+					cellValue = titleParam.getFillValue();
+				}
+				setContentCellValue(nextRow, titleParam.getHeight(), i, cellValue);
+				crn++;
 			}
 		}
-		currentRowNumber += addRow;
+		currentRowNumber += (CollectionUtils.isEmpty(collectionValue) ? 1 : collectionValue.size());
 	}
-
+	
 	/**
 	 * 设置内容单元格的值
 	 *
@@ -225,64 +222,6 @@ public class ExportService {
 		Cell cell = row.createCell(columnNumber);
 		cell.setCellValue(cellValue);
 		cell.setCellStyle(contentStyle);
-	}
-
-	/**
-	 * 处理需要导出列的参数信息
-	 */
-	private void handleTitleParams() {
-		List<ExportTitleParam> titleParams = fetchExportTitleParams(this.cls);
-		titleParams.addAll(getEntities(this.cls));
-		titleParams.addAll(getCollections(this.cls));
-
-		if (this.sheetParam.isAddIndex()) {
-			titleParams.add(new ExportTitleParam(this.sheetParam));
-		}
-
-		List<ExportTitleParam> groupTitleParams = new ArrayList<>();
-		titleParams.stream()
-				.filter(e -> StringUtils.isNotBlank(e.getGroupName()))
-				.sorted()
-				.collect(Collectors.groupingBy(ExportTitleParam::getGroupName))
-				.forEach((k, v) -> {
-					List<ExportTitleParam> children = v.stream().sorted().collect(Collectors.toList());
-					ExportTitleParam titleParam = new ExportTitleParam()
-							.setTitle(k).setChildren(children)
-							.setOrder(v.get(0).getOrder());
-					groupTitleParams.add(titleParam);
-				});
-
-		List<ExportTitleParam> singleTitleParams = titleParams.stream()
-				.filter(e -> StringUtils.isBlank(e.getGroupName()))
-				.collect(Collectors.toList());
-
-		singleTitleParams.addAll(groupTitleParams);
-
-		this.titleParams = singleTitleParams.stream()
-				.sorted()
-				.collect(Collectors.toList());
-
-		this.contentParams = this.titleParams.stream()
-				.flatMap(e -> {
-					if (CollectionUtils.isEmpty(e.getChildren())) {
-						return Arrays.asList(e).stream();
-					} else {
-						return e.getChildren().stream();
-					}
-				}).collect(Collectors.toList());
-	}
-
-	/**
-	 * 根据实体类型获取需要导出的列参数集合
-	 *
-	 * @param cls 实体类型
-	 * @return 列参数集合
-	 */
-	private List<ExportTitleParam> fetchExportTitleParams(Class<?> cls) {
-		Map<String, ExportTitleParam> titleParamHashMap = new HashMap<>();
-		getFields(cls, titleParamHashMap);
-		getMethods(cls, titleParamHashMap);
-		return titleParamHashMap.values().stream().collect(Collectors.toList());
 	}
 
 	/**
@@ -392,6 +331,69 @@ public class ExportService {
 		Row row = sheet.createRow(currentRowNumber++);
 		row.setHeight(sheetParam.getTitleHeight());
 		cellMerge(row, sheetTitleStyle, sheetParam.getTitle(), 0, 0, 0, this.contentParams.size() - 1);
+	}
+	
+	/**
+	 * 处理需要导出列的参数信息
+	 */
+	private void handleTitleParams() {
+		List<ExportTitleParam> titleParams = fetchExportTitleParams(this.cls);
+		titleParams.addAll(getEntities(this.cls));
+		titleParams.addAll(getCollections(this.cls));
+
+		if (this.sheetParam.isAddIndex()) {
+			titleParams.add(new ExportTitleParam(this.sheetParam));
+		}
+
+		List<ExportTitleParam> groupTitleParams = new ArrayList<>();
+		titleParams.stream()
+				.filter(e -> StringUtils.isNotBlank(e.getGroupName()))
+				.sorted()
+				.collect(Collectors.groupingBy(ExportTitleParam::getGroupName))
+				.forEach((k, v) -> {
+					List<ExportTitleParam> children = v.stream().sorted().collect(Collectors.toList());
+					ExportTitleParam titleParam = new ExportTitleParam()
+							.setTitle(k).setChildren(children)
+							.setOrder(v.get(0).getOrder());
+					groupTitleParams.add(titleParam);
+				});
+
+		List<ExportTitleParam> singleTitleParams = titleParams.stream()
+				.filter(e -> StringUtils.isBlank(e.getGroupName()))
+				.collect(Collectors.toList());
+
+		singleTitleParams.addAll(groupTitleParams);
+
+		this.titleParams = singleTitleParams.stream()
+				.sorted()
+				.collect(Collectors.toList());
+
+		this.contentParams = this.titleParams.stream()
+				.flatMap(e -> {
+					if (CollectionUtils.isEmpty(e.getChildren())) {
+						return Arrays.asList(e).stream();
+					} else {
+						return e.getChildren().stream();
+					}
+				}).collect(Collectors.toList());
+		
+		this.collectionTitleParam = this.contentParams.stream()
+				.filter(ExportTitleParam::isCollection)
+				.findFirst()
+				.get();
+	}
+	
+	/**
+	 * 根据实体类型获取需要导出的列参数集合
+	 *
+	 * @param cls 实体类型
+	 * @return 列参数集合
+	 */
+	private List<ExportTitleParam> fetchExportTitleParams(Class<?> cls) {
+		Map<String, ExportTitleParam> titleParamHashMap = new HashMap<>();
+		getFields(cls, titleParamHashMap);
+		getMethods(cls, titleParamHashMap);
+		return titleParamHashMap.values().stream().collect(Collectors.toList());
 	}
 
 	/**
@@ -507,8 +509,8 @@ public class ExportService {
 					}
 					return Arrays.asList(new ExportTitleParam(f, cls)
 							.setCollection(true)
-							.setEntityField(f)
-							.setMethod(null)
+							.setEntityField(f) // 用于获取集合字段的值
+							.setMethod(null) // 设为null, 则填充单元格数据时, 直接使用集合中元素的toString()值
 						).stream();
 				}).collect(Collectors.toList());
 

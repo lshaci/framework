@@ -83,6 +83,16 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	private boolean merge;
 	
 	/**
+	 * 不合并非集合列时, 是否填充相同数据
+	 */
+	private boolean fillSame;
+	
+	/**
+	 * 不合并集合列行时, 不填充相同数据, 可以指定填充数据
+	 */
+	private String fillValue;
+	
+	/**
 	 * 是否为集合
 	 */
 	private boolean isCollection;
@@ -98,7 +108,8 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	private Method method;
 
 	/**
-	 * 该列数据的实体字段(实体中的内嵌对象字段, 标记有{@code @ExportEntity}注解的字段)
+	 * 导出实体中的内嵌对象或集合字段, 用于获取实体中该字段的值
+	 * <p>{@code @ExportTitle} 注解中<b>isEntity</b>或<b>isCollection</b>为<b>true</b></p>
 	 */
 	private Field entityField;
 
@@ -262,6 +273,8 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	private void build(ExportTitle exportTitle) {
 		this.order = exportTitle.order();
 		this.merge = exportTitle.merge();
+		this.fillSame = exportTitle.fillSame();
+		this.fillValue = exportTitle.fillValue();
 		if (StringUtils.isNotBlank(exportTitle.prefix())) {
 			this.prefix = exportTitle.prefix();
 		}

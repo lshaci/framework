@@ -111,9 +111,23 @@ public @interface ExportTitle {
 	boolean isCollection() default false;
 	
 	/**
-	 * 是否合并列
+	 * 是否合并非集合列行
 	 *
-	 * @return 行数据中有Collection是是否合并列
+	 * @return 行数据中有Collection时是否合并不是集合列的行
 	 */
 	boolean merge() default true;
+	
+	/**
+	 * 不合并集合列行时, 是否填充相同数据
+	 * 
+	 * @return 不合并集合列行时, 是否填充相同数据
+	 */
+	boolean fillSame() default true;
+	
+	/**
+	 * 不合并集合列行时, 不填充相同数据, 可以指定填充数据
+	 * 
+	 * @return 不合并集合列行时, 不填充相同数据, 指定的填充数据
+	 */
+	String fillValue() default "";
 }
