@@ -71,7 +71,7 @@ public @interface ExportTitle {
 	/**
 	 * 分组名称(相同组名会生成二级标题)
 	 *
-	 * @return  分组名称
+	 * @return 分组名称
 	 */
 	String groupName() default "";
 
