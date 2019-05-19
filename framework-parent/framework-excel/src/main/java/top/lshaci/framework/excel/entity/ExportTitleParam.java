@@ -145,6 +145,7 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	 */
 	public ExportTitleParam(ExportSheetParam sheetParam) {
 		this.isIndex = true;
+		this.fillSame = true;
 		this.merge = sheetParam.isMergeIndex();
 		this.title = sheetParam.getIndexName();
 		this.order = Integer.MIN_VALUE;

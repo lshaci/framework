@@ -199,7 +199,7 @@ public class ExportService {
 					break;
 				}
 				// 非集合列, 不合并行, 不填充相同数据, 单元格设置值为指定的填充数据
-				if (!titleParam.isCollection() && !titleParam.isFillSame() && crn != currentRowNumber) {
+				if (!(titleParam.isCollection() || titleParam.isFillSame() || crn == currentRowNumber)) {
 					cellValue = titleParam.getFillValue();
 				}
 				setContentCellValue(nextRow, titleParam.getHeight(), i, cellValue);
