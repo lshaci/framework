@@ -8,5 +8,4 @@ package top.lshaci.framework.excel.enums;
  */
 public enum ExcelType {
 	XLS, XLSX
-
 }
