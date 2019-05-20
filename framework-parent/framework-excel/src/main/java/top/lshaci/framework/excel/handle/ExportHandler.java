@@ -9,8 +9,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import top.lshaci.framework.excel.annotation.export.ExportSheet;
+import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.enums.ExcelType;
+import top.lshaci.framework.excel.exception.ExcelHandlerException;
 import top.lshaci.framework.excel.service.ExportService;
 
 /**
@@ -36,7 +37,7 @@ public class ExportHandler {
 	public static <E> Workbook export(Class<E> cls, List<E> datas) {
 		return export(cls, datas, null);
 	}
-	
+
 	/**
 	 * 根据导出实体类信息和数据条数导出Excel WorkBook
 	 *
@@ -46,9 +47,21 @@ public class ExportHandler {
 	 * @return Excel WorkBook
 	 */
 	public static <E> Workbook export(Class<E> cls, List<E> datas, String sheetTitle) {
+		verifyParam(cls);
 		Workbook workbook = getWorkbook(cls, CollectionUtils.isEmpty(datas) ? 0 : datas.size());
 		new ExportService(cls, datas, workbook, sheetTitle).create();
 		return workbook;
+	}
+
+	/**
+	 * 验证参数
+	 *
+	 * @param cls 导出对象类型
+	 */
+	private static void verifyParam(Class<?> cls) {
+		if (Objects.isNull(cls)) {
+			throw new ExcelHandlerException("导出对象类型不能为空");
+		}
 	}
 
 	/**

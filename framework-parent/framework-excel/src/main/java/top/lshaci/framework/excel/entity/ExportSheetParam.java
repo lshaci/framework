@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import top.lshaci.framework.excel.annotation.export.ExportSheet;
+import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.builder.CellStyleBuilder;
 import top.lshaci.framework.excel.builder.IndexBuilder;
 import top.lshaci.framework.excel.builder.impl.DefaultCellStyleBuilder;
@@ -54,7 +54,7 @@ public class ExportSheetParam {
 	 * 是否添加序号列
 	 */
 	private boolean addIndex = true;
-	
+
 	/**
 	 * 是否合并序号列
 	 */
@@ -64,7 +64,7 @@ public class ExportSheetParam {
 	 * 序号列标题
 	 */
 	private String indexName = "序号";
-	
+
 	/**
 	 * 序号列宽度
 	 */

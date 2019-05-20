@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The title name of the excel1 corresponding to the entity field
+ * The title name of the excel corresponding to the entity field
  *
  * @author lshaci
  * @since 0.0.3
@@ -19,9 +19,9 @@ import java.lang.annotation.Target;
 public @interface UploadExcelTitle {
 
 	/**
-	 * Get the value(excel1 title name)
+	 * Get the value(excel title name)
 	 *
-	 * @return the excel1 title name
+	 * @return the excel title name
 	 */
 	String[] value();
 

@@ -1,5 +1,15 @@
 package top.lshaci.framework.excel.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import top.lshaci.framework.excel.annotation.ExportTitle;
+import top.lshaci.framework.excel.builder.IndexBuilder;
+import top.lshaci.framework.excel1.exception.ExcelHandlerException;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -8,17 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
-import top.lshaci.framework.excel.annotation.export.ExportTitle;
-import top.lshaci.framework.excel.builder.IndexBuilder;
-import top.lshaci.framework.excel1.exception.ExcelHandlerException;
 
 /**
  * 导出列定义的相关参数
@@ -76,22 +75,22 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	 * 是否为序号列
 	 */
 	private boolean isIndex;
-	
+
 	/**
 	 * 是否合并
 	 */
 	private boolean merge;
-	
+
 	/**
 	 * 不合并非集合列时, 是否填充相同数据
 	 */
 	private boolean fillSame;
-	
+
 	/**
 	 * 不合并集合列行时, 不填充相同数据, 可以指定填充数据
 	 */
 	private String fillValue;
-	
+
 	/**
 	 * 是否为集合
 	 */
