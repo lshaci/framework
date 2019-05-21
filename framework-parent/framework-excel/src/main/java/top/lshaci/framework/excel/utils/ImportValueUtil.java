@@ -65,7 +65,7 @@ public class ImportValueUtil extends BaseValueUtil {
 
 		// 转换方法存在, 则使用转换方法对原始只进行处理
 		if (Objects.nonNull(titleParam.getConvertMethod())) {
-			return getConvertValue(titleParam.getConvertClass(), titleParam.getMethod(), cellValue);
+			return getConvertValue(titleParam.getConvertClass(), titleParam.getConvertMethod(), cellValue);
 		} else {
 			return StringConverterUtils.getTargetValue(titleParam.getField().getType(), cellValue);
 		}
