@@ -43,7 +43,7 @@ public class ExcelImportUtils {
 		try (
 				InputStream is = new FileInputStream(file)	
 		) {
-			return parse(is, cls, null);
+			return parse(is, cls, sheetParam);
 		} catch (IOException e) {
 			log.error("获取Excel文件输入流时发生错误", e);
 			throw new ExcelHandlerException("获取Excel文件输入流时发生错误", e);
