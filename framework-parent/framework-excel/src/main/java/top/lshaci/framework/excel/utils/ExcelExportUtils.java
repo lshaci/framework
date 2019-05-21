@@ -1,5 +1,6 @@
 package top.lshaci.framework.excel.utils;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class ExcelExportUtils {
 				Workbook workbook = ExportHandler.export(cls, datas, sheetTitle)
 		) {
 			workbook.write(os);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			log.error("将Excel工作簿导出时发生错误", e);
 			throw new ExcelHandlerException("将Excel工作簿导出时发生错误", e);
 		}

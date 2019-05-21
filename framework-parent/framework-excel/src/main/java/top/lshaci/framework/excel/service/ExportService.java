@@ -1,35 +1,23 @@
 package top.lshaci.framework.excel.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-
-import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.ExcelEntity;
 import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.annotation.ExportTitle;
 import top.lshaci.framework.excel.entity.ExportSheetParam;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
-import top.lshaci.framework.excel.utils.CellValueUtil;
+import top.lshaci.framework.excel.utils.ExportValueUtil;
 import top.lshaci.framework.utils.ClassUtils;
 import top.lshaci.framework.utils.ReflectionUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 导出Excel业务类
@@ -158,7 +146,7 @@ public class ExportService {
 			Row row = sheet.createRow(currentRowNumber++);
 			for (int i = 0; i < this.contentParams.size(); i++) {
 				ExportTitleParam titleParam = this.contentParams.get(i);
-				String cellValue = CellValueUtil.get(titleParam, data);
+				String cellValue = ExportValueUtil.fetch(titleParam, data);
 				setContentCellValue(row, titleParam.getHeight(), i, cellValue);
 			}
 		}
@@ -175,7 +163,7 @@ public class ExportService {
 		for (int i = 0; i < this.contentParams.size(); i++) {
 			ExportTitleParam titleParam = this.contentParams.get(i);
 			if (CollectionUtils.isEmpty(collectionValue)) {
-				String cellValue = titleParam.isCollection() ? "" : CellValueUtil.get(titleParam, data);
+				String cellValue = titleParam.isCollection() ? "" : ExportValueUtil.fetch(titleParam, data);
 				setContentCellValue(row, titleParam.getHeight(), i, cellValue);
 				continue;
 			}
@@ -188,9 +176,9 @@ public class ExportService {
 				if (titleParam.isCollection()) {
 					cellValue = Objects.isNull(value) ? "" : value.toString();
 					// 如果集合列中的泛型未标记为@ExcelEntity, 则直接使用集合中元素的值
-					cellValue = Objects.isNull(titleParam.getMethod()) ? cellValue : CellValueUtil.get(titleParam, value);
+					cellValue = Objects.isNull(titleParam.getMethod()) ? cellValue : ExportValueUtil.fetch(titleParam, value);
 				} else {
-					cellValue = CellValueUtil.get(titleParam, data);
+					cellValue = ExportValueUtil.fetch(titleParam, data);
 				}
 				Row nextRow = sheet.getRow(crn) == null ? sheet.createRow(crn) : sheet.getRow(crn);
 				// 非集合列, 集合数据大于1条, 指定合并行
@@ -337,7 +325,7 @@ public class ExportService {
 	 * 处理需要导出列的参数信息
 	 */
 	private void handleTitleParams() {
-		List<ExportTitleParam> titleParams = fetchExportTitleParams(this.cls);
+		List<ExportTitleParam> titleParams = fetchTitleParams(this.cls);
 		titleParams.addAll(getEntities(this.cls));
 		titleParams.addAll(getCollections(this.cls));
 
@@ -389,11 +377,11 @@ public class ExportService {
 	 * @param cls 实体类型
 	 * @return 列参数集合
 	 */
-	private List<ExportTitleParam> fetchExportTitleParams(Class<?> cls) {
-		Map<String, ExportTitleParam> titleParamHashMap = new HashMap<>();
-		getFields(cls, titleParamHashMap);
-		getMethods(cls, titleParamHashMap);
-		return titleParamHashMap.values().stream().collect(Collectors.toList());
+	private List<ExportTitleParam> fetchTitleParams(Class<?> cls) {
+		Map<String, ExportTitleParam> titleParamMap = new HashMap<>();
+		getFields(cls, titleParamMap);
+		getMethods(cls, titleParamMap);
+		return titleParamMap.values().stream().collect(Collectors.toList());
 	}
 
 	/**
@@ -462,7 +450,7 @@ public class ExportService {
 					return true;
 				}).flatMap(f -> {
 					ExportTitle exportTitle = f.getAnnotation(ExportTitle.class);
-					return this.fetchExportTitleParams(f.getType())
+					return this.fetchTitleParams(f.getType())
 							.stream()
 							.map(e -> e.setEntityField(f)
 									.setGroupName(exportTitle.title())
@@ -499,7 +487,7 @@ public class ExportService {
 					Class<?> fieldGenericType = ClassUtils.getFieldGenericType(f);
 					ExcelEntity excelEntity = fieldGenericType.getAnnotation(ExcelEntity.class);
 					if (Objects.nonNull(excelEntity)) {
-						return this.fetchExportTitleParams(fieldGenericType)
+						return this.fetchTitleParams(fieldGenericType)
 								.stream()
 								.map(e -> e.setEntityField(f)
 										.setCollection(true)

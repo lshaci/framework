@@ -185,7 +185,7 @@ public abstract class POIExcelUploadHandler {
         boolean requireCellValue = uploadVerify != null && uploadVerify.requireCellValue();
         boolean requireRowValue = uploadVerify != null && uploadVerify.requireRowValue();
 
-        // Loop the sheet get row
+        // Loop the sheet fetch row
         for (int i = titleRow + 1; i <= lastRowNum; i++) {
             Row row = sheet.getRow(i);
 
@@ -198,7 +198,7 @@ public abstract class POIExcelUploadHandler {
                 continue;
             }
 
-            // Loop the row get cell
+            // Loop the row fetch cell
 
             final Set<Object> targetValues = new HashSet<>();
             Map<String, String> cellValueMap = getCellValues(titles, row, requireCellValue);
@@ -245,7 +245,7 @@ public abstract class POIExcelUploadHandler {
 
 		    if (targetValue != null) {
 		        targetValues.add(targetValue);
-		        // set field value and get the target value
+		        // set field value and fetch the target value
 		        ReflectionUtils.setFieldValue(entity, relationModel.getTargetField(), targetValue);
 		    }
 		});
@@ -286,7 +286,7 @@ public abstract class POIExcelUploadHandler {
 	}
 
 	/**
-     * Verify and get the target value with cell value
+     * Verify and fetch the target value with cell value
      *
      * @param titleArray the excel1 title array
      * @param relationModel the excel1 relation model

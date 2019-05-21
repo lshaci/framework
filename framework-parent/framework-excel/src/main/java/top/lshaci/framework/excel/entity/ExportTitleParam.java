@@ -1,15 +1,5 @@
 package top.lshaci.framework.excel.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import top.lshaci.framework.excel.annotation.ExportTitle;
-import top.lshaci.framework.excel.builder.IndexBuilder;
-import top.lshaci.framework.excel1.exception.ExcelHandlerException;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -18,6 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.excel.annotation.ExportTitle;
+import top.lshaci.framework.excel.builder.IndexBuilder;
+import top.lshaci.framework.excel1.exception.ExcelHandlerException;
 
 /**
  * 导出列定义的相关参数
@@ -172,7 +173,7 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	}
 
 	/**
-	 * 根据导出的字段创建序号列信息
+	 * 根据导出的字段创建列信息
 	 *
 	 * @param field 需要导出的字段
 	 * @param cls 需要导出的实体类
@@ -253,11 +254,11 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 		if (field.getType() == boolean.class) {
 			throw new ExcelHandlerException("禁止使用boolean类型");
 		}
-		String methodName = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
+		String methodName = "fetch" + name.substring(0, 1).toUpperCase() + name.substring(1);
 		try {
 			return cls.getMethod(methodName);
 		} catch (NoSuchMethodException | SecurityException e) {
-			log.error("字段{}.{}的get方法不存在", cls, name);
+			log.error("{}的{}方法不存在", cls, methodName);
 			throw new ExcelHandlerException("Get方法不存在", e);
 		}
 

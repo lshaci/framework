@@ -1,14 +1,13 @@
 package top.lshaci.framework.excel.utils;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Objects;
+
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.utils.ReflectionUtils;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * 获取单元格值的工具类
@@ -17,12 +16,7 @@ import java.util.Objects;
  * @since 1.0.2
  */
 @Slf4j
-public class CellValueUtil {
-
-	/**
-	 * 转换对象缓存Map
-	 */
-	private static Map<Class<?>, Object> convertCacheMap = new HashMap<>();
+public class ExportValueUtil extends BaseValueUtil {
 
 	/**
 	 * 根据列参数信息和行数据获取对应单元格的值
@@ -31,7 +25,7 @@ public class CellValueUtil {
 	 * @param data 行数据
 	 * @return 对应单元格的值
 	 */
-	public static String get(ExportTitleParam titleParam, Object data) {
+	public static String fetch(ExportTitleParam titleParam, Object data) {
 		// 是否是序号列
 		if (titleParam.isIndex()) {
 			return titleParam.getIndexNumber();
@@ -50,7 +44,8 @@ public class CellValueUtil {
 
 		// 转换方法存在, 则使用转换方法对原始只进行处理
 		if (Objects.nonNull(titleParam.getConvertMethod())) {
-			return getConvertValue(titleParam, value);
+			value = getConvertValue(titleParam.getConvertClass(), titleParam.getMethod(), value);
+			return Objects.isNull(value) ? "" : value.toString();
 		}
 		// 枚举方法存在, 则使用枚举方法对原始只进行处理
 		if (Objects.nonNull(titleParam.getEnumMethod())) {
@@ -110,30 +105,6 @@ public class CellValueUtil {
 			value = ReflectionUtils.invokeMethod(data, titleParam.getMethod());
 		}
 		return value;
-	}
-
-	/**
-	 * 获取需要转换的单元格的值
-	 *
-	 * @param titleParam 列参数信息
-	 * @param value 单元格原始值
-	 * @return 转换后单元格的值
-	 */
-	private static String getConvertValue(ExportTitleParam titleParam, Object value) {
-		Class<?> convertClass = titleParam.getConvertClass();
-		Object convertInstance = convertCacheMap.get(convertClass);
-		if (Objects.isNull(convertInstance)) {
-			convertInstance = ReflectionUtils.newInstance(convertClass);
-			convertCacheMap.put(convertClass, convertInstance);
-		}
-
-		value = ReflectionUtils.invokeMethod(convertInstance, titleParam.getConvertMethod(), value);
-		if (Objects.isNull(value)) {
-			log.warn("{}转换后的值为空", titleParam.getTitle());
-			return "";
-		}
-
-		return value.toString();
 	}
 
 	/**
