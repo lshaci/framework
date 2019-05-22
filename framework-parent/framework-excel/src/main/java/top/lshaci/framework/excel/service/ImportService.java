@@ -80,16 +80,29 @@ public class ImportService {
 			.limit(this.sheet.getLastRowNum())
 			.map(this.sheet::getRow)
 			.filter(Objects::nonNull)
-			.map(r -> {
-				Object obj = ReflectionUtils.newInstance(this.cls);
-				this.titleParams.forEach(p -> {
-					Cell cell = r.getCell(p.getColNum());
-					Object value = ImportValueUtil.getTargetValue(cell, p);
-					verifyValue(r, p, value);
-					ReflectionUtils.invokeMethod(obj, p.getMethod(), value);
-				});
-				return obj;
-			}).collect(Collectors.toList());
+			.map(this::row2Obj)
+			.filter(Objects::nonNull) // 过滤空行值
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * 将行数据转换为对象
+	 * 
+	 * @param row 行数据
+	 * @return 行数据对应的对象
+	 */
+	private Object row2Obj(Row row) {
+		Object obj = ReflectionUtils.newInstance(this.cls);
+		List<Object> values = new ArrayList<>();
+		this.titleParams.forEach(p -> {
+			Cell cell = row.getCell(p.getColNum());
+			Object value = ImportValueUtil.getTargetValue(cell, p);
+			verifyValue(row, p, value);
+			ReflectionUtils.invokeMethod(obj, p.getMethod(), value);
+			values.add(value);
+		});
+		// 对象中所有的值为空, 则返回空, 在上一层中过滤掉
+		return values.stream().filter(Objects::isNull).count() == values.size() ? null : obj;
 	}
 
 	/**
