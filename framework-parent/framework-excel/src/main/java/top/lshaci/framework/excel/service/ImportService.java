@@ -114,8 +114,10 @@ public class ImportService {
 	 */
 	private void verifyValue(Row row, ImportTitleParam titleParam, Object value) {
 		if (Objects.isNull(value) && titleParam.isRequired()) {
-			log.error("{}的值不能为空", titleParam.getTitle());
-			throw new ImportHandlerException("第" + (row.getRowNum() + 1) + "行, 第" + (titleParam.getColNum() + 1) + "列的值解析后为空");
+			int rn = row.getRowNum() + 1;
+			int cn = titleParam.getColNum() + 1;
+			log.error("[{}]的值不能为空; 第{}行, 第{}列的值解析后为空", titleParam.getTitle(), rn, cn);
+			throw new ImportHandlerException("第" + rn + "行, 第" + cn + "列的值解析后为空");
 		}
 	}
 
