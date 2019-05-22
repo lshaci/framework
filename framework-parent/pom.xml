@@ -11,7 +11,6 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>framework-core</module>
 		<module>framework-mybatis</module>
 		<module>framework-test</module>
 		<module>framework-utils</module>
@@ -88,12 +87,6 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-common</artifactId>
-				<version>${framework.version}</version>
-			</dependency>
-			<!-- framework core module -->
-			<dependency>
-				<groupId>top.lshaci</groupId>
-				<artifactId>framework-core</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework redis module -->
