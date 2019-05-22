@@ -12,11 +12,6 @@ import top.lshaci.framework.utils.string.converter.StringConverter;
 public abstract class StringConverterUtils {
 
 	/**
-	 * The default string converter factory
-	 */
-	private static StringConverterFactory stringConverterFactory = StringConverterFactory.buildDefaultFactory();
-	
-	/**
 	 * Get target value
 	 * 
 	 * @param <T> the target value type
@@ -25,12 +20,26 @@ public abstract class StringConverterUtils {
 	 * @return the target value
 	 */
 	public static <T> T getTargetValue(Class<T> targetClass, String source) {
-		StringConverter<T> converter = stringConverterFactory.getConverter(targetClass);
+		StringConverter<T> converter = Inner.factory.getConverter(targetClass);
 		
 		if (converter != null) {
 			return converter.convert(source);
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * 内部类用于延迟加载
+	 * 
+	 * @author lshaci
+	 * @since 1.0.2
+	 */
+	static class Inner {
+		
+		/**
+		 * 默认的字符串转换器工厂
+		 */
+		static StringConverterFactory factory = StringConverterFactory.buildDefaultFactory();
 	}
 }
