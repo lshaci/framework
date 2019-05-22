@@ -11,7 +11,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.enums.ExcelType;
-import top.lshaci.framework.excel.exception.ExcelHandlerException;
+import top.lshaci.framework.excel.enums.ExportError;
+import top.lshaci.framework.excel.exception.ExportHandlerException;
 import top.lshaci.framework.excel.service.ExportService;
 
 /**
@@ -60,7 +61,7 @@ public class ExportHandler {
 	 */
 	private static void verifyParam(Class<?> cls) {
 		if (Objects.isNull(cls)) {
-			throw new ExcelHandlerException("导出对象类型不能为空");
+			throw new ExportHandlerException(ExportError.ENTITY_IS_NULL);
 		}
 	}
 

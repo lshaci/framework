@@ -3,6 +3,12 @@ package top.lshaci.framework.excel.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 导入时的错误信息
+ * 
+ * @author lshaci
+ * @since 1.0.2
+ */
 @Getter
 @AllArgsConstructor
 public enum ImportError {

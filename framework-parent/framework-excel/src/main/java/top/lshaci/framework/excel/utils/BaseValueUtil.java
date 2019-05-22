@@ -15,7 +15,7 @@ import top.lshaci.framework.utils.ReflectionUtils;
  * @since 1.0.2
  */
 @Slf4j
-public class BaseValueUtil {
+class BaseValueUtil {
 
 	/**
 	 * 转换对象缓存Map

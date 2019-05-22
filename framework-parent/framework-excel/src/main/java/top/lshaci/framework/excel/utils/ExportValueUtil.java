@@ -44,7 +44,7 @@ public class ExportValueUtil extends BaseValueUtil {
 
 		// 转换方法存在, 则使用转换方法对原始只进行处理
 		if (Objects.nonNull(titleParam.getConvertMethod())) {
-			value = getConvertValue(titleParam.getConvertClass(), titleParam.getMethod(), value);
+			value = getConvertValue(titleParam.getConvertClass(), titleParam.getConvertMethod(), value);
 			return Objects.isNull(value) ? "" : value.toString();
 		}
 		// 枚举方法存在, 则使用枚举方法对原始只进行处理

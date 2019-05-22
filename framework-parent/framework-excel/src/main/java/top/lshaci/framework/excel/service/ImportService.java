@@ -145,7 +145,7 @@ public class ImportService {
 			ImportTitleParam titleParam = titleParamMap.get(title);
 			if (Objects.isNull(titleParam)) {
 				log.warn("[{}]未定义为需要导入的列", title);
-				if (this.sheetParam.isForceRelevance()) {
+				if (this.sheetParam.isForceEntity()) {
 					throw new ImportHandlerException(ImportError.INVALID_TEMPLATE);
 				}
 			} else {
@@ -155,7 +155,7 @@ public class ImportService {
 			}
 		});
 
-		if (MapUtils.isNotEmpty(titleParamMap)) {
+		if (MapUtils.isNotEmpty(titleParamMap) && this.sheetParam.isForceSheet()) {
 			log.warn("{}列在Excel文件中不存在", titleParamMap.keySet());
 			throw new ImportHandlerException(ImportError.INVALID_TEMPLATE);
 		}

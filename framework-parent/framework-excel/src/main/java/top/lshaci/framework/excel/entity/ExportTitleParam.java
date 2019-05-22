@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -13,6 +12,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -26,16 +26,12 @@ import top.lshaci.framework.excel1.exception.ExcelHandlerException;
  * @author lshaci
  * @since 1.0.2
  */
-@Data
 @Slf4j
+@Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class ExportTitleParam implements Comparable<ExportTitleParam> {
-
-	/**
-	 * 列标题
-	 */
-	private String title;
+@EqualsAndHashCode(callSuper = true)
+public class ExportTitleParam extends BaseTitleParam implements Comparable<ExportTitleParam> {
 
 	/**
 	 * 列顺序
@@ -56,16 +52,6 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	 * 内容行高
 	 */
 	private int height = 20;
-
-	/**
-	 * 导出数据需要拼接的前缀
-	 */
-	private String prefix = "";
-
-	/**
-	 * 导出数据需要拼接的后缀
-	 */
-	private String suffix = "";
 
 	/**
 	 * 分组下的二级标题信息
@@ -98,30 +84,10 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	private boolean isCollection;
 
 	/**
-	 * 列数据字段(内嵌对象为内嵌对象中的字段)
-	 */
-	private Field field;
-
-	/**
-	 * 列数据方法
-	 */
-	private Method method;
-
-	/**
 	 * 导出实体中的内嵌对象或集合字段, 用于获取实体中该字段的值
 	 * <p>{@code @ExportTitle} 注解中<b>isEntity</b>或<b>isCollection</b>为<b>true</b></p>
 	 */
 	private Field entityField;
-
-	/**
-	 * 数据转换类
-	 */
-	private Class<?> convertClass;
-
-	/**
-	 * 数据转换方法
-	 */
-	private Method convertMethod;
 
 	/**
 	 * 生成序号的对象
@@ -132,11 +98,6 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	 * 枚举方法
 	 */
 	private Method enumMethod;
-
-	/**
-	 * 列数据替换信息映射
-	 */
-	private Map<String, String> replaceMap;
 
 	/**
 	 * 根据Sheet参数创建序号列信息
@@ -168,7 +129,7 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 		}
 
 		build(exportTitle);
-		buildConvertMethod(exportTitle);
+		buildConvertMethod(exportTitle.convertClass(), exportTitle.convertMethod(), this.method.getReturnType());
 		buildEnumMethod(method, exportTitle);
 	}
 
@@ -181,7 +142,7 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 	public ExportTitleParam(Field field, Class<?> cls) {
 		this.field = field;
 		this.title = field.getName();
-		this.method = createByField(field, cls);
+		this.method = createByField(field, cls, MethodType.GET);
 
 		ExportTitle exportTitle = field.getAnnotation(ExportTitle.class);
 		if (Objects.isNull(exportTitle)) {
@@ -189,25 +150,8 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 		}
 
 		build(exportTitle);
-		buildConvertMethod(exportTitle);
+		buildConvertMethod(exportTitle.convertClass(), exportTitle.convertMethod(), this.method.getReturnType());
 		buildEnumMethod(field, exportTitle);
-	}
-
-	/**
-	 * 创建转换方法
-	 *
-	 * @param exportTitle 字段或方法上标记的列信息
-	 */
-	private void buildConvertMethod(ExportTitle exportTitle) {
-		if (Void.class != exportTitle.convertClass() && StringUtils.isNotBlank(exportTitle.convertMethod())) {
-			try {
-				this.convertClass = exportTitle.convertClass();
-				this.convertMethod = this.convertClass.getMethod(exportTitle.convertMethod(), this.method.getReturnType());
-			} catch (NoSuchMethodException | SecurityException e) {
-				log.error("{}.{}转换方法不存在", exportTitle.convertClass(), exportTitle.convertMethod());
-				throw new ExcelHandlerException("转换方法不存在", e);
-			}
-		}
 	}
 
 	/**
@@ -240,28 +184,6 @@ public class ExportTitleParam implements Comparable<ExportTitleParam> {
 				throw new ExcelHandlerException("枚举中方法不存在", e);
 			}
 		}
-	}
-
-	/**
-	 * 根据字段和类创建字段的公共get方法
-	 *
-	 * @param field 字段
-	 * @param cls 类
-	 * @return get方法
-	 */
-	private Method createByField(Field field, Class<?> cls) {
-		String name = field.getName();
-		if (field.getType() == boolean.class) {
-			throw new ExcelHandlerException("禁止使用boolean类型");
-		}
-		String methodName = "fetch" + name.substring(0, 1).toUpperCase() + name.substring(1);
-		try {
-			return cls.getMethod(methodName);
-		} catch (NoSuchMethodException | SecurityException e) {
-			log.error("{}的{}方法不存在", cls, methodName);
-			throw new ExcelHandlerException("Get方法不存在", e);
-		}
-
 	}
 
 	/**

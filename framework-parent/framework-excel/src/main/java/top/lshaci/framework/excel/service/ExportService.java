@@ -1,23 +1,36 @@
 package top.lshaci.framework.excel.service;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.ExcelEntity;
 import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.annotation.ExportTitle;
 import top.lshaci.framework.excel.entity.ExportSheetParam;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
-import top.lshaci.framework.excel.exception.ExcelHandlerException;
+import top.lshaci.framework.excel.enums.ExportError;
+import top.lshaci.framework.excel.exception.ExportHandlerException;
 import top.lshaci.framework.excel.utils.ExportValueUtil;
 import top.lshaci.framework.utils.ClassUtils;
 import top.lshaci.framework.utils.ReflectionUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 导出Excel业务类
@@ -341,8 +354,8 @@ public class ExportService {
 				.forEach((k, v) -> {
 					List<ExportTitleParam> children = v.stream().sorted().collect(Collectors.toList());
 					ExportTitleParam titleParam = new ExportTitleParam()
-							.setTitle(k).setChildren(children)
-							.setOrder(v.get(0).getOrder());
+							.setChildren(children).setOrder(v.get(0).getOrder());
+					titleParam.setTitle(k);
 					groupTitleParams.add(titleParam);
 				});
 
@@ -445,7 +458,7 @@ public class ExportService {
 					ExcelEntity excelEntity = f.getType().getAnnotation(ExcelEntity.class);
 					if (Objects.isNull(excelEntity)) {
 						log.error("{}未使用ExcelEntity注解标记", f.getType());
-						throw new ExcelHandlerException("导出实体未使用ExcelEntity注解标记");
+						throw new ExportHandlerException(ExportError.NOT_EXCEL_ENTITY);
 					}
 					return true;
 				}).flatMap(f -> {
@@ -471,7 +484,7 @@ public class ExportService {
 				.filter(f -> f.getAnnotation(ExportTitle.class).isCollection())
 				.count();
 		if (count > 1) {
-			throw new ExcelHandlerException("导出实体类仅允许标记一个集合类型字段");
+			throw new ExportHandlerException(ExportError.ANY_ONE_COLLECTION);
 		}
 		return Arrays.stream(cls.getDeclaredFields())
 				.filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
@@ -479,7 +492,7 @@ public class ExportService {
 				.filter(f -> {
 					if (!Collection.class.isAssignableFrom(f.getType())) {
 						log.error("使用ExportTitle注解标记的字段{}不是集合类型", f.getName());
-						throw new ExcelHandlerException("使用ExportTitle注解标记的字段不是集合类型");
+						throw new ExportHandlerException(ExportError.NOT_COLLECTION);
 					}
 					return true;
 				}).flatMap(f -> {
@@ -495,12 +508,11 @@ public class ExportService {
 										.setOrder(exportTitle.order() + e.getOrder() / 100.0)
 								);
 					}
-					return Arrays.asList(new ExportTitleParam(f, cls)
+					ExportTitleParam titleParam = new ExportTitleParam(f, cls)
 							.setCollection(true)
-							.setEntityField(f) // 用于获取集合字段的值
-							.setMethod(null) // 设为null, 则填充单元格数据时, 直接使用集合中元素的toString()值
-						).stream();
+							.setEntityField(f); // 用于获取集合字段的值
+					titleParam.setMethod(null); // 设为null, 则填充单元格数据时, 直接使用集合中元素的toString()值
+					return Arrays.asList(titleParam).stream();
 				}).collect(Collectors.toList());
-
 	}
 }
