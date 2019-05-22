@@ -1,33 +1,32 @@
 package top.lshaci.framework.excel.entity;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.excel1.exception.ExcelHandlerException;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * 导入导出公共的列标题信息
- * 
+ *
  * @author lshaci
  * @since 1.0.2
  */
 @Data
 @Slf4j
 @Accessors(chain = true)
-public class BaseTitleParam {
-	
+class BaseTitleParam {
+
 	/**
 	 * 列标题
 	 */
 	protected String title;
-	
+
 	/**
 	 * 前缀(导出添加, 导入去掉)
 	 */
@@ -47,7 +46,7 @@ public class BaseTitleParam {
 	 * 字段的set/get方法
 	 */
 	protected Method method;
-	
+
 	/**
 	 * 数据转换类
 	 */
@@ -57,12 +56,12 @@ public class BaseTitleParam {
 	 * 数据转换方法
 	 */
 	protected Method convertMethod;
-	
+
 	/**
 	 * 列数据替换信息映射
 	 */
 	protected Map<String, String> replaceMap;
-	
+
 	/**
 	 * 创建转换方法
 	 *
@@ -81,7 +80,7 @@ public class BaseTitleParam {
 			}
 		}
 	}
-	
+
 	/**
 	 * 根据字段和类创建字段的公共set/get方法
 	 *
@@ -103,17 +102,17 @@ public class BaseTitleParam {
 			throw new ExcelHandlerException(methodType + "方法不存在", e);
 		}
 	}
-	
+
 	/**
 	 * 方法类型
-	 * 
+	 *
 	 * @author lshaci
 	 * @since 1.0.2
 	 */
 	@AllArgsConstructor
 	protected enum MethodType {
 		SET("set"), GET("get");
-		
+
 		private String des;
 	}
 
