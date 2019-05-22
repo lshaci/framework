@@ -131,11 +131,11 @@ public class ImportService {
 	private void handleTitleParams() {
 		Map<String, ImportTitleParam> titleParamMap = fetchTitleParams();
 		Row row = this.sheet.getRow(this.sheetParam.getTitleRow());
-		if (Objects.isNull(row)) {
+		if (Objects.isNull(row) || row.getLastCellNum() == -1) {
 			log.error("{}行不存在数据", this.sheetParam.getTitleRow());
 			throw new ImportHandlerException(ImportError.TITLE_ROW_NOT_EXIST);
 		}
-
+		
 		row.forEach(c -> {
 			String title = ImportValueUtil.get(c);
 			if (Objects.isNull(title)) {

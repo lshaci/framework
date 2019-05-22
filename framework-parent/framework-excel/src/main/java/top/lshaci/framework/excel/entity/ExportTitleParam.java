@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.ExportTitle;
 import top.lshaci.framework.excel.builder.IndexBuilder;
-import top.lshaci.framework.excel1.exception.ExcelHandlerException;
+import top.lshaci.framework.excel.exception.ExcelHandlerException;
 
 /**
  * 导出列定义的相关参数
