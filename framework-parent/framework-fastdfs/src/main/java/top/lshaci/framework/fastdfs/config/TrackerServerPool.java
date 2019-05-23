@@ -1,15 +1,17 @@
 package top.lshaci.framework.fastdfs.config;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.csource.common.MyException;
 import org.csource.fastdfs.ClientGlobal;
 import org.csource.fastdfs.TrackerServer;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.enums.ErrorCode;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
-
-import java.io.IOException;
 
 /**
  * Tracker server pool
@@ -17,35 +19,37 @@ import java.io.IOException;
  * @author lshaci
  * @since 0.0.4
  */
+@Data
 @Slf4j
 public class TrackerServerPool {
-
+	
+	/**
+	 * The max file size
+	 */
+	private long maxFileSize;
+	/**
+	 * The file server address
+	 */
+	private String fileServerAddr;
     /**
      * Tracker server config
      */
-	protected static String config;
+	private String config;
 
     /**
      * The min storage connection
      */
-	protected static int minStorageConnection;
+	private int minStorageConnection;
 
     /**
      * The max storage connection
      */
-	protected static int maxStorageConnection;
+	private int maxStorageConnection;
 
     /**
      * The tracker server pool
      */
-	protected static GenericObjectPool<TrackerServer> trackerServerPool;
-
-    /**
-     * Privatization construction method
-     */
-    private TrackerServerPool(){
-
-    }
+	private GenericObjectPool<TrackerServer> trackerServerPool;
 
     /**
      * Init tracker server pool
@@ -53,7 +57,7 @@ public class TrackerServerPool {
      * @throws IOException
      * @throws MyException
      */
-	public static void initPool() throws IOException, MyException {
+	public void init() throws IOException, MyException {
 		log.debug("Init tracker server pool...");
 		// load config properties
 		ClientGlobal.initByProperties(config);
@@ -73,7 +77,7 @@ public class TrackerServerPool {
 	 * @return Tracker server instance
 	 * @throws FastDFSException
 	 */
-	public static TrackerServer borrowObject() throws FastDFSException {
+	public TrackerServer borrowObject() throws FastDFSException {
         TrackerServer trackerServer = null;
         try {
             trackerServer = trackerServerPool.borrowObject();
@@ -92,7 +96,7 @@ public class TrackerServerPool {
      *
      * @param trackerServer the tracker server instance
      */
-    public static void returnObject(TrackerServer trackerServer){
+    public void returnObject(TrackerServer trackerServer){
     	if (trackerServer != null) {
     		trackerServerPool.returnObject(trackerServer);
 		}

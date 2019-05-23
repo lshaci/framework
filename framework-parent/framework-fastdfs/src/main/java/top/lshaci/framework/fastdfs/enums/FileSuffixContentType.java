@@ -2,6 +2,7 @@ package top.lshaci.framework.fastdfs.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Getter;
  * @since 0.0.4
  */
 @Getter
+@AllArgsConstructor
 public enum FileSuffixContentType {
 	
 	/**
@@ -89,9 +91,6 @@ public enum FileSuffixContentType {
 
 	private String contentType;
 
-	private FileSuffixContentType(String contentType) {
-		this.contentType = contentType;
-	}
 	
 	/**
 	 * Get content type by file suffix

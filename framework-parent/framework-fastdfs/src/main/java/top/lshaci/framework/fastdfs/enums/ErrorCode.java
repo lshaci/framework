@@ -1,5 +1,6 @@
 package top.lshaci.framework.fastdfs.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Getter;
  * @since 0.0.4
  */
 @Getter
+@AllArgsConstructor
 public enum ErrorCode {
 	
 	/**
@@ -80,9 +82,4 @@ public enum ErrorCode {
 	private String code;
 	private String message;
     
-    private ErrorCode(String code, String message){
-        this.code = code;
-        this.message = message;
-    }
-
 }

@@ -1,16 +1,17 @@
 package top.lshaci.framework.fastdfs.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 import top.lshaci.framework.fastdfs.properties.FastDFSProperties;
 import top.lshaci.framework.fastdfs.util.FastDFSClient;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Fast dfs client config
@@ -26,16 +27,27 @@ public class FastDFSClientConfig {
 
     @Autowired
     private FastDFSProperties properties;
+    
+    /**
+     * 创建Fast dfs服务连接池
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public TrackerServerPool trackerServerPool() throws Exception {
+    	TrackerServerPool pool = new TrackerServerPool();
+    	initPool(pool);
+    	return pool;
+    }
 
     /**
      * Init tracker server pool config
      *
      * @throws Exception if tracker server pool config error throw this
      */
-    @PostConstruct
-    public void initPool() throws Exception {
+    private void initPool(TrackerServerPool pool) throws Exception {
     	log.debug("Start tracker server pool config.");
-    	TrackerServerPool.config = properties.getConfig();
+    	pool.setConfig(properties.getConfig());
+    	long maxFileSize = properties.getMaxFileSize();
     	int minStorageConnection = properties.getMinStorageConnection();
     	int maxStorageConnection = properties.getMaxStorageConnection();
     	if (maxStorageConnection < 0) {
@@ -44,10 +56,18 @@ public class FastDFSClientConfig {
     	if (minStorageConnection < 0 || minStorageConnection > maxStorageConnection) {
     		minStorageConnection = FastDFSConstant.DEFAULT_MIN_STORAGE_CONNECTION;
     	}
-    	TrackerServerPool.minStorageConnection = minStorageConnection;
-    	TrackerServerPool.maxStorageConnection = maxStorageConnection;
+    	if (maxFileSize < 0) {
+			maxFileSize = FastDFSConstant.DEFAULT_MAX_FILE_SIZE;
+		}
+    	pool.setMaxFileSize(maxFileSize);
+    	pool.setMinStorageConnection(minStorageConnection);
+    	pool.setMaxStorageConnection(maxStorageConnection);
+    	String fileServerAddr = properties.getFileServerAddr();
+    	if (StringUtils.isNotBlank(fileServerAddr)) {
+    		pool.setFileServerAddr(fileServerAddr.trim());
+		}
 
-    	TrackerServerPool.initPool();
+    	pool.init();
     	log.debug("Tracker server pool config successfully.");
     }
 
@@ -56,18 +76,10 @@ public class FastDFSClientConfig {
      *
      * @throws Exception if server address is empty throw this
      */
-    @PostConstruct
-    public void setMaxFileSize() {
+    @Autowired
+    public void setTrackerServerPool(TrackerServerPool trackerServerPool) {
     	log.debug("Set fast dfs client.");
-    	long maxFileSize = properties.getMaxFileSize();
-    	if (maxFileSize < 0) {
-			maxFileSize = FastDFSConstant.DEFAULT_MAX_FILE_SIZE;
-		}
-    	String fileServerAddr = properties.getFileServerAddr();
-    	if (StringUtils.isNotBlank(fileServerAddr)) {
-    		FastDFSClient.fileServerAddr = fileServerAddr.trim();
-		}
-    	FastDFSClient.maxFileSize = maxFileSize;
+    	FastDFSClient.pool = trackerServerPool;
     	log.debug("The fast dfs client info: \n\t{}", FastDFSClient.info());
     }
 

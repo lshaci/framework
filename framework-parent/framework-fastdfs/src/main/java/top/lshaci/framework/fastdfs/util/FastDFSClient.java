@@ -1,6 +1,24 @@
 package top.lshaci.framework.fastdfs.util;
 
-import lombok.extern.slf4j.Slf4j;
+import static java.util.stream.Collectors.toMap;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -12,38 +30,30 @@ import org.csource.fastdfs.ProtoCommon;
 import org.csource.fastdfs.StorageClient1;
 import org.csource.fastdfs.TrackerServer;
 import org.springframework.web.multipart.MultipartFile;
+
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.config.TrackerServerPool;
 import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 import top.lshaci.framework.fastdfs.enums.ErrorCode;
 import top.lshaci.framework.fastdfs.enums.FileSuffixContentType;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.stream.Collectors.toMap;
-
+/**
+ * FastDfs客户端工具
+ * 
+ * @author lshaci
+ * @since 0.0.4
+ */
 @Slf4j
 public class FastDFSClient {
+	
 	/**
-	 * The max file size
+	 * FastDfs服务器连接池
 	 */
-    public static long maxFileSize;
-	/**
-	 * The file server address
-	 */
-    public static String fileServerAddr;
+    public static TrackerServerPool pool;
 
 	private FastDFSClient() {
 	}
-
 
 	/**
 	 * Upload with MultipartFile
@@ -201,7 +211,7 @@ public class FastDFSClient {
 
 		TrackerServer trackerServer = null;
 		try {
-			trackerServer = TrackerServerPool.borrowObject();
+			trackerServer = pool.borrowObject();
 			StorageClient1 storageClient = new StorageClient1(trackerServer, null);
 			// read available bytes
 			byte[] fileBuff = new byte[is.available()];
@@ -219,7 +229,7 @@ public class FastDFSClient {
 			log.error(ErrorCode.FILE_UPLOAD_FAILED.getCode());
 			throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
 		} finally {
-			TrackerServerPool.returnObject(trackerServer);
+			pool.returnObject(trackerServer);
 			// close input stream
 			if (is != null) {
 				try {
@@ -243,7 +253,7 @@ public class FastDFSClient {
 		}
 
 		try {
-			if (is.available() > maxFileSize) {
+			if (is.available() > pool.getMaxFileSize()) {
 				throw new FastDFSException(ErrorCode.FILE_OUT_SIZE);
 			}
 		} catch (IOException e) {
@@ -356,7 +366,7 @@ public class FastDFSClient {
 		filepath = toLocal(filepath.trim());
 		log.debug("Write file, the file path is: {}", filepath);
 
-		TrackerServer trackerServer = TrackerServerPool.borrowObject();
+		TrackerServer trackerServer = pool.borrowObject();
 		StorageClient1 storageClient = new StorageClient1(trackerServer, null);
 
 		byte[] fileByte = null;
@@ -367,7 +377,7 @@ public class FastDFSClient {
 			log.error(ErrorCode.FILE_DOWNLOAD_FAILED.getCode(), e);
 			throw new FastDFSException(ErrorCode.FILE_DOWNLOAD_FAILED);
 		} finally {
-			TrackerServerPool.returnObject(trackerServer);
+			pool.returnObject(trackerServer);
 		}
 
 		// file not exist, throw exception
@@ -426,7 +436,7 @@ public class FastDFSClient {
 	public static int deleteFile(String filepath) {
 		verifyFilepath(filepath);
 
-		TrackerServer trackerServer = TrackerServerPool.borrowObject();
+		TrackerServer trackerServer = pool.borrowObject();
 		StorageClient1 storageClient = new StorageClient1(trackerServer, null);
 		try {
 			return storageClient.delete_file1(filepath);
@@ -434,7 +444,7 @@ public class FastDFSClient {
 			log.error(ErrorCode.FILE_DELETE_FAILED.getCode(), e);
 			throw new FastDFSException(ErrorCode.FILE_DELETE_FAILED);
 		} finally {
-			TrackerServerPool.returnObject(trackerServer);
+			pool.returnObject(trackerServer);
 		}
 	}
 
@@ -454,7 +464,7 @@ public class FastDFSClient {
 	 *         </pre>
 	 */
 	public static FileInfo getFileInfo(String filepath) {
-		TrackerServer trackerServer = TrackerServerPool.borrowObject();
+		TrackerServer trackerServer = pool.borrowObject();
 		StorageClient1 storageClient = new StorageClient1(trackerServer, null);
 		try {
 			return storageClient.get_file_info1(filepath);
@@ -462,7 +472,7 @@ public class FastDFSClient {
 			log.error(ErrorCode.FETCH_FILE_INFO_FAILED.getCode(), e);
 			throw new FastDFSException(ErrorCode.FETCH_FILE_INFO_FAILED);
 		} finally {
-			TrackerServerPool.returnObject(trackerServer);
+			pool.returnObject(trackerServer);
 		}
 	}
 
@@ -501,7 +511,7 @@ public class FastDFSClient {
 	 * @return the file descriptions
 	 */
 	public static Map<String, String> getFileDescriptions(String filepath) {
-		TrackerServer trackerServer = TrackerServerPool.borrowObject();
+		TrackerServer trackerServer = pool.borrowObject();
 		StorageClient1 storageClient = new StorageClient1(trackerServer, null);
 		NameValuePair[] nvps = null;
 		try {
@@ -509,7 +519,7 @@ public class FastDFSClient {
 		} catch (IOException | MyException e) {
 			log.warn("Error getting file description: {}", filepath);
 		} finally {
-			TrackerServerPool.returnObject(trackerServer);
+			pool.returnObject(trackerServer);
 		}
 
 		Map<String, String> infoMap = null;
@@ -592,7 +602,7 @@ public class FastDFSClient {
 	 * @return the file server address
 	 */
 	public static String getFileServerAddr() {
-		return fileServerAddr;
+		return pool.getFileServerAddr();
 	}
 
 	/**
@@ -603,10 +613,10 @@ public class FastDFSClient {
 	public static String info() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("The file server address is: ")
-		  .append(fileServerAddr)
+		  .append(pool.getFileServerAddr())
 		  .append("; \n\t")
 		  .append("The max file size is: ")
-		  .append(maxFileSize)
+		  .append(pool.getMaxFileSize())
 		  .append(".");
 		return sb.toString();
 	}
