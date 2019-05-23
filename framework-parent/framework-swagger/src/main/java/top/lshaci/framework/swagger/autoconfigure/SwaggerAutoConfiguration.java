@@ -1,8 +1,9 @@
 package top.lshaci.framework.swagger.autoconfigure;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -13,6 +14,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+
+import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -22,10 +28,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties;
 import top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties.DocketInfo;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Swagger auto configuration<br><br>
@@ -39,7 +41,7 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 @EnableConfigurationProperties(FrameworkSwaggerProperties.class)
-@ConditionalOnProperty(prefix = FrameworkSwaggerProperties.SWAGGER_PREFIX, value = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = FrameworkSwaggerProperties.SWAGGER_PREFIX, value = "enabled", havingValue = "true", matchIfMissing = true)
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
 	@Autowired
