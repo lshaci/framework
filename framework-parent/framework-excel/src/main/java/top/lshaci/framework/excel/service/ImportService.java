@@ -87,7 +87,7 @@ public class ImportService {
 
 	/**
 	 * 将行数据转换为对象
-	 * 
+	 *
 	 * @param row 行数据
 	 * @return 行数据对应的对象
 	 */
@@ -150,7 +150,7 @@ public class ImportService {
 			log.error("{}行不存在数据", this.sheetParam.getTitleRow());
 			throw new ImportHandlerException(ImportError.TITLE_ROW_NOT_EXIST);
 		}
-		
+
 		row.forEach(c -> {
 			String title = ImportValueUtil.get(c);
 			if (Objects.isNull(title)) {
@@ -190,6 +190,12 @@ public class ImportService {
 		return titleParamMap;
 	}
 
+	/**
+	 * 获取字段上的{@code @ImportTitle}注解信息, 生成列参数信息
+	 * 
+	 * @param cls 导入实体类型
+	 * @param titleParamMap 列参数信息
+	 */
 	private void getFields(Class<?> cls, Map<String, ImportTitleParam> titleParamMap) {
 		if (cls == Object.class) {
 			return;
