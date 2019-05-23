@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * Mybatis plus config
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Slf4j
 @Configuration
-@PropertySource("classpath:mybatisPlus.properties")
 public class MybatisPlusConfig {
 
     /**
@@ -25,7 +23,7 @@ public class MybatisPlusConfig {
      */
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "framework.mybatis.enabled.pagination", havingValue = "true")
+    @ConditionalOnProperty(value = "framework.mybatis.enabled.pagination", havingValue = "true", matchIfMissing = true)
     public PaginationInterceptor paginationInterceptor() {
         log.debug("Config mybatis plus pagination interceptor.");
         return new PaginationInterceptor();
@@ -38,6 +36,7 @@ public class MybatisPlusConfig {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "framework.mybatis.enabled.optimistic-locker", havingValue = "true")
     public OptimisticLockerInterceptor optimisticLockerInterceptor() {
+        log.debug("Config mybatis plus optimistic locker interceptor.");
         return new OptimisticLockerInterceptor();
     }
 }

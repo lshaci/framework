@@ -1,4 +1,4 @@
-package top.lshaci.framework.fastdfs;
+package top.lshaci.framework.fastdfs.config;
 
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
@@ -8,7 +8,7 @@ import org.csource.fastdfs.TrackerServer;
 
 /**
  * Tracker Server Factory
- * 
+ *
  * @author lshaci
  * @since 0.0.4
  */

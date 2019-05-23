@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-top.lshaci.framework.fastdfs.FastDFSClientConfig
+top.lshaci.framework.fastdfs.config.FastDFSClientConfig

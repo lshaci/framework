@@ -1,25 +1,24 @@
-package top.lshaci.framework.fastdfs;
+package top.lshaci.framework.fastdfs.config;
 
-import java.io.IOException;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.csource.common.MyException;
 import org.csource.fastdfs.ClientGlobal;
 import org.csource.fastdfs.TrackerServer;
-
-import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.enums.ErrorCode;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
 
+import java.io.IOException;
+
 /**
  * Tracker server pool
- * 
+ *
  * @author lshaci
  * @since 0.0.4
  */
 @Slf4j
-class TrackerServerPool {
+public class TrackerServerPool {
 
     /**
      * Tracker server config
@@ -30,7 +29,7 @@ class TrackerServerPool {
      * The min storage connection
      */
 	protected static int minStorageConnection;
-    
+
     /**
      * The max storage connection
      */
@@ -45,16 +44,16 @@ class TrackerServerPool {
      * Privatization construction method
      */
     private TrackerServerPool(){
-    	
+
     }
 
     /**
      * Init tracker server pool
-     * 
+     *
      * @throws IOException
      * @throws MyException
      */
-    protected static void initPool() throws IOException, MyException {
+	public static void initPool() throws IOException, MyException {
 		log.debug("Init tracker server pool...");
 		// load config properties
 		ClientGlobal.initByProperties(config);
@@ -70,11 +69,11 @@ class TrackerServerPool {
 
 	/**
 	 * Borrow tracker server from pool
-	 * 
+	 *
 	 * @return Tracker server instance
 	 * @throws FastDFSException
 	 */
-    protected static TrackerServer borrowObject() throws FastDFSException {
+	public static TrackerServer borrowObject() throws FastDFSException {
         TrackerServer trackerServer = null;
         try {
             trackerServer = trackerServerPool.borrowObject();
@@ -90,10 +89,10 @@ class TrackerServerPool {
 
     /**
      * Return tracker server to pool
-     * 
+     *
      * @param trackerServer the tracker server instance
      */
-    protected static void returnObject(TrackerServer trackerServer){
+    public static void returnObject(TrackerServer trackerServer){
     	if (trackerServer != null) {
     		trackerServerPool.returnObject(trackerServer);
 		}
