@@ -1,19 +1,20 @@
 package top.lshaci.framework.web.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.context.request.RequestContextListener;
+
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.web.aspect.PreventRepeatSubmitAspect;
 import top.lshaci.framework.web.aspect.UserRoleAspect;
 import top.lshaci.framework.web.aspect.WebLogAspect;
 import top.lshaci.framework.web.handler.exception.GlobalExceptionHandler;
 
 /**
- * <p>Framework web config</p><br>
+ * <p>Framework web config</p>
  *
  * <b>0.0.4: </b>Add setDownloadCacheSize method; Add config GlobalExceptionHandler, WebLogAspect, PreventRepeatSubmitAspect
  * <b>1.0.2: </b>修改配置属性前缀；删除DownloadUtil cacheSize配置

@@ -1,22 +1,25 @@
 package top.lshaci.framework.web.aspect;
 
-import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
+
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.web.exception.RepeatSubmitException;
 import top.lshaci.framework.web.utils.HttpRequestUtils;
 import top.lshaci.framework.web.utils.HttpSessionUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.UUID;
-
 /**
- * Prevent repeat submit aspect<br><br>
+ * <p>Prevent repeat submit aspect</p>
  * <b>1.0.1: </b>Change After aspect to AfterReturning aspect; Add AfterThrowing aspect
+ * <b>1.0.2: </b>修改前缀和值
  *
  * @author lshaci
  * @since 0.0.4
- * @version 1.0.1
+ * @version 1.0.2
  */
 @Slf4j
 @Aspect
@@ -24,14 +27,14 @@ import java.util.UUID;
 public class PreventRepeatSubmitAspect {
 
 	/**
-	 * Submit token prefix
+	 * 请求Url的前缀(用于拼接url放入session中)
 	 */
-	private final static String SUBMIT_TOKEN_PREFIX = "SUBMIT_TOKEN";
+	private final static String SUBMIT_KEY_PREFIX = PreventRepeatSubmitAspect.class.getSimpleName() + "_";
 
 	/**
-	 * Submit token separator
+	 * 操作中
 	 */
-	private final static String SUBMIT_TOKEN_SEPARATOR = "_";
+	private final static String IN_OPERATION = "IN_OPERATION";
 
 	/**
 	 * The prevent repeat submit point cut
@@ -42,28 +45,21 @@ public class PreventRepeatSubmitAspect {
 
 	@Before("preventRepeatSubmit()")
 	public void doBefore() {
-		HttpServletRequest request = HttpRequestUtils.get();
-		String requestUrl = request.getRequestURI();
+		String requestUrl = HttpRequestUtils.get().getRequestURI();
 		log.debug("PreventRepeatSubmitAspect: the request url is: {}.", requestUrl);
-		Object tokenKey = HttpSessionUtils.getAttribute(requestUrl);
-		if (tokenKey != null) {
+		String submitKey = concatSubmitKey();
+		Object value = HttpSessionUtils.getAttribute(concatSubmitKey());
+		if (value != null) {
 			log.warn("In operation...");
 			throw new RepeatSubmitException();
 		}
-		String token = new StringBuilder()
-				.append(SUBMIT_TOKEN_PREFIX)
-				.append(SUBMIT_TOKEN_SEPARATOR)
-				.append(UUID.randomUUID().toString())
-				.append(SUBMIT_TOKEN_SEPARATOR)
-				.append(System.currentTimeMillis())
-				.toString();
-		HttpSessionUtils.setAttribute(requestUrl, token);
+
+		HttpSessionUtils.setAttribute(submitKey, IN_OPERATION);
 	}
 
 	@AfterReturning("preventRepeatSubmit()")
 	public void doAfterReturning() {
-		String requestUrl = HttpRequestUtils.get().getRequestURI();
-		HttpSessionUtils.removeAttribute(requestUrl);
+		HttpSessionUtils.removeAttribute(concatSubmitKey());
 		log.debug("Remove submit token key from session is succeed.");
 	}
 
@@ -73,8 +69,16 @@ public class PreventRepeatSubmitAspect {
 			log.warn("In operation...");
 			return;
 		}
-		String requestUrl = HttpRequestUtils.get().getRequestURI();
-		HttpSessionUtils.removeAttribute(requestUrl);
+		HttpSessionUtils.removeAttribute(concatSubmitKey());
 		log.debug("Remove submit token key from session is succeed.");
+	}
+	
+	/**
+	 * 拼接存入session中的key
+	 * 
+	 * @return 放重复提交url的key
+	 */
+	private String concatSubmitKey() {
+		return SUBMIT_KEY_PREFIX + HttpRequestUtils.get().getRequestURI();
 	}
 }
