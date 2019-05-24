@@ -1,11 +1,12 @@
 package top.lshaci.framework.fastdfs.config;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.csource.fastdfs.ClientGlobal;
 import org.csource.fastdfs.TrackerServer;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.enums.ErrorCode;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
 
@@ -56,7 +57,7 @@ public class TrackerServerPool {
 		log.debug("Init tracker server pool...");
 		// load config properties
 		ClientGlobal.initByProperties(config);
-		log.debug("ClientGlobal configInfo: {}", ClientGlobal.configInfo());
+		log.debug("ClientGlobal configInfo: \n{}", ClientGlobal.configInfo());
 
 		// pool config
 		GenericObjectPoolConfig<TrackerServer> poolConfig = new GenericObjectPoolConfig<>();
