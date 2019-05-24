@@ -83,7 +83,7 @@ public class FastDFSClientConfig {
     public void setTrackerServerPool(TrackerServerPool trackerServerPool) {
     	log.debug("Set fast dfs client.");
     	FastDFSClient.pool = trackerServerPool;
-    	log.debug("The fast dfs client info: \n\t{}", FastDFSClient.info());
+    	log.debug("The fast dfs client info: \n{}", FastDFSClient.info());
     }
 
 }

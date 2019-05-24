@@ -27,8 +27,8 @@ public class FastJsonConfig {
                 .addSerializerFeature(
                         SerializerFeature.WriteMapNullValue,
                         SerializerFeature.PrettyFormat,
-                        SerializerFeature.DisableCircularReferenceDetect)
-                .get();
+                        SerializerFeature.DisableCircularReferenceDetect
+                 ).get();
         return new HttpMessageConverters(fastJsonHttpMessageConverter);
     }
 }
