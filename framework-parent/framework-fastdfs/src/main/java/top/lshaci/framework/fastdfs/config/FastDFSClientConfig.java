@@ -65,9 +65,9 @@ public class FastDFSClientConfig {
     	pool.setMaxFileSize(maxFileSize);
     	pool.setMinStorageConnection(minStorageConnection);
     	pool.setMaxStorageConnection(maxStorageConnection);
-    	String fileServerAddr = properties.getFileServerAddr();
-    	if (StringUtils.isNotBlank(fileServerAddr)) {
-    		pool.setFileServerAddr(fileServerAddr.trim());
+    	String proxyAddress = properties.getReverseProxyAddress();
+    	if (StringUtils.isNotBlank(proxyAddress)) {
+    		pool.setReverseProxyAddress(proxyAddress.trim());
 		}
 
     	pool.init();

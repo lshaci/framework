@@ -1,24 +1,6 @@
 package top.lshaci.framework.fastdfs.util;
 
-import static java.util.stream.Collectors.toMap;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,23 +12,33 @@ import org.csource.fastdfs.ProtoCommon;
 import org.csource.fastdfs.StorageClient1;
 import org.csource.fastdfs.TrackerServer;
 import org.springframework.web.multipart.MultipartFile;
-
-import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.config.TrackerServerPool;
 import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 import top.lshaci.framework.fastdfs.enums.ErrorCode;
 import top.lshaci.framework.fastdfs.enums.FileSuffixContentType;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toMap;
+
 /**
  * FastDfs客户端工具
- * 
+ *
  * @author lshaci
  * @since 0.0.4
  */
 @Slf4j
 public class FastDFSClient {
-	
+
 	/**
 	 * FastDfs服务器连接池
 	 */
@@ -210,12 +202,14 @@ public class FastDFSClient {
 		String suffix = getFilenameSuffix(filename);
 
 		TrackerServer trackerServer = null;
-		try {
+		try (
+				InputStream _is = is;
+		) {
 			trackerServer = pool.borrowObject();
 			StorageClient1 storageClient = new StorageClient1(trackerServer, null);
 			// read available bytes
-			byte[] fileBuff = new byte[is.available()];
-			is.read(fileBuff, 0, fileBuff.length);
+			byte[] fileBuff = new byte[_is.available()];
+			_is.read(fileBuff, 0, fileBuff.length);
 
 			// upload
 			path = storageClient.upload_file1(fileBuff, suffix, nvps);
@@ -228,16 +222,6 @@ public class FastDFSClient {
 		} catch (IOException | MyException e) {
 			log.error(ErrorCode.FILE_UPLOAD_FAILED.getCode());
 			throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
-		} finally {
-			pool.returnObject(trackerServer);
-			// close input stream
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					log.warn("Close input streat exception.", e);
-				}
-			}
 		}
 
 		return path;
@@ -601,8 +585,8 @@ public class FastDFSClient {
 	 *
 	 * @return the file server address
 	 */
-	public static String getFileServerAddr() {
-		return pool.getFileServerAddr();
+	public static String getReverseProxyAddress() {
+		return pool.getReverseProxyAddress();
 	}
 
 	/**
@@ -612,9 +596,9 @@ public class FastDFSClient {
 	 */
 	public static String info() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{\n  The file server address is: ")
-		  .append(pool.getFileServerAddr())
-		  .append("\n  The max file size is: ")
+		sb.append("{\n  reverse_proxy_address = ")
+		  .append(pool.getReverseProxyAddress())
+		  .append("\n  max_file_size(byte) = ")
 		  .append(pool.getMaxFileSize())
 		  .append("\n}");
 		return sb.toString();

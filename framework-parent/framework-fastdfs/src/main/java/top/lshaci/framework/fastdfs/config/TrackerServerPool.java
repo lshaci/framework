@@ -25,9 +25,9 @@ public class TrackerServerPool {
 	 */
 	private long maxFileSize;
 	/**
-	 * The file server address
+	 * 反向代理地址
 	 */
-	private String fileServerAddr;
+	private String reverseProxyAddress;
     /**
      * Tracker server config
      */

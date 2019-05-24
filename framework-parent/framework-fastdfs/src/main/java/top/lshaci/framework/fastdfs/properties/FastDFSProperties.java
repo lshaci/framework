@@ -22,9 +22,9 @@ public class FastDFSProperties {
 	private Boolean enabled = true;
 
 	/**
-	 * The file server reverse proxy address
+	 *  反向代理地址
 	 */
-	private String fileServerAddr;
+	private String reverseProxyAddress;
 	/**
 	 * The fastdfs config
 	 */
