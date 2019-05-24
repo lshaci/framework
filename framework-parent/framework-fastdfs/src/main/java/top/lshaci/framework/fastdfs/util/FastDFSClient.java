@@ -612,11 +612,9 @@ public class FastDFSClient {
 	 */
 	public static String info() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{\n")
-		  .append("  The file server address is: ")
+		sb.append("{\n  The file server address is: ")
 		  .append(pool.getFileServerAddr())
-		  .append("\n  ")
-		  .append("The max file size is: ")
+		  .append("\n  The max file size is: ")
 		  .append(pool.getMaxFileSize())
 		  .append("\n}");
 		return sb.toString();
