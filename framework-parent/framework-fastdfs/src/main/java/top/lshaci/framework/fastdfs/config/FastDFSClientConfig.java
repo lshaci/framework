@@ -27,9 +27,12 @@ public class FastDFSClientConfig {
 
     @Autowired
     private FastDFSProperties properties;
-    
+
     /**
-     * 创建Fast dfs服务连接池
+     * 创建FastDfs Tracker Server连接池
+	 *
+	 * @return FastDfs 服务连接池
+	 * @throws Exception 创建失败抛出异常
      */
     @Bean
     @ConditionalOnMissingBean
@@ -73,8 +76,8 @@ public class FastDFSClientConfig {
 
     /**
      * Set fast dfs client information
-     *
-     * @throws Exception if server address is empty throw this
+	 *
+	 * @param trackerServerPool FastDfs Tracker Server连接池
      */
     @Autowired
     public void setTrackerServerPool(TrackerServerPool trackerServerPool) {

@@ -1,15 +1,11 @@
 package top.lshaci.framework.fastdfs.config;
 
-import java.io.IOException;
-
-import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.csource.common.MyException;
-import org.csource.fastdfs.ClientGlobal;
-import org.csource.fastdfs.TrackerServer;
-
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.csource.fastdfs.ClientGlobal;
+import org.csource.fastdfs.TrackerServer;
 import top.lshaci.framework.fastdfs.enums.ErrorCode;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
 
@@ -22,7 +18,7 @@ import top.lshaci.framework.fastdfs.exception.FastDFSException;
 @Data
 @Slf4j
 public class TrackerServerPool {
-	
+
 	/**
 	 * The max file size
 	 */
@@ -54,10 +50,9 @@ public class TrackerServerPool {
     /**
      * Init tracker server pool
      *
-     * @throws IOException
-     * @throws MyException
+     * @throws Exception 初始化FastDfs Tracker Server连接池失败抛出异常
      */
-	public void init() throws IOException, MyException {
+	public void init() throws Exception {
 		log.debug("Init tracker server pool...");
 		// load config properties
 		ClientGlobal.initByProperties(config);
@@ -75,9 +70,8 @@ public class TrackerServerPool {
 	 * Borrow tracker server from pool
 	 *
 	 * @return Tracker server instance
-	 * @throws FastDFSException
 	 */
-	public TrackerServer borrowObject() throws FastDFSException {
+	public TrackerServer borrowObject() {
         TrackerServer trackerServer = null;
         try {
             trackerServer = trackerServerPool.borrowObject();
