@@ -1,5 +1,6 @@
 package top.lshaci.framework.web.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -8,14 +9,15 @@ import lombok.Getter;
  * org.springframework.web.HttpRequestMethodNotSupportedException<br>
  * top.lshaci.framework.web.exception.RolePermissionException <br>
  * <b>1.0.1: </b>Add top.lshaci.framework.web.exception.RepeatSubmitException
- * 
+ *
  * @author lshaci
  * @since 0.0.3
  * @version 1.0.1
  */
 @Getter
+@AllArgsConstructor
 public enum ErrorCode {
-	
+
 	/**
 	 * top.lshaci.framework.web.exception.LoginException
 	 */
@@ -113,20 +115,14 @@ public enum ErrorCode {
      */
     HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(50022, "请求方法不支持", "org.springframework.web.HttpRequestMethodNotSupportedException"),
     ;
-	
+
 	private int code;
 	private String msg;
 	private String exceptionClass;
-	
-	private ErrorCode(int code, String msg, String exceptionClass) {
-		this.code = code;
-		this.msg = msg;
-		this.exceptionClass = exceptionClass;
-	}
-	
+
 	/**
 	 * Get error code by exception
-	 * 
+	 *
 	 * @param exception the exception
 	 * @return the error code
 	 */
