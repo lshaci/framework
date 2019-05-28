@@ -24,7 +24,7 @@ public class ExcelExportUtils {
 	 *
 	 * @param cls 导出实体类信息
 	 * @param datas 需要导出的数据
-	 * @param os 需要将Excel工作簿写到到输出流
+	 * @param os 需要将Excel工作簿写到的输出流
 	 */
 	public static <E> void export(Class<E> cls, List<E> datas, OutputStream os) {
 		export(cls, datas, null, os);
@@ -36,7 +36,7 @@ public class ExcelExportUtils {
 	 * @param cls 导出实体类信息
 	 * @param datas 需要导出的数据
 	 * @param sheetTitle sheet中的标题, 会覆盖注解{@code @ExportSheet}中的title属性
-	 * @param os 需要将Excel工作簿写到到输出流
+	 * @param os 需要将Excel工作簿写到的输出流
 	 */
 	public static <E> void export(Class<E> cls, List<E> datas, String sheetTitle, OutputStream os) {
 		try (
