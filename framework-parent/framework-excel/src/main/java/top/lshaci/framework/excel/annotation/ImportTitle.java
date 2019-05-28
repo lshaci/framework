@@ -55,14 +55,14 @@ public @interface ImportTitle {
 	String[] replaces() default {};
 
 	/**
-	 * 导出数据转换对象类
+	 * 导入数据转换对象类
 	 *
 	 * @return 转换对象类
 	 */
 	Class<?> convertClass() default Void.class;
 
 	/**
-	 * 导出数据转换对象类中的方法名称, <b>优先级最高</b>
+	 * 导入数据转换对象类中的方法名称
 	 *
 	 * @return 转换对象类中的方法名称
 	 */
