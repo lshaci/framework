@@ -59,6 +59,11 @@ public class ExportSheetParam {
 	 * 是否合并序号列
 	 */
 	private boolean mergeIndex = true;
+	
+	/**
+	 * 是否冻结标题
+	 */
+	private boolean freezeTitle = false;
 
 	/**
 	 * 序号列标题
@@ -104,6 +109,7 @@ public class ExportSheetParam {
 		}
 		this.addIndex = exportSheet.addIndex();
 		this.mergeIndex = exportSheet.mergeIndex();
+		this.freezeTitle = exportSheet.freezeTitle();
 		this.cellStyleBuilder = ReflectionUtils.newInstance(exportSheet.cellStyleBuilder());
 		this.indexBuilder = ReflectionUtils.newInstance(exportSheet.indexBuilder());
 
