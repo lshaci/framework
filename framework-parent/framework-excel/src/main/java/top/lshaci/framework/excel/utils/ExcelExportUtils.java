@@ -44,8 +44,8 @@ public class ExcelExportUtils {
 		) {
 			workbook.write(os);
 		} catch (IOException e) {
-			log.error("将Excel工作簿导出时发生错误", e);
-			throw new ExcelHandlerException("将Excel工作簿导出时发生错误", e);
+			log.error("导出Excel工作簿时发生错误", e);
+			throw new ExcelHandlerException("导出Excel工作簿时发生错误", e);
 		}
 	}
 
