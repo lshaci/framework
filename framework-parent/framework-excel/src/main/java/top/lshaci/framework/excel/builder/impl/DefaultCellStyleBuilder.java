@@ -37,7 +37,7 @@ public class DefaultCellStyleBuilder implements CellStyleBuilder {
 		setBorder(style);
 		setCenter(style);
 
-		Font font = createFont(workbook, IndexedColors.BLACK.index, (short) 10, false, exportSheetParam.getFontName());
+		Font font = createFont(workbook, IndexedColors.BLACK, (short) 10, false, exportSheetParam.getFontName());
 		style.setFont(font);
 
 		return style;
@@ -50,7 +50,7 @@ public class DefaultCellStyleBuilder implements CellStyleBuilder {
 		setBorder(style);
 		setCenter(style);
 
-		Font font = createFont(workbook, IndexedColors.BLACK.index, (short) 20, true, exportSheetParam.getFontName());
+		Font font = createFont(workbook, IndexedColors.BLACK, (short) 20, true, exportSheetParam.getFontName());
 		style.setFont(font);
 
 		return style;
@@ -62,7 +62,7 @@ public class DefaultCellStyleBuilder implements CellStyleBuilder {
 		setBorder(style);
 		setCenter(style);
 
-		Font font = createFont(workbook, IndexedColors.BLACK.index, (short) 12, true, exportSheetParam.getFontName());
+		Font font = createFont(workbook, IndexedColors.BLACK, (short) 12, true, exportSheetParam.getFontName());
 		style.setFont(font);
 
 		return style;
@@ -78,9 +78,9 @@ public class DefaultCellStyleBuilder implements CellStyleBuilder {
 	 * @param fontName 字体名称
 	 * @return 创建的字体
 	 */
-	private Font createFont(Workbook workbook, short color, short height, Boolean bold, String fontName) {
+	private Font createFont(Workbook workbook, IndexedColors color, short height, Boolean bold, String fontName) {
 		Font font = workbook.createFont();
-		font.setColor(color);
+		font.setColor(color.index);
 		font.setFontHeightInPoints(height);
 		font.setBold(bold);
 		font.setFontName(fontName);

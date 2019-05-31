@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>framework-excel</artifactId>
-	
+
 	<name>framework-excel</name>
 	<description>framework excel handler</description>
 
 	<parent>
 		<groupId>top.lshaci</groupId>
 		<artifactId>framework-parent</artifactId>
-		<version>1.0.2</version>
+		<version>1.0.3</version>
 	</parent>
 
 	<dependencies>
