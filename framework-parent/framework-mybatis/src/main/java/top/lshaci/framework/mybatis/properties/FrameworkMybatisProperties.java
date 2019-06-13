@@ -30,9 +30,9 @@ public class FrameworkMybatisProperties {
         private Boolean pagination = true;
 
         /**
-         * 是否开启mybatis plus乐观锁(默认开启)
+         * 是否开启mybatis plus乐观锁(默认关闭)
          */
-        private Boolean optimisticLocker = true;
+        private Boolean optimisticLocker = false;
 
     }
 }
