@@ -104,38 +104,37 @@ public class ExportSheetParam {
 	 * @param total 需要导出的数据总条数
 	 */
 	public ExportSheetParam(ExportSheet exportSheet, int total) {
-		if (Objects.isNull(exportSheet)) {
-			return;
-		}
-		this.addIndex = exportSheet.addIndex();
-		this.mergeIndex = exportSheet.mergeIndex();
-		this.freezeTitle = exportSheet.freezeTitle();
-		this.cellStyleBuilder = ReflectionUtils.newInstance(exportSheet.cellStyleBuilder());
-		this.indexBuilder = ReflectionUtils.newInstance(exportSheet.indexBuilder());
-
-		if (StringUtils.isNotBlank(exportSheet.fontName())) {
-			this.fontName = exportSheet.fontName();
-		}
-		if (StringUtils.isNotBlank(exportSheet.indexName())) {
-			this.indexName = exportSheet.indexName();
-		}
-		if (StringUtils.isNotBlank(exportSheet.title())) {
-			this.title = exportSheet.title();
-		}
-		if (StringUtils.isNotBlank(exportSheet.name())) {
-			this.name = exportSheet.name();
-		}
-		if (exportSheet.indexWidth() > 0) {
-			this.indexWidth = exportSheet.indexWidth();
-		}
-		if (exportSheet.number() > 0) {
-			this.number = exportSheet.number();
-		}
-		if (exportSheet.titleHeight() > 0) {
-			this.titleHeight = (short) (exportSheet.titleHeight() * 20);
-		}
-		if (exportSheet.columnTitleHeight() > 0) {
-			this.columnTitleHeight = (short) (exportSheet.columnTitleHeight() * 20);
+		if (Objects.nonNull(exportSheet)) {
+			this.addIndex = exportSheet.addIndex();
+			this.mergeIndex = exportSheet.mergeIndex();
+			this.freezeTitle = exportSheet.freezeTitle();
+			this.cellStyleBuilder = ReflectionUtils.newInstance(exportSheet.cellStyleBuilder());
+			this.indexBuilder = ReflectionUtils.newInstance(exportSheet.indexBuilder());
+			
+			if (StringUtils.isNotBlank(exportSheet.fontName())) {
+				this.fontName = exportSheet.fontName();
+			}
+			if (StringUtils.isNotBlank(exportSheet.indexName())) {
+				this.indexName = exportSheet.indexName();
+			}
+			if (StringUtils.isNotBlank(exportSheet.title())) {
+				this.title = exportSheet.title();
+			}
+			if (StringUtils.isNotBlank(exportSheet.name())) {
+				this.name = exportSheet.name();
+			}
+			if (exportSheet.indexWidth() > 0) {
+				this.indexWidth = exportSheet.indexWidth();
+			}
+			if (exportSheet.number() > 0) {
+				this.number = exportSheet.number();
+			}
+			if (exportSheet.titleHeight() > 0) {
+				this.titleHeight = (short) (exportSheet.titleHeight() * 20);
+			}
+			if (exportSheet.columnTitleHeight() > 0) {
+				this.columnTitleHeight = (short) (exportSheet.columnTitleHeight() * 20);
+			}
 		}
 
 		if (total > 0 && total / this.number > 0) {
