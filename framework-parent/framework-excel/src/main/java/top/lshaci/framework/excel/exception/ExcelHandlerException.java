@@ -4,9 +4,9 @@ import top.lshaci.framework.common.exception.BaseException;
 
 /**
  * Framework excel handler exception
- * 
+ *
  * @author lshaci
- * @since 0.0.1
+ * @since 1.0.2
  */
 public class ExcelHandlerException extends BaseException {
 

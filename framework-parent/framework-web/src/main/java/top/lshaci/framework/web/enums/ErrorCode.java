@@ -1,28 +1,35 @@
 package top.lshaci.framework.web.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * Error code enum<br><br>
  * <b>0.0.4: </b>Add org.springframework.http.converter.HttpMessageNotReadableException<br>
  * org.springframework.web.HttpRequestMethodNotSupportedException<br>
- * top.lshaci.framework.web.exception.NoPermissionException
- * 
+ * top.lshaci.framework.web.exception.RolePermissionException <br>
+ * <b>1.0.1: </b>Add top.lshaci.framework.web.exception.RepeatSubmitException
+ *
  * @author lshaci
  * @since 0.0.3
- * @version 0.0.4
+ * @version 1.0.1
  */
 @Getter
+@AllArgsConstructor
 public enum ErrorCode {
-	
+
 	/**
-	 * top.lshaci.framework.web.exception.NotLoginException
+	 * top.lshaci.framework.web.exception.LoginException
 	 */
-	NOT_LOGIN_EXCEPTION(40001, "登录失效，请重新登录", "top.lshaci.framework.web.exception.NotLoginException"),
+	LOGIN_EXCEPTION(40001, "登录失效，请重新登录", "top.lshaci.framework.web.exception.LoginException"),
 	/**
-     * top.lshaci.framework.web.exception.NoPermissionException
+     * top.lshaci.framework.web.exception.RolePermissionException
      */
-    NO_PERMISSION_EXCEPTION(40002, "无权限进行此操作", "top.lshaci.framework.web.exception.NoPermissionException"),
+    ROLE_PERMISSION_EXCEPTION(40002, "无权限进行此操作", "top.lshaci.framework.web.exception.RolePermissionException"),
+    /**
+     * top.lshaci.framework.web.exception.RepeatSubmitException
+     */
+    REPEAT_SUBMIT_EXCEPTION(40003, "上次操作未完成，请勿重复操作", "top.lshaci.framework.web.exception.RepeatSubmitException"),
 	/**
 	 * com.xdbigdata.framework.common.exception.BaseException
 	 */
@@ -108,20 +115,14 @@ public enum ErrorCode {
      */
     HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(50022, "请求方法不支持", "org.springframework.web.HttpRequestMethodNotSupportedException"),
     ;
-	
+
 	private int code;
 	private String msg;
 	private String exceptionClass;
-	
-	private ErrorCode(int code, String msg, String exceptionClass) {
-		this.code = code;
-		this.msg = msg;
-		this.exceptionClass = exceptionClass;
-	}
-	
+
 	/**
 	 * Get error code by exception
-	 * 
+	 *
 	 * @param exception the exception
 	 * @return the error code
 	 */

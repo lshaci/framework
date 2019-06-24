@@ -1,14 +1,16 @@
 package top.lshaci.framework.web.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * Http servlet response content type
- * 
+ *
  * @author lshaci
  * @since 0.0.4
  */
 @Getter
+@AllArgsConstructor
 public enum ResponseContentType {
 
     /**
@@ -22,8 +24,4 @@ public enum ResponseContentType {
 	;
 
 	private String name;
-
-	private ResponseContentType(String name) {
-		this.name = name;
-	}
 }

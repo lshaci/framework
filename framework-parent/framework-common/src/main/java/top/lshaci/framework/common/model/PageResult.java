@@ -8,7 +8,7 @@ import lombok.Data;
 import top.lshaci.framework.common.constants.Constants;
 
 /**
- * Page query result
+ * Page qo result
  * 
  * @author lshaci
  * @param <T>	The result entity type

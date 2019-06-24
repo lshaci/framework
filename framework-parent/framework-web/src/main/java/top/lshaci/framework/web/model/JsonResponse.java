@@ -1,21 +1,23 @@
 package top.lshaci.framework.web.model;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-
 /**
  * Web controller json response<br><br>
- * 
+ *
  * <b>0.0.4:</b> Add method: successMessage and message; Change the name of the params field to otherData
  *
  * @author lshaci
  * @since 0.0.1
  * @version 0.0.4
  */
-@Getter
+@Data
+@Accessors(chain = true)
 public class JsonResponse<R> implements Serializable {
 
     private static final long serialVersionUID = 7574078101944305355L;
@@ -31,11 +33,14 @@ public class JsonResponse<R> implements Serializable {
     private Map<String, Object> otherData = new HashMap<>();
 
     /**
-     * Constructor a json response
+     * Build a json response
+     *
+     * @return json response
      */
-    public JsonResponse() {
+    public static <R> JsonResponse<R> build() {
+    	return new JsonResponse<>();
     }
-    
+
     /**
      * Build a success json response with data
      *
@@ -48,7 +53,7 @@ public class JsonResponse<R> implements Serializable {
         response.data = data;
         return response;
     }
-    
+
     /**
      * Build a success json response with message
      *
@@ -58,7 +63,7 @@ public class JsonResponse<R> implements Serializable {
     public static <R> JsonResponse<R> successMessage(String message) {
         return message(true, message);
     }
-    
+
     /**
      * Build a message json response with status and message
      *
@@ -72,7 +77,7 @@ public class JsonResponse<R> implements Serializable {
         response.message = message;
         return response;
     }
-    
+
     /**
      * Build a failure json response with message
      *
@@ -81,17 +86,6 @@ public class JsonResponse<R> implements Serializable {
      */
     public static <R> JsonResponse<R> failure(String message) {
         return message(false, message);
-    }
-
-    /**
-     * Set other data
-     *
-     * @param otherData other data
-     * @return this
-     */
-    public JsonResponse<R> setOtherData(Map<String, Object> otherData) {
-        this.otherData = otherData;
-        return this;
     }
 
     /**
@@ -117,48 +111,5 @@ public class JsonResponse<R> implements Serializable {
         return this;
     }
 
-    /**
-     * Set response status
-     *
-     * @param status json response status
-     * @return this
-     */
-    public JsonResponse<R> setStatus(boolean status) {
-        this.status = status;
-        return this;
-    }
 
-    /**
-     * Set response code
-     *
-     * @param code json response code
-     * @return this
-     */
-    public JsonResponse<R> setCode(int code) {
-        this.code = code;
-        return this;
-    }
-
-    /**
-     * Set response message
-     *
-     * @param message json response message
-     * @return this
-     */
-    public JsonResponse<R> setMessage(String message) {
-        this.message = message;
-        return this;
-    }
-
-    /**
-     * Set response data
-     *
-     * @param data json response data
-     * @return this
-     */
-    public JsonResponse<R> setData(R data) {
-        this.data = data;
-        return this;
-    }
-    
 }

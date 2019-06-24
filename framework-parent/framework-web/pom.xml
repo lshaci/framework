@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>top.lshaci</groupId>
 		<artifactId>framework-parent</artifactId>
-		<version>0.0.4</version>
+		<version>1.0.2</version>
 	</parent>
 
 	<dependencies>
@@ -18,11 +18,6 @@
 		<dependency>
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-utils</artifactId>
-		</dependency>
-		<!-- framework permission module -->
-		<dependency>
-			<groupId>top.lshaci</groupId>
-			<artifactId>framework-permission</artifactId>
 		</dependency>
 		<!-- spring boot configuration -->
 		<dependency>

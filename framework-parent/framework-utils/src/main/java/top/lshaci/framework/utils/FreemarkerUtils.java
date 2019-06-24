@@ -16,6 +16,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.common.exception.BaseException;
 
@@ -26,11 +28,13 @@ import top.lshaci.framework.common.exception.BaseException;
  * @since 0.0.4
  */
 @Slf4j
-public   class FreemarkerUtils {
+public class FreemarkerUtils {
 	
 	/**
 	 * template configuration
 	 */
+	@Getter
+	@Setter
 	private Configuration configuration;
 		
 	/**

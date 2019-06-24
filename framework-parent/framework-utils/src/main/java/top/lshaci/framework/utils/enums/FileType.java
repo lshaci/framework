@@ -1,11 +1,16 @@
 package top.lshaci.framework.utils.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * File type
  * 
  * @author lshaci
  * @since 0.0.1
  */
+@Getter
+@AllArgsConstructor
 public enum FileType {
 
 	/**
@@ -245,25 +250,8 @@ public enum FileType {
 
 	;
 
-	private String value = "";
+	private String value;
 
-	/**
-	 * Constructor a file type with file stream header
-	 * 
-	 * @param value the file stream header
-	 */
-	private FileType(String value) {
-		this.value = value;
-	}
-
-	/**
-	 * Get the file type value
-	 * 
-	 * @return the file stream header
-	 */
-	public String getValue() {
-		return value;
-	}
 
 	/**
 	 * Get the file type with the file stream header

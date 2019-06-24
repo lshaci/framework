@@ -1,16 +1,18 @@
 package top.lshaci.framework.web.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * Character encoding enums
- * 
+ *
  * @author lshaci
  * @since 0.0.4
  */
 @Getter
+@AllArgsConstructor
 public enum Encoding {
-	
+
 	/**
 	 * UTF-8
 	 */
@@ -19,7 +21,4 @@ public enum Encoding {
 
 	private String name;
 
-	private Encoding(String name) {
-		this.name = name;
-	}
 }

@@ -1,11 +1,12 @@
 package top.lshaci.framework.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,10 +28,9 @@ public abstract class FileUploadUtils {
 	 * 通过文件后缀名验证上传文件是否允许
 	 * 
 	 * @param filename 上传文件的文件名
-	 * @param allowSuffixes 允许上传的后缀名集合
-	 * @throws UtilException 验证不通过抛出该异常
+	 * @param allowSuffixes 允许上传的后缀名集合(使用大写)
 	 */
-	public static void verifySuffix(String filename, List<String> allowSuffixes) throws UtilException {
+	public static void verifySuffix(String filename, List<String> allowSuffixes) {
 		if (StringUtils.isBlank(filename)) {
 			throw new UtilException("文件名不能为空");
 		}
@@ -51,9 +51,8 @@ public abstract class FileUploadUtils {
 	 * 
 	 * @param inputStream 文件输入流
 	 * @param allowFileTypes 允许上传的文件类型集合
-	 * @throws UtilException 验证不通过抛出该异常
 	 */
-	public static void verifySuffix(InputStream inputStream, List<FileType> allowFileTypes) throws UtilException {
+	public static void verifySuffix(InputStream inputStream, List<FileType> allowFileTypes) {
 		if (inputStream == null) {
 			throw new UtilException("文件不能为空");
 		}
@@ -61,8 +60,11 @@ public abstract class FileUploadUtils {
 			throw new UtilException("允许的文件类型不能为空");
 		}
 		FileType fileType = null;
-		try {
-			fileType = FileTypeUtil.getType(inputStream);
+		try (
+				ByteArrayOutputStream os = StreamUtils.copyInputStream(inputStream);
+				ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray())
+		) {
+			fileType = FileTypeUtil.getType(is);
 		} catch (Exception e) {
 			log.error("获取文件流错误", e);
 			throw new UtilException("上传文件发送错误");
@@ -75,22 +77,22 @@ public abstract class FileUploadUtils {
 	/**
 	 * 保存文件到服务器
 	 * 
-	 * @param filePath 保存文件的路径
-	 * @param prefix 保存文件名的前缀
-	 * @param suffix 保存文件名的后缀名(不含.)
+	 * @param dir 保存文件的路径
+	 * @param saveFileName 保存文件名
 	 * @param inputStream 文件输入流
-	 * @return 文件在服务器上的文件名
 	 */
-	public static String saveFile(String filePath, String prefix, String suffix, InputStream inputStream) throws UtilException {
+	public static void saveFile(String dir, String saveFileName, InputStream inputStream) {
 		if (inputStream == null) {
 			throw new UtilException("文件不能为空");
 		}
-		if (StringUtils.isBlank(filePath)) {
-			throw new UtilException("The file path or save file name is empty!");
+		if (StringUtils.isBlank(dir)) {
+			throw new UtilException("保存文件的路径不能为空");
 		}
+		if (StringUtils.isBlank(saveFileName)) {
+            throw new UtilException("保存文件名不能为空");
+        }
 		
-		String saveFileName = prefix + "-" + UUID.randomUUID().toString() + "." + suffix;
-		File saveFile = new File(filePath, saveFileName);
+		File saveFile = new File(dir, saveFileName);
 		if (!saveFile.getParentFile().exists()) {
 			saveFile.getParentFile().mkdirs();
 		}
@@ -103,7 +105,6 @@ public abstract class FileUploadUtils {
 			log.error("Failed to save file!", e);
 			throw new UtilException("保存文件失败", e);
 		}
-		return saveFileName;
 	}
 	
 }
