@@ -40,6 +40,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+			<scope>provided</scope>
         </dependency>
 		<!-- mybatis plus generator -->
 		<dependency>

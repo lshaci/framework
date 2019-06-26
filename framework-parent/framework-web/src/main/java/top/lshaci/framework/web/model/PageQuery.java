@@ -1,20 +1,23 @@
 package top.lshaci.framework.web.model;
 
-import java.io.Serializable;
-
 import lombok.Getter;
+import lombok.ToString;
 import top.lshaci.framework.common.constants.Constants;
+
+import java.io.Serializable;
 
 /**
  * Page base query entity<br><br>
- * 
- * <b>0.0.4:</b> Change to non-abstract
+ *
+ * <b>0.0.4:</b> Change to non-abstract<br>
+ * <b>1.0.3:</b> 添加{code @ToString}
  *
  * @author lshaci
  * @since 0.0.1
- * @version 0.0.4
+ * @version 1.0.3
  */
 @Getter
+@ToString
 public class PageQuery implements Serializable {
 
     private static final long serialVersionUID = 2987113271659158089L;
