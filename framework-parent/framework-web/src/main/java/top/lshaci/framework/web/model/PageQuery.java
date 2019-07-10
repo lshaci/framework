@@ -7,7 +7,7 @@ import top.lshaci.framework.common.constants.Constants;
 import java.io.Serializable;
 
 /**
- * Page base query entity<br><br>
+ * <p>Page base query entity</p><br>
  *
  * <b>0.0.4:</b> Change to non-abstract<br>
  * <b>1.0.3:</b> 添加{code @ToString}

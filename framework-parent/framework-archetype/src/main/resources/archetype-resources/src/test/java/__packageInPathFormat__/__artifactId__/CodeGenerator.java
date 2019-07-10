@@ -127,8 +127,13 @@ public class CodeGenerator {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+        strategy.setSkipView(true);
         strategy.setEntityLombokModel(true);
-        strategy.setExclude("no");
+        strategy.setLogicDeleteFieldName("deleted");
+        strategy.setVersionFieldName("version");
+
+//        strategy.setInclude(); // 设置需要生成代码的表, 允许正则表达式(与exclude二选一配置)
+        strategy.setExclude("no"); // 设置不需要代码生成的表
         strategy.setTablePrefix("t_");
 
         mpg.setGlobalConfig(gc);
