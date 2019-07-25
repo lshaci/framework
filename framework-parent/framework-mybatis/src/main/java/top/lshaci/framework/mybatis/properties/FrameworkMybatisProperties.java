@@ -53,7 +53,7 @@ public class FrameworkMybatisProperties {
         /**
          * 溢出总页数，设置第一页
          */
-        private boolean overflow = false;
+        private boolean overflow = true;
         /**
          * 单页限制 500 条，小于 0 如 -1 不受限制
          */
