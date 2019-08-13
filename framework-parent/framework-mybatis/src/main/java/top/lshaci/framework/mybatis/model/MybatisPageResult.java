@@ -18,12 +18,12 @@ import java.util.List;
 @Setter
 @Getter
 public class MybatisPageResult<T> extends PageResult<T> {
-	
+
     private static final long serialVersionUID = 3497792361815572368L;
 
     /**
 	 * Constructs a new page result with the current page number and page size
-	 * 
+	 *
 	 * @param pgCt the current page number
 	 * @param pgSz the page size
 	 */
@@ -56,11 +56,11 @@ public class MybatisPageResult<T> extends PageResult<T> {
 
 	/**
 	 * Constructs a new page result with the page helper result
-	 * 
+	 *
 	 * @param page the page helper result
 	 */
 	public MybatisPageResult(IPage<T> page) {
-	    this((int) page.getPages(), (int) page.getSize(), (int) page.getTotal(), page.getRecords());
+	    this((int) page.getCurrent(), (int) page.getSize(), (int) page.getTotal(), page.getRecords());
 	}
 
 }
