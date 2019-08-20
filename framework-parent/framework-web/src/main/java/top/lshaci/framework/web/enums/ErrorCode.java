@@ -114,6 +114,10 @@ public enum ErrorCode {
      * org.springframework.web.HttpRequestMethodNotSupportedException
      */
     HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(50022, "请求方法不支持", "org.springframework.web.HttpRequestMethodNotSupportedException"),
+    /**
+     * org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+     */
+    METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION(50023, "参数类型不匹配", "org.springframework.web.method.annotation.MethodArgumentTypeMismatchException"),
     ;
 
 	private int code;
