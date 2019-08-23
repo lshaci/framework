@@ -222,6 +222,8 @@ public class FastDFSClient {
 		} catch (IOException | MyException e) {
 			log.error(ErrorCode.FILE_UPLOAD_FAILED.getCode());
 			throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
+		} finally {
+			pool.returnObject(trackerServer);
 		}
 
 		return path;
