@@ -31,7 +31,7 @@ public class PageQuery implements Serializable {
      * @param pgCt the current page number
      */
     public void setPgCt(Integer pgCt) {
-        this.pgCt = pgCt == null || pgCt < 0 ? Constants.DEFAULT_PGCT : pgCt;
+        this.pgCt = pgCt == null || pgCt <= 0 ? Constants.DEFAULT_PGCT : pgCt;
     }
 
     /**
@@ -40,7 +40,7 @@ public class PageQuery implements Serializable {
      * @param pgSz the page size
      */
     public void setPgSz(Integer pgSz) {
-        this.pgSz = pgSz == null || pgSz < 0 ? Constants.DEFAULT_PGSZ : pgSz;
+        this.pgSz = pgSz == null || pgSz <= 0 ? Constants.DEFAULT_PGSZ : pgSz;
     }
 
     /**

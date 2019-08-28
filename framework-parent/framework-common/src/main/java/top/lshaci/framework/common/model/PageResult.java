@@ -1,34 +1,34 @@
 package top.lshaci.framework.common.model;
 
+import lombok.Data;
+import top.lshaci.framework.common.constants.Constants;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
-import top.lshaci.framework.common.constants.Constants;
-
 /**
  * Page qo result
- * 
+ *
  * @author lshaci
  * @param <T>	The result entity type
  * @since 0.0.1
  */
 @Data
 public class PageResult<T> implements Serializable {
-	
+
 	private static final long serialVersionUID = 2696109518770817050L;
-	
+
 	private int pgCt;
 	private int pgSz;
 	private int end;
 	private int total;
 	private List<T> datas = new ArrayList<>();
-	
-	
+
+
 	/**
 	 * Constructs a new page result with the current page number and page size
-	 * 
+	 *
 	 * @param pgCt the current page number
 	 * @param pgSz the page size
 	 */
@@ -47,7 +47,7 @@ public class PageResult<T> implements Serializable {
 		this.pgCt = pgCt < 1 ? Constants.DEFAULT_PGCT : pgCt;
 		this.pgSz = pgSz < 1 ? Constants.DEFAULT_PGSZ : pgSz;
 		this.total = total;
-		this.end = (total + pgSz - 1) / pgSz;
+		this.end = (total + this.pgSz - 1) / this.pgSz;
 	}
 
 	/**
