@@ -1,5 +1,9 @@
 package top.lshaci.framework.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import top.lshaci.framework.utils.constants.Constants;
+
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -7,28 +11,23 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
-import top.lshaci.framework.utils.constants.Constants;
-
 /**
  * Date utils<br><br>
- * 
- * <b>0.0.4:</b> Add method formateDate, formatMsecDate, Date and LocalDate interconvert
- * 
+ *
+ * <b>0.0.4:</b> Add method format Date, format Msec Date, Date and LocalDate interconvert
+ *
  * @author lshaci
  * @since 0.0.1
  * @version 0.0.4
  */
 @Slf4j
 public abstract class DateUtils {
-	
+
 	private final static ZoneId ZONE = ZoneId.systemDefault();
 
 	/**
 	 * Format millisecond date use <b>yyyy-MM-dd HH:mm:ss.SSS</b>
-	 * 
+	 *
 	 * @param date the date
 	 * @return the string type date
 	 */
@@ -38,10 +37,10 @@ public abstract class DateUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Format long date use <b>yyyy-MM-dd HH:mm:ss</b>
-	 * 
+	 *
 	 * @param date the date
 	 * @return the string type date
 	 */
@@ -51,10 +50,10 @@ public abstract class DateUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Format short date use <b>yyyy-MM-dd</b>
-	 * 
+	 *
 	 * @param date the date
 	 * @return the string type date
 	 */
@@ -64,10 +63,10 @@ public abstract class DateUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Format date with pattern
-	 * 
+	 *
 	 * @param date the date
 	 * @param pattern the pattern
 	 * @return the string type date
@@ -77,12 +76,12 @@ public abstract class DateUtils {
 			log.warn("the date is null!");
 			return null;
 		}
-		
+
 		if (StringUtils.isBlank(pattern)) {
 			log.warn("the pattern is empty!");
 			return null;
 		}
-		
+
 		try {
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 			return simpleDateFormat.format(date);
@@ -91,10 +90,10 @@ public abstract class DateUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Convert Date to LocalDate
-	 * 
+	 *
 	 * @param date the Date instance
 	 * @return the LocalDate instance
 	 */
@@ -106,10 +105,10 @@ public abstract class DateUtils {
 		LocalDateTime localDateTime = date2LocalDateTime(date);
 	    return localDateTime.toLocalDate();
 	}
-	
+
 	/**
 	 * Convert Date to LocalDateTime
-	 * 
+	 *
 	 * @param date the Date instance
 	 * @return the LocalDateTime instance
 	 */
@@ -121,10 +120,10 @@ public abstract class DateUtils {
 		Instant instant = date.toInstant();
 		return LocalDateTime.ofInstant(instant, ZONE);
 	}
-	
+
 	/**
 	 * Convert LocalDate to Date
-	 * 
+	 *
 	 * @param localDate the LocalDate instance
 	 * @return the Date instance
 	 */
@@ -136,10 +135,10 @@ public abstract class DateUtils {
 		Instant instant = localDate.atStartOfDay(ZONE).toInstant();
 	    return Date.from(instant);
 	}
-	
+
 	/**
 	 * Convert LocalDateTime to Date
-	 * 
+	 *
 	 * @param localDateTime the LocalDateTime instance
 	 * @return the Date instance
 	 */
@@ -151,5 +150,5 @@ public abstract class DateUtils {
 		Instant instant = localDateTime.atZone(ZONE).toInstant();
 		return Date.from(instant);
 	}
-	
+
 }

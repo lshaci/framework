@@ -7,14 +7,14 @@ import lombok.Getter;
 
 /**
  * The correspondence between filename suffix and content type
- * 
+ *
  * @author lshaci
  * @since 0.0.4
  */
 @Getter
 @AllArgsConstructor
 public enum FileSuffixContentType {
-	
+
 	/**
 	 * PNG;image/png
 	 */
@@ -91,10 +91,9 @@ public enum FileSuffixContentType {
 
 	private String contentType;
 
-	
 	/**
 	 * Get content type by file suffix
-	 * 
+	 *
 	 * @param suffix the file suffix
 	 * @return the content type corresponding to the suffix name
 	 */
@@ -102,13 +101,13 @@ public enum FileSuffixContentType {
 		if (StringUtils.isBlank(suffix)) {
 			return null;
 		}
-		
+
 		FileSuffixContentType fileSuffixContentType = FileSuffixContentType.valueOf(suffix.trim().toUpperCase());
 		if (fileSuffixContentType != null) {
 			return fileSuffixContentType.contentType;
 		}
-		
+
 		return null;
 	}
-	
+
 }
