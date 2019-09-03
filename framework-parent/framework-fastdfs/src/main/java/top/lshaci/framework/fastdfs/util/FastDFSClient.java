@@ -264,9 +264,7 @@ public class FastDFSClient {
 		}
 		// the file descriptions
 		if (descriptions != null && descriptions.size() > 0) {
-			descriptions.forEach((key, value) -> {
-				nvpsList.add(new NameValuePair(key, value));
-			});
+			descriptions.forEach((key, value) -> nvpsList.add(new NameValuePair(key, value)));
 		}
 		if (nvpsList.size() > 0) {
 			nvps = new NameValuePair[nvpsList.size()];
@@ -334,7 +332,7 @@ public class FastDFSClient {
 				response.setContentType(contentType + ";charset=UTF-8");
 			}
 		    response.setHeader("Accept-Ranges", "bytes");
-		    response.setHeader("Content-Disposition", "attachment;filename=\"" + encoderName + "\"");
+		    response.setHeader("Content-Disposition", "attachment;filename=" + encoderName);
 		} catch (UnsupportedEncodingException e) {
 			log.warn("Ignore.", e);
 		}
