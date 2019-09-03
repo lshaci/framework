@@ -263,15 +263,11 @@ public class FastDFSClient {
 			nvpsList.add(new NameValuePair(FastDFSConstant.FILE_DESCRIPTION_FILE_NAME, filename));
 		}
 		// the file descriptions
-		if (descriptions != null && descriptions.size() > 0) {
+		if (MapUtils.isNotEmpty(descriptions)) {
 			descriptions.forEach((key, value) -> nvpsList.add(new NameValuePair(key, value)));
 		}
-		if (nvpsList.size() > 0) {
-			nvps = new NameValuePair[nvpsList.size()];
-			nvpsList.toArray(nvps);
-		}
 
-		return nvps;
+		return nvpsList.stream().toArray(NameValuePair[]::new);
 	}
 
 	/**
@@ -312,12 +308,11 @@ public class FastDFSClient {
 		}
     }
 
-
 	/**
 	 * Set response header
 	 *
 	 * @param filename the download file name
-	 * @param response the http servlet respons
+	 * @param response the http servlet response
 	 */
 	private static void setResponseHeader(String filename, HttpServletResponse response) {
 		if (StringUtils.isBlank(filename)) {
@@ -326,7 +321,7 @@ public class FastDFSClient {
 		}
 
 		try {
-			String encoderName = URLEncoder.encode(filename, "UTF-8").replace("+", "%20").replace("%2B", "+");
+			String encoderName = URLEncoder.encode(filename, "UTF-8");
 			String contentType = FileSuffixContentType.getContentType(getFilenameSuffix(filename));
 			if (StringUtils.isNotBlank(contentType)) {
 				response.setContentType(contentType + ";charset=UTF-8");
