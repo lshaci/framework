@@ -13,6 +13,8 @@ import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 import top.lshaci.framework.fastdfs.properties.FastDFSProperties;
 import top.lshaci.framework.fastdfs.util.FastDFSClient;
 
+import static top.lshaci.framework.fastdfs.constant.FastDFSConstant.FAST_DFS_PREFIX;
+
 /**
  * Fast dfs client config
  *
@@ -22,7 +24,7 @@ import top.lshaci.framework.fastdfs.util.FastDFSClient;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(FastDFSProperties.class)
-@ConditionalOnProperty(prefix = FastDFSConstant.FAST_DFS_PREFIX, value = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = FAST_DFS_PREFIX, value = "enabled", havingValue = "true", matchIfMissing = true)
 public class FastDFSClientConfig {
 
     @Autowired
