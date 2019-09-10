@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>top.lshaci</groupId>
@@ -18,10 +16,11 @@
 		<module>framework-excel</module>
 		<module>framework-web</module>
 		<module>framework-swagger</module>
-		<module>framework-test</module>
-		<module>framework-pdfUtils</module>
-		<module>framework-thread</module>
+	    <module>framework-apollo</module>
 		<module>framework-fastdfs</module>
+		<module>framework-pdfUtils</module>
+		<module>framework-test</module>
+		<module>framework-thread</module>
 		<module>framework-redis</module>
 		<module>framework-fescar</module>
 	</modules>
@@ -44,6 +43,7 @@
 		<java.version>1.8</java.version>
 
 		<poi.version>3.17</poi.version>
+		<apollo.version>1.4.0</apollo.version>
 		<swagger.version>2.9.2</swagger.version>
 
 		<framework.version>1.0.3</framework.version>
@@ -104,6 +104,12 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-swagger</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework apollo module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-apollo</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework web module -->
@@ -225,6 +231,12 @@
 				<groupId>net.oschina.zcx7878</groupId>
 				<artifactId>fastdfs-client-java</artifactId>
 				<version>${fastdfs.client.version}</version>
+			</dependency>
+			<!-- apollo client -->
+			<dependency>
+			    <groupId>com.ctrip.framework.apollo</groupId>
+			    <artifactId>apollo-client</artifactId>
+			    <version>${apollo.version}</version>
 			</dependency>
 			<!-- spring boot dependencies -->
 			<dependency>
