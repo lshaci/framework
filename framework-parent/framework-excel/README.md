@@ -107,7 +107,7 @@ public class User extends UserBase {
 	private String motherName = "母亲";
 	
 	@ExportTitle(title = "地址", order = 6, isEntity = true)
-	private Address address = new Address().setCity("浙江").setProvince("杭州");
+	private Address address = new Address().setCity("杭州").setProvince("浙江");
 	
 	@ExportTitle(title = "籍贯", order = 11, isCollection = true)
 	private List<Address> nativePlaces = Arrays.asList(
