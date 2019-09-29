@@ -9,18 +9,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import top.lshaci.framework.common.exception.BaseException;
 import top.lshaci.framework.web.enums.ErrorCode;
+import top.lshaci.framework.web.model.ExceptionMessage;
 import top.lshaci.framework.web.model.JsonResponse;
+import top.lshaci.framework.web.utils.GlobalExceptionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * Global exception handler<br><br>
  *
- * <b>0.0.4: </b>Add method argumentExceptionHandler
+ * <b>0.0.4: </b>Add method argumentExceptionHandler<br>
+ * <b>1.0.4: </b>使用GlobalExceptionUtils来获取自定义的异常消息
  *
  * @author lshaci
  * @since 0.0.3
- * @version 0.0.4
+ * @version 1.0.4
  */
 @Slf4j
 @RestController
@@ -96,11 +99,11 @@ public class GlobalExceptionHandler {
     public JsonResponse<Object> defaultExceptionHandler(HttpServletRequest req, Exception e) {
     	log.error(SYSTEM_EXCEPTION, e);
 
-    	ErrorCode errorCode = ErrorCode.getByException(e);
+		ExceptionMessage message = GlobalExceptionUtils.get(e.getClass());
 
-    	return JsonResponse
-    			.failure(errorCode.getMsg())
-    			.setCode(errorCode.getCode())
+		return JsonResponse
+    			.failure(message.getMessage())
+    			.setCode(message.getCode())
     			.addOtherData("detail", e.getMessage());
     }
 

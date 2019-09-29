@@ -89,7 +89,7 @@ public enum ErrorCode {
     /**
      * java.lang.NoSuchMethodException
      */
-    NOSUCH_METHOD_EXCEPTION(50014, "方法未找到异常", "java.lang.NoSuchMethodException"),
+    NO_SUCH_METHOD_EXCEPTION(50014, "方法未找到异常", "java.lang.NoSuchMethodException"),
     /**
      * java.net.ConnectException
      */
