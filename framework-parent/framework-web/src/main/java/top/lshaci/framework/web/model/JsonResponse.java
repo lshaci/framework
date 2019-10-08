@@ -22,14 +22,29 @@ public class JsonResponse<R> implements Serializable {
 
     private static final long serialVersionUID = 7574078101944305355L;
 
+    /**
+     * 状态信息; true: 成功, false: 失败
+     */
     private boolean status;
 
+    /**
+     * 响应码
+     */
     private int code;
 
+    /**
+     * 响应消息
+     */
     private String message;
 
+    /**
+     * 需要返回的数据
+     */
     private R data;
 
+    /**
+     * 返回添加的额外数据
+     */
     private Map<String, Object> otherData = new HashMap<>();
 
     /**
