@@ -62,7 +62,6 @@ public class ExceptionMessage {
         } catch (ClassNotFoundException e) {
             log.error("Class not found! Class name is: {}", errorCode.getExceptionClass());
         }
-        Assert.notNull(this.exceptionClass, "The exception class must not be null!");
     }
 
 }

@@ -38,6 +38,7 @@ public class GlobalExceptionUtils {
          */
         exceptionMessageMap = Arrays.stream(ErrorCode.values())
                 .map(ExceptionMessage::new)
+                .filter(em -> Objects.nonNull(em.getExceptionClass()))
                 .collect(toMap(ExceptionMessage::getExceptionClass, Function.identity(), (k1, k2) -> k2));
     }
 

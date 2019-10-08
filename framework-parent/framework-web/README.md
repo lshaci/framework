@@ -12,7 +12,7 @@ framework:
       global-exception-handler: true
 ```
 + 框架中已定义的异常, 参考: **top.lshaci.framework.web.enums.ErrorCode**
-### 1.2 添加其它异常
+### 1.2 代码中添加其它异常
 在项目启动后调用top.lshaci.framework.web.utils.GlobalExceptionUtils中的put方法, 如下:
 ```java
 public class Application {
@@ -21,6 +21,21 @@ public class Application {
     }
 }
 ```
+
+### 1.3 配置中添加其它异常
+在项目的配置文件application.yml中添加如下配置:
+```yaml
+framework:
+  web:
+    exception-messages:
+    - code: 50025
+      message: 算术计算异常
+      exception-class: java.lang.ArithmeticException
+    - code: 50026
+      message: 空指针异常
+      exception-class: java.lang.NullPointerException
+```
+
 ## 2.防重复提交
 该功能基于访问url和session进行构建, 集群项目请谨慎使用(使用session共享的项目可以使用)
 
