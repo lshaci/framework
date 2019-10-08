@@ -2,12 +2,19 @@ package top.lshaci.framework.web.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import top.lshaci.framework.web.model.ExceptionMessage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Framework web properties
+ * <p>Framework web properties</p>
+ *
+ * <p><b>1.0.4: </b>添加自定义异常信息属性{@code exceptionMessages}</p><br>
  *
  * @author lshaci
  * @since 1.0.2
+ * @version 1.0.4
  */
 @Data
 @ConfigurationProperties(prefix = "framework.web")
@@ -17,6 +24,11 @@ public class FrameworkWebProperties {
      * 需要开启的功能
      */
     private Enabled enabled = new Enabled();
+
+    /**
+     * 异常信息
+     */
+    private List<ExceptionMessage> exceptionMessages = new ArrayList<>();
 
     /**
      * framework web中的功能

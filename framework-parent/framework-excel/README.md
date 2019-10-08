@@ -17,7 +17,7 @@
 | number  | int | 1 | Excel中生成Sheet的数量 |
 | fontName  | String | 宋体 | Sheet中使用的字体名称 |
 | addIndex  | boolean | true | 是否添加序号列 |
-| mergeIndex  | boolean | true | 行数据中有Collection是是否合并序号列 |
+| mergeIndex  | boolean | true | 行数据中有Collection时是否合并序号列 |
 | freezeTitle  | boolean | false | 是否冻结标题行 |
 | type  | ExcelType | XLSX | 生成的Excel类型, 可指定XLS, XLSX |
 | cellStyleBuilder  | Class<? extends CellStyleBuilder> | DefaultCellStyleBuilder.class | 单元样式构建类, 用于构建标题和内容样式, 以及设置合并单元格边框 |
