@@ -112,7 +112,7 @@ public enum ErrorCode {
     DATA_TRUNCATION_EXCEPTION(50202, "服务器不能接收所有数据", "java.sql.DataTruncation"),
 
     /**
-     * java.util.concurrent.CancellationException
+     * java.text.ParseException
      */
     PARSE_EXCEPTION(50301, "日期格式错误", "java.text.ParseException"),
     /**

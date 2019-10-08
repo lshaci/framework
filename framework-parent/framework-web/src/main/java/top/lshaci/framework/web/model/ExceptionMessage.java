@@ -3,6 +3,7 @@ package top.lshaci.framework.web.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import top.lshaci.framework.web.enums.ErrorCode;
 
@@ -24,10 +25,12 @@ public class ExceptionMessage {
     /**
      * 自定义的异常信息
      */
+    @Nullable
     private String message;
     /**
      * 异常类
      */
+    @Nullable
     private Class<? extends Exception> exceptionClass;
 
     /**

@@ -77,8 +77,18 @@ public class GlobalExceptionUtils {
      * @param exceptionClass 异常类Class
      * @return 异常消息
      */
-    public static ExceptionMessage get(Class<? extends Exception> exceptionClass) {
+    public static ExceptionMessage get(Class<? extends Exception> exceptionClass){
         ExceptionMessage exceptionMessage = exceptionMessageMap.get(exceptionClass);
-        return Objects.nonNull(exceptionMessage) ? exceptionMessage: DEFAULT_MESSAGE;
+        if (Objects.nonNull(exceptionClass)) {
+            return exceptionMessage;
+        }
+
+        log.warn("The exception message is undefined. Try to get the super exception message!");
+        return exceptionMessageMap.values()
+                .stream()
+                .filter(c -> c.getExceptionClass().isAssignableFrom(exceptionClass))
+                .findFirst()
+                .orElse(DEFAULT_MESSAGE);
     }
+
 }
