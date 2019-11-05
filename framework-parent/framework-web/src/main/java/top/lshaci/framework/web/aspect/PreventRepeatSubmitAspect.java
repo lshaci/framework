@@ -72,10 +72,10 @@ public class PreventRepeatSubmitAspect {
 		HttpSessionUtils.removeAttribute(concatSubmitKey());
 		log.debug("Remove submit token key from session is succeed.");
 	}
-	
+
 	/**
 	 * 拼接存入session中的key
-	 * 
+	 *
 	 * @return 放重复提交url的key
 	 */
 	private String concatSubmitKey() {

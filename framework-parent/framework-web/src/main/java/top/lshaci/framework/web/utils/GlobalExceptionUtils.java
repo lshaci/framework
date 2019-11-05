@@ -80,7 +80,7 @@ public class GlobalExceptionUtils {
      */
     public static ExceptionMessage get(Class<? extends Exception> exceptionClass){
         ExceptionMessage exceptionMessage = exceptionMessageMap.get(exceptionClass);
-        if (Objects.nonNull(exceptionClass)) {
+        if (Objects.nonNull(exceptionMessage)) {
             return exceptionMessage;
         }
 
