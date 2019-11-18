@@ -1,5 +1,6 @@
 package top.lshaci.framework.web.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Getter;
 import lombok.ToString;
 import top.lshaci.framework.common.constants.Constants;
@@ -48,6 +49,7 @@ public class PageQuery implements Serializable {
      *
      * @return the start row
      */
+    @JSONField(serialize = false)
     public Integer getStart() {
         return (this.pgCt - 1) * this.pgSz;
     }
