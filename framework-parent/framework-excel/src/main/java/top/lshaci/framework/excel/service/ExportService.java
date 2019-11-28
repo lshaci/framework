@@ -1,26 +1,10 @@
 package top.lshaci.framework.excel.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-
-import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.annotation.ExcelEntity;
 import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.annotation.ExportTitle;
@@ -31,6 +15,10 @@ import top.lshaci.framework.excel.exception.ExportHandlerException;
 import top.lshaci.framework.excel.service.utils.ExportValueUtil;
 import top.lshaci.framework.utils.ClassUtils;
 import top.lshaci.framework.utils.ReflectionUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 导出Excel业务类
@@ -132,7 +120,7 @@ public class ExportService {
 			currentRowNumber = 0;
 			sheetParam.getIndexBuilder().reset();
 			this.sheet = workbook.createSheet(sheetParam.getName() + "_" + (n + 1));
-			
+
 			setColumnWidth();
 			setSheetTitle();
 			setColumnTitles();
@@ -140,7 +128,7 @@ public class ExportService {
 			if (CollectionUtils.isEmpty(datas)) {
 				return;
 			}
-			
+
 			if (this.sheetParam.isFreezeTitle()) {
 				this.sheet.createFreezePane(0, currentRowNumber, 0, currentRowNumber);
 			}
@@ -489,7 +477,7 @@ public class ExportService {
 				.filter(f -> f.getAnnotation(ExportTitle.class).isCollection())
 				.count();
 		if (count > 1) {
-			throw new ExportHandlerException(ExportError.ANY_ONE_COLLECTION);
+			throw new ExportHandlerException(ExportError.ONLY_ONE_COLLECTION);
 		}
 		return Arrays.stream(cls.getDeclaredFields())
 				.filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))

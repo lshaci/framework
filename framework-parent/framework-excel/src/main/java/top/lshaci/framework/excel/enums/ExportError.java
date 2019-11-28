@@ -5,7 +5,7 @@ import lombok.Getter;
 
 /**
  * 导入时的错误信息
- * 
+ *
  * @author lshaci
  * @since 1.0.2
  */
@@ -23,13 +23,13 @@ public enum ExportError {
 	/**
 	 * 导出实体类仅允许标记一个集合类型字段
 	 */
-	ANY_ONE_COLLECTION("导出实体类仅允许标记一个集合类型字段"),
+	ONLY_ONE_COLLECTION("导出实体类仅允许标记一个集合类型字段"),
 	/**
 	 * 使用ExportTitle注解标记的字段不是集合类型
 	 */
 	NOT_COLLECTION("使用ExportTitle注解标记的字段不是集合类型"),
 	;
-	
+
 	private String msg;
 
 }

@@ -1,4 +1,4 @@
-package top.lshaci.framework.web.model;
+package top.lshaci.framework.common.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -10,11 +10,12 @@ import java.util.Map;
 /**
  * Web controller json response<br><br>
  *
- * <b>0.0.4:</b> Add method: successMessage and message; Change the name of the params field to otherData
+ * <b>0.0.4: </b> Add method: successMessage and message; Change the name of the params field to otherData<br>
+ * <b>1.0.5: </b> Move form framework web module to framework common module
  *
  * @author lshaci
  * @since 0.0.1
- * @version 0.0.4
+ * @version 1.0.5
  */
 @Data
 @Accessors(chain = true)

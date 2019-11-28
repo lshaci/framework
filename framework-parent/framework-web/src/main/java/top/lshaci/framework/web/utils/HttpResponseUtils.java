@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import top.lshaci.framework.web.model.JsonResponse;
+import top.lshaci.framework.common.model.JsonResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

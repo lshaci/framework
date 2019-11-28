@@ -46,7 +46,7 @@
 		<apollo.version>1.4.0</apollo.version>
 		<swagger.version>2.9.2</swagger.version>
 
-		<framework.version>1.0.4</framework.version>
+		<framework.version>1.0.5</framework.version>
 		<fastjson.version>1.2.47</fastjson.version>
 		<commons.compress.version>1.18</commons.compress.version>
 		<fastdfs.client.version>1.27.0.0</fastdfs.client.version>
