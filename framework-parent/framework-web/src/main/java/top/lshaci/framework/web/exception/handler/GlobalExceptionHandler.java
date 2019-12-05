@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import top.lshaci.framework.common.exception.BaseException;
+import top.lshaci.framework.common.model.JsonResponse;
 import top.lshaci.framework.web.enums.ErrorCode;
 import top.lshaci.framework.web.model.ExceptionMessage;
 import top.lshaci.framework.web.utils.GlobalExceptionUtils;
