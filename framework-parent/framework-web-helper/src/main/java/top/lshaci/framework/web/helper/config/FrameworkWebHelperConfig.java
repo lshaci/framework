@@ -51,14 +51,14 @@ public class FrameworkWebHelperConfig {
     @ConditionalOnMissingBean
     @ConditionalOnBean(StringRedisTemplate.class)
     public PreventRepeat redisPreventRepeat(StringRedisTemplate stringRedisTemplate){
-        log.info("Config RedisPreventRepeat...");
+        log.debug("Config redis prevent repeat...");
         return new RedisPreventRepeat(properties.getPreventRepeatSubmit().getTimeout(), stringRedisTemplate);
     }
 
     @Bean
     @ConditionalOnMissingBean(StringRedisTemplate.class)
     public PreventRepeat timedCachePreventRepeat(){
-        log.info("Config TimedCachePreventRepeat...");
+        log.debug("Config timed cache prevent repeat...");
         return new TimedCachePreventRepeat(properties.getPreventRepeatSubmit().getTimeout());
     }
 
