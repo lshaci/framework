@@ -43,9 +43,10 @@ public class FrameworkWebHelperConfig {
     }
 
     /**
-     * Redis Prevent Repeat
+     * Config redis prevent repeat, Conditional on bean {@code StringRedisTemplate}
      *
-     * @param stringRedisTemplate string Redis Template
+     * @param stringRedisTemplate the string redis template
+     * @return the redis prevent repeat bean
      */
     @Bean
     @ConditionalOnMissingBean
@@ -55,6 +56,11 @@ public class FrameworkWebHelperConfig {
         return new RedisPreventRepeat(properties.getPreventRepeatSubmit().getTimeout(), stringRedisTemplate);
     }
 
+    /**
+     * Config timed cache prevent repeat, Conditional on missing bean {@code StringRedisTemplate}
+     *
+     * @return the timed cache prevent repeat bean
+     */
     @Bean
     @ConditionalOnMissingBean(StringRedisTemplate.class)
     public PreventRepeat timedCachePreventRepeat(){
