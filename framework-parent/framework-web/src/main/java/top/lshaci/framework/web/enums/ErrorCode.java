@@ -34,7 +34,7 @@ public enum ErrorCode {
     /**
      * top.lshaci.framework.web.exception.RepeatSubmitException
      */
-    REPEAT_SUBMIT_EXCEPTION(40003, "上次操作未完成，请勿重复操作", "top.lshaci.framework.web.exception.RepeatSubmitException"),
+    REPEAT_SUBMIT_EXCEPTION(40003, "上次操作未完成，请勿重复操作", "top.lshaci.framework.web.helper.exception.RepeatSubmitException"),
 
     /**
      * java.lang.ArithmeticException

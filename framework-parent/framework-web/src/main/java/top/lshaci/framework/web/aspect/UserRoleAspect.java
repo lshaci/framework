@@ -10,8 +10,8 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import top.lshaci.framework.web.annotation.IgnoreRole;
 import top.lshaci.framework.web.annotation.NeedRole;
+import top.lshaci.framework.web.common.utils.HttpRequestUtils;
 import top.lshaci.framework.web.exception.RolePermissionException;
-import top.lshaci.framework.web.utils.HttpRequestUtils;
 import top.lshaci.framework.web.utils.SessionUserUtils;
 
 import javax.servlet.http.HttpServletRequest;

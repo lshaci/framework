@@ -8,8 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
+import top.lshaci.framework.web.common.utils.HttpRequestUtils;
 import top.lshaci.framework.web.constant.WebConstant;
-import top.lshaci.framework.web.utils.HttpRequestUtils;
 import top.lshaci.framework.web.utils.SessionUserUtils;
 
 import javax.servlet.http.HttpServletRequest;

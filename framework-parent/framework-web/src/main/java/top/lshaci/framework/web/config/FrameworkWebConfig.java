@@ -8,7 +8,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
-import top.lshaci.framework.web.aspect.PreventRepeatSubmitAspect;
 import top.lshaci.framework.web.aspect.UserRoleAspect;
 import top.lshaci.framework.web.aspect.WebLogAspect;
 import top.lshaci.framework.web.exception.handler.GlobalExceptionHandler;
@@ -65,19 +64,6 @@ public class FrameworkWebConfig {
     public WebLogAspect webLogAspect() {
         log.debug("Config web log aspect...");
         return new WebLogAspect();
-    }
-
-    /**
-     * Config prevent repeat submit aspect
-     *
-     * @return the prevent repeat submit aspect bean
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "framework.web.enabled.prevent-repeat-submit", havingValue = "true", matchIfMissing = true)
-    public PreventRepeatSubmitAspect preventRepeatSubmitAspect() {
-        log.debug("Config prevent repeat submit aspect...");
-        return new PreventRepeatSubmitAspect();
     }
 
     /**

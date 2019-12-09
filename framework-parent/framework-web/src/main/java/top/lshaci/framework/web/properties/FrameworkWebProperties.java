@@ -47,11 +47,6 @@ public class FrameworkWebProperties {
         private Boolean globalExceptionHandler = true;
 
         /**
-         * 是否开启防重复提交(默认开启)
-         */
-        private Boolean preventRepeatSubmit = true;
-
-        /**
          * 是否开启web日志(默认关闭)
          */
         private Boolean webLog = false;

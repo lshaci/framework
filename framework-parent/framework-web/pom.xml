@@ -19,26 +19,16 @@
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-utils</artifactId>
 		</dependency>
+		<!-- framework web common module -->
+		<dependency>
+			<groupId>top.lshaci</groupId>
+			<artifactId>framework-web-common</artifactId>
+		</dependency>
 		<!-- spring boot configuration -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
-		</dependency>
-		<!-- spring boot web -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<!-- spring boot aop -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>
-		<!-- fastjson -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
 		</dependency>
 	</dependencies>
 </project>
