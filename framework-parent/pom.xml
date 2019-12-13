@@ -4,7 +4,7 @@
 
 	<groupId>top.lshaci</groupId>
 	<artifactId>framework-parent</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.6</version>
 
 	<packaging>pom</packaging>
 
@@ -49,7 +49,7 @@
 		<swagger.version>2.9.2</swagger.version>
 
 		<hutool.version>5.0.7</hutool.version>
-		<framework.version>1.0.5</framework.version>
+		<framework.version>1.0.6</framework.version>
 		<fastjson.version>1.2.47</fastjson.version>
 		<commons.compress.version>1.18</commons.compress.version>
 		<fastdfs.client.version>1.27.0.0</fastdfs.client.version>
