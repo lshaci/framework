@@ -36,21 +36,10 @@ framework:
       exception-class: java.lang.NullPointerException
 ```
 
-## 2.防重复提交
-该功能基于访问url和session进行构建, 集群项目请谨慎使用(使用session共享的项目可以使用)
-
-### 2.1 启用(默认开启)
-在yml配置文件中添加如下配置:
-```yaml
-framework:
-  web:
-    enabled:
-      prevent-repeat-submit: true
-```
-## 3.控制层请求日志
+## 2.控制层请求日志
 该功能用于打印标记有注解@RequestMapping, @GetMapping, @PostMapping, @PutMapping, @DeleteMapping, @PatchMapping的接口的参数和返回数据
 
-### 3.1 启用(默认关闭)
+### 2.1 启用(默认关闭)
 在yml配置文件中添加如下配置:
 ```yaml
 framework:

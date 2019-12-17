@@ -1,24 +1,6 @@
 package top.lshaci.framework.fastdfs.util;
 
-import static java.util.stream.Collectors.toMap;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,13 +12,23 @@ import org.csource.fastdfs.ProtoCommon;
 import org.csource.fastdfs.StorageClient1;
 import org.csource.fastdfs.TrackerServer;
 import org.springframework.web.multipart.MultipartFile;
-
-import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.config.TrackerServerPool;
 import top.lshaci.framework.fastdfs.constant.FastDFSConstant;
 import top.lshaci.framework.fastdfs.enums.ErrorCode;
 import top.lshaci.framework.fastdfs.enums.FileSuffixContentType;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * FastDfs客户端工具
@@ -110,7 +102,6 @@ public class FastDFSClient {
             throw new FastDFSException(ErrorCode.FILE_PATH_IS_NULL);
         }
         File file = new File(filepath.trim());
-        String path = null;
         try (
         		InputStream is = new FileInputStream(file);
         ) {
@@ -118,13 +109,12 @@ public class FastDFSClient {
             filepath = toLocal(filepath);
             String filename = filepath.substring(filepath.lastIndexOf("/") + 1);
 
-            path = upload(is, filename, descriptions);
+            return upload(is, filename, descriptions);
         } catch (IOException e) {
             log.error(ErrorCode.FILE_NOT_EXIST.getCode(), e);
             throw new FastDFSException(ErrorCode.FILE_NOT_EXIST);
         }
 
-        return path;
     }
 
 	/**
@@ -247,7 +237,7 @@ public class FastDFSClient {
 		}
 
 		try {
-			if (is.available() > pool.getMaxFileSize()) {
+			if (pool.getMaxFileSize() != -1 && is.available() > pool.getMaxFileSize()) {
 				throw new FastDFSException(ErrorCode.FILE_OUT_SIZE);
 			}
 		} catch (IOException e) {
@@ -274,7 +264,7 @@ public class FastDFSClient {
 			descriptions.forEach((key, value) -> nvpsList.add(new NameValuePair(key, value)));
 		}
 
-		return nvpsList.stream().toArray(NameValuePair[]::new);
+		return nvpsList.toArray(new NameValuePair[0]);
 	}
 
 	/**
@@ -473,7 +463,7 @@ public class FastDFSClient {
         // unix seconds
         int ts = (int) Instant.now().getEpochSecond();
         // token
-        String token = "null";
+        String token;
         try {
             token = ProtoCommon.getToken(getFilename(filepath), ts, httpSecretKey);
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException | MyException e) {

@@ -1,20 +1,27 @@
 package top.lshaci.framework.fastdfs.config;
 
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.csource.fastdfs.ClientGlobal;
 import org.csource.fastdfs.TrackerServer;
-
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.fastdfs.enums.ErrorCode;
 import top.lshaci.framework.fastdfs.exception.FastDFSException;
+import top.lshaci.framework.fastdfs.properties.FrameworkFastDFSProperties;
+
+import java.util.Map;
+import java.util.Properties;
 
 /**
- * Tracker server pool
+ * <p>Tracker server pool</p><br>
+ *
+ * <b>1.0.6: </b>
  *
  * @author lshaci
  * @since 0.0.4
+ * @version 1.0.6
  */
 @Data
 @Slf4j
@@ -25,47 +32,48 @@ public class TrackerServerPool {
 	 */
 	private long maxFileSize;
 	/**
-	 * 反向代理地址
+	 * Reverse proxy address(Use with nginx)
 	 */
 	private String reverseProxyAddress;
-    /**
-     * Tracker server config
-     */
-	private String config;
-
-    /**
-     * The min storage connection
-     */
-	private int minStorageConnection;
-
-    /**
-     * The max storage connection
-     */
-	private int maxStorageConnection;
-
-    /**
-     * The tracker server pool
-     */
+	/**
+	 * The tracker server pool
+	 */
 	private GenericObjectPool<TrackerServer> trackerServerPool;
 
     /**
-     * Init tracker server pool
+     * Constructor a <code>TrackerServerPool</code> with fastDFS properties
      *
-     * @throws Exception 初始化FastDfs Tracker Server连接池失败抛出异常
+     * @param properties The fastDFS properties
+     * @throws Exception if fastDFS client init failure
      */
-	public void init() throws Exception {
-		log.debug("Init tracker server pool...");
-		// load config properties
-		ClientGlobal.initByProperties(config);
-		log.debug("ClientGlobal configInfo: \n{}", ClientGlobal.configInfo());
-
+	public TrackerServerPool(FrameworkFastDFSProperties properties) throws Exception {
+		this.maxFileSize = properties.getMaxFileSize().toBytes();
+		this.reverseProxyAddress = properties.getReverseProxyAddress();
+		// fast dfs client init
+		clientInit(properties.getProperties());
 		// pool config
 		GenericObjectPoolConfig<TrackerServer> poolConfig = new GenericObjectPoolConfig<>();
-		poolConfig.setMinIdle(minStorageConnection);
-		poolConfig.setMaxTotal(maxStorageConnection);
+		poolConfig.setMinIdle(properties.getMinIdle());
+        poolConfig.setMaxIdle(properties.getMaxIdle());
+		poolConfig.setMaxTotal(properties.getMinIdle());
 
 		trackerServerPool = new GenericObjectPool<>(new TrackerServerFactory(), poolConfig);
 	}
+
+    /**
+     * Init fastDFS client
+     *
+     * @param properties The fastDFS properties
+     * @throws Exception if fastDFS client init failure
+     */
+	private void clientInit(Map<String, String> properties) throws Exception {
+        Properties fastDFSProperties = new Properties();
+        if (MapUtils.isNotEmpty(properties)) {
+            properties.forEach((k, v) -> fastDFSProperties.put("fastdfs." + k, v));
+        }
+        ClientGlobal.initByProperties(fastDFSProperties);
+        log.debug("ClientGlobal configInfo: \n{}", ClientGlobal.configInfo());
+    }
 
 	/**
 	 * Borrow tracker server from pool
@@ -73,17 +81,12 @@ public class TrackerServerPool {
 	 * @return Tracker server instance
 	 */
 	public TrackerServer borrowObject() {
-        TrackerServer trackerServer = null;
         try {
-            trackerServer = trackerServerPool.borrowObject();
+            return trackerServerPool.borrowObject();
         } catch (Exception e) {
         	log.error(ErrorCode.FETCH_TRACKER_SERVER_FAILED.getCode(), e);
             throw new FastDFSException(ErrorCode.FETCH_TRACKER_SERVER_FAILED);
         }
-        if (trackerServer == null) {
-        	throw new FastDFSException(ErrorCode.FETCH_TRACKER_SERVER_FAILED);
-		}
-        return trackerServer;
     }
 
     /**

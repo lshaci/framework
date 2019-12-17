@@ -7,21 +7,19 @@ import org.csource.fastdfs.TrackerClient;
 import org.csource.fastdfs.TrackerServer;
 
 /**
- * Tracker Server Factory
+ * <p>Tracker Server Factory</p><br>
+ *
+ * <b>1.0.6: </b>Modify create method
  *
  * @author lshaci
  * @since 0.0.4
+ * @version 1.0.6
  */
 class TrackerServerFactory extends BasePooledObjectFactory<TrackerServer>{
 
 	@Override
 	public TrackerServer create() throws Exception {
-		// TrackerClient
-        TrackerClient trackerClient = new TrackerClient();
-        // TrackerServer
-        TrackerServer trackerServer = trackerClient.getConnection();
-
-        return trackerServer;
+        return new TrackerClient().getConnection();
 	}
 
 	@Override
