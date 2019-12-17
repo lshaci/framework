@@ -17,7 +17,7 @@ import java.util.Properties;
 /**
  * <p>Tracker server pool</p><br>
  *
- * <b>1.0.6: </b>
+ * <b>1.0.6: </b>Modify the initialization method
  *
  * @author lshaci
  * @since 0.0.4
