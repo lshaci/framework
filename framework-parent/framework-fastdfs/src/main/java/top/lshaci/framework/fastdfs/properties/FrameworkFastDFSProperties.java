@@ -43,7 +43,7 @@ public class FrameworkFastDFSProperties {
 	 * The tracker server pool max idle connection number
 	 */
 	@Min(value = 1, message = "The [framework.fastdfs.max-idle] must greater than 1!")
-	private int maxIdle = 2;
+	private int maxIdle = 8;
 	/**
 	 * The tracker server pool max total connection number
 	 */
