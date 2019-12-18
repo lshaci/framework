@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-top.lshaci.framework.swagger.autoconfigure.SwaggerAutoConfiguration
+top.lshaci.framework.swagger.config.FrameworkSwaggerConfig

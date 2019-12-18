@@ -13,13 +13,4 @@
 		<version>1.0.6</version>
 	</parent>
 
-	<dependencies>
-		<!-- fastjson -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-
 </project>

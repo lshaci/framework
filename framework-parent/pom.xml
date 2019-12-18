@@ -20,7 +20,6 @@
 		<module>framework-pdfUtils</module>
 		<module>framework-test</module>
 		<module>framework-thread</module>
-		<module>framework-redis</module>
 		<module>framework-fescar</module>
 		<module>framework-web</module>
 		<module>framework-web-common</module>
@@ -89,12 +88,6 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-common</artifactId>
-				<version>${framework.version}</version>
-			</dependency>
-			<!-- framework redis module -->
-			<dependency>
-				<groupId>top.lshaci</groupId>
-				<artifactId>framework-redis</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework mybatis module -->

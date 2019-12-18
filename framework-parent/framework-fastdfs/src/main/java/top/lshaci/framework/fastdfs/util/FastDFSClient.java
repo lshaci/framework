@@ -125,7 +125,7 @@ public class FastDFSClient {
 	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
 	 */
 	public static String uploadWithBase64(String base64) {
-        return uploadWithBase64(base64, null, null);
+        return uploadWithBase64(base64, null);
     }
 
 	/**
@@ -192,8 +192,6 @@ public class FastDFSClient {
 		verifyInputStream(is);
 		// the converted file name
 		filename = toLocal(filename);
-		// the return path
-		String path = null;
 		// the file descriptions
 		NameValuePair[] nvps = createFileDescriptions(filename, descriptions);
 		// the file name suffix
@@ -201,7 +199,7 @@ public class FastDFSClient {
 
 		TrackerServer trackerServer = null;
 		try (
-				InputStream _is = is;
+				InputStream _is = is
 		) {
 			trackerServer = pool.borrowObject();
 			StorageClient1 storageClient = new StorageClient1(trackerServer, null);
@@ -210,21 +208,20 @@ public class FastDFSClient {
 			_is.read(fileBuff, 0, fileBuff.length);
 
 			// upload
-			path = storageClient.upload_file1(fileBuff, suffix, nvps);
+			String path = storageClient.upload_file1(fileBuff, suffix, nvps);
 
 			if (StringUtils.isBlank(path)) {
 				throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
 			}
 
 			log.debug("upload file success, return path is {}", path);
+			return path;
 		} catch (IOException | MyException e) {
 			log.error(ErrorCode.FILE_UPLOAD_FAILED.getCode());
 			throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
 		} finally {
 			pool.returnObject(trackerServer);
 		}
-
-		return path;
 	}
 
 	/**
@@ -368,7 +365,7 @@ public class FastDFSClient {
 		) {
 
 			byte[] buffer = new byte[1024 * 5];
-			int len = 0;
+			int len;
 			while ((len = is.read(buffer)) > 0) {
 				_os.write(buffer, 0, len);
 			}
