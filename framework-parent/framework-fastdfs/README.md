@@ -2,7 +2,7 @@
 
 在项目的配置文件application.yml中添加配置，**示例中的配置均为默认值**。
 
-## 1.1 启用
+## 1.1 启用配置
 
 ```yaml
 # framework
@@ -36,5 +36,5 @@ framework:
       http_anti_steal_token: fasle # http反窃取令牌
       http_secret_key: FastDFS1234567890 # http密钥
       http_tracker_http_port: 80 # http跟踪器http端口
-      tracker_servers:  # tracker servers地址(server的IP和端口用冒号':'分隔;server之间用逗号','分隔)
+      tracker_servers:  # tracker servers地址(server的IP和端口用冒号':'分隔; server之间用逗号','分隔)
 ```
