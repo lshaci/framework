@@ -1,13 +1,12 @@
-package top.lshaci.framework.excel.service.utils;
-
-import java.util.Objects;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
+package top.lshaci.framework.excel.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.utils.ReflectionUtils;
+
+import java.util.Objects;
 
 /**
  * 获取单元格值的工具类
@@ -16,7 +15,7 @@ import top.lshaci.framework.utils.ReflectionUtils;
  * @since 1.0.2
  */
 @Slf4j
-public class ExportValueUtil extends BaseValueUtil {
+class ExportValueUtil extends BaseValueUtil {
 
 	/**
 	 * 根据列参数信息和行数据获取对应单元格的值
