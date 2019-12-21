@@ -1,5 +1,16 @@
 package top.lshaci.framework.excel.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import top.lshaci.framework.excel.annotation.ExportTitle;
+import top.lshaci.framework.excel.builder.IndexBuilder;
+import top.lshaci.framework.excel.exception.ExcelHandlerException;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -7,18 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
-import top.lshaci.framework.excel.annotation.ExportTitle;
-import top.lshaci.framework.excel.builder.IndexBuilder;
-import top.lshaci.framework.excel.exception.ExcelHandlerException;
 
 /**
  * 导出列定义的相关参数
@@ -103,15 +102,18 @@ public class ExportTitleParam extends BaseTitleParam implements Comparable<Expor
 	 * 根据Sheet参数创建序号列信息
 	 *
 	 * @param sheetParam Sheet参数
+	 * @return 序号列信息
 	 */
-	public ExportTitleParam(ExportSheetParam sheetParam) {
-		this.isIndex = true;
-		this.fillSame = true;
-		this.merge = sheetParam.isMergeIndex();
-		this.title = sheetParam.getIndexName();
-		this.order = Integer.MIN_VALUE;
-		this.width = sheetParam.getIndexWidth();
-		this.indexBuilder = sheetParam.getIndexBuilder();
+	public static ExportTitleParam indexTitle(ExportSheetParam sheetParam) {
+		ExportTitleParam indexTitle = new ExportTitleParam();
+		indexTitle.isIndex = true;
+		indexTitle.fillSame = true;
+		indexTitle.merge = sheetParam.isMergeIndex();
+		indexTitle.title = sheetParam.getIndexName();
+		indexTitle.order = Integer.MIN_VALUE;
+		indexTitle.width = sheetParam.getIndexWidth();
+		indexTitle.indexBuilder = sheetParam.getIndexBuilder();
+		return indexTitle;
 	}
 
 	/**
@@ -235,13 +237,6 @@ public class ExportTitleParam extends BaseTitleParam implements Comparable<Expor
 			return this.indexBuilder.get();
 		}
 		throw new ExcelHandlerException("当前列不是序号列");
-	}
-
-	/**
-	 * 重置序号
-	 */
-	public void resetIndexNumber() {
-		this.indexBuilder.reset();
 	}
 
 	@Override

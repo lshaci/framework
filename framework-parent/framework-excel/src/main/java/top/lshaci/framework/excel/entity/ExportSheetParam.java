@@ -1,18 +1,19 @@
 package top.lshaci.framework.excel.entity;
 
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.builder.CellStyleBuilder;
 import top.lshaci.framework.excel.builder.IndexBuilder;
 import top.lshaci.framework.excel.builder.impl.DefaultCellStyleBuilder;
 import top.lshaci.framework.excel.builder.impl.DefaultIndexBuilder;
 import top.lshaci.framework.utils.ReflectionUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 导出Excel中Sheet的参数
@@ -96,47 +97,57 @@ public class ExportSheetParam {
 	private IndexBuilder indexBuilder = new DefaultIndexBuilder();
 
 	/**
+	 * 其它自定义的参数信息
+	 */
+	private Map<String, Object> otherParamMap = new HashMap<>();
+
+	/**
 	 * 根据实体类上的{@code @ExportSheet}注解和需要导出的数据总条数创建Sheet的参数
 	 *
 	 * @see ExportSheet
 	 *
 	 * @param exportSheet 实体类上的ExportSheet注解信息
-	 * @param total 需要导出的数据总条数
 	 */
-	public ExportSheetParam(ExportSheet exportSheet, int total) {
-		if (Objects.nonNull(exportSheet)) {
-			this.addIndex = exportSheet.addIndex();
-			this.mergeIndex = exportSheet.mergeIndex();
-			this.freezeTitle = exportSheet.freezeTitle();
-			this.cellStyleBuilder = ReflectionUtils.newInstance(exportSheet.cellStyleBuilder());
-			this.indexBuilder = ReflectionUtils.newInstance(exportSheet.indexBuilder());
-			
-			if (StringUtils.isNotBlank(exportSheet.fontName())) {
-				this.fontName = exportSheet.fontName();
-			}
-			if (StringUtils.isNotBlank(exportSheet.indexName())) {
-				this.indexName = exportSheet.indexName();
-			}
-			if (StringUtils.isNotBlank(exportSheet.title())) {
-				this.title = exportSheet.title();
-			}
-			if (StringUtils.isNotBlank(exportSheet.name())) {
-				this.name = exportSheet.name();
-			}
-			if (exportSheet.indexWidth() > 0) {
-				this.indexWidth = exportSheet.indexWidth();
-			}
-			if (exportSheet.number() > 0) {
-				this.number = exportSheet.number();
-			}
-			if (exportSheet.titleHeight() > 0) {
-				this.titleHeight = (short) (exportSheet.titleHeight() * 20);
-			}
-			if (exportSheet.columnTitleHeight() > 0) {
-				this.columnTitleHeight = (short) (exportSheet.columnTitleHeight() * 20);
-			}
+	public static ExportSheetParam build(ExportSheet exportSheet) {
+		ExportSheetParam param = new ExportSheetParam();
+		if (Objects.isNull(exportSheet)) {
+			return param;
+		}
+		param.addIndex = exportSheet.addIndex();
+		param.mergeIndex = exportSheet.mergeIndex();
+		param.freezeTitle = exportSheet.freezeTitle();
+		param.cellStyleBuilder = ReflectionUtils.newInstance(exportSheet.cellStyleBuilder());
+		param.indexBuilder = ReflectionUtils.newInstance(exportSheet.indexBuilder());
+
+		if (StringUtils.isNotBlank(exportSheet.fontName())) {
+			param.fontName = exportSheet.fontName();
+		}
+		if (StringUtils.isNotBlank(exportSheet.indexName())) {
+			param.indexName = exportSheet.indexName();
+		}
+		if (StringUtils.isNotBlank(exportSheet.title())) {
+			param.title = exportSheet.title();
+		}
+		if (StringUtils.isNotBlank(exportSheet.name())) {
+			param.name = exportSheet.name();
+		}
+		if (exportSheet.indexWidth() > 0) {
+			param.indexWidth = exportSheet.indexWidth();
+		}
+		if (exportSheet.number() > 0) {
+			param.number = exportSheet.number();
+		}
+		if (exportSheet.titleHeight() > 0) {
+			param.titleHeight = (short) (exportSheet.titleHeight() * 20);
+		}
+		if (exportSheet.columnTitleHeight() > 0) {
+			param.columnTitleHeight = (short) (exportSheet.columnTitleHeight() * 20);
 		}
 
+		return param;
+	}
+
+	public ExportSheetParam setSizeAndNumber(int total) {
 		if (total > 0 && total / this.number > 0) {
 			Double size = Math.ceil(total / (this.number * 1.0));
 			this.size = size.intValue();
@@ -144,7 +155,16 @@ public class ExportSheetParam {
 			this.size = total;
 			this.number = 1;
 		}
+		return this;
 	}
 
+	public ExportSheetParam putOtherParam(String key, Object value) {
+		this.otherParamMap.put(key, value);
+		return this;
+	}
+
+	public Object getOtherParam(String key) {
+		return this.otherParamMap.get(key);
+	}
 
 }

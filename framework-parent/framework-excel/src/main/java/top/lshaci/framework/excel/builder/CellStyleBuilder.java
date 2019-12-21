@@ -5,13 +5,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 
-import top.lshaci.framework.excel.entity.ExportSheetParam;
-
 /**
- * 单元格样式构建者
+ * <p>单元格样式构建者</p><br>
+ *
+ * <b>1.0.6: </b>将样式创建方法的入参<code>ExportSheetParam</code>修改为<code>fontName</code>
  *
  * @author lshaci
  * @since 1.0.2
+ * @version 1.0.6
  */
 public interface CellStyleBuilder {
 
@@ -27,27 +28,27 @@ public interface CellStyleBuilder {
 	 * 创建内容单元格样式
 	 *
 	 * @param workbook Excel工作簿
-	 * @param exportSheetParam Excel Sheet参数
+	 * @param fontName 字体名称
 	 * @return 内容单元格样式
 	 */
-	CellStyle contentStyle(Workbook workbook, ExportSheetParam exportSheetParam);
+	CellStyle contentStyle(Workbook workbook, String fontName);
 
 	/**
 	 * 创建Sheet标题单元格样式
 	 *
 	 * @param workbook Excel工作簿
-	 * @param exportSheetParam Excel Sheet参数
+	 * @param fontName 字体名称
 	 * @return Sheet标题单元格样式
 	 */
-	CellStyle sheetTitleStyle(Workbook workbook, ExportSheetParam exportSheetParam);
+	CellStyle sheetTitleStyle(Workbook workbook, String fontName);
 
 	/**
 	 * 创建列标题单元格样式
 	 *
 	 * @param workbook Excel工作簿
-	 * @param exportSheetParam Excel Sheet参数
+	 * @param fontName 字体名称
 	 * @return 列标题单元格样式
 	 */
-	CellStyle columnTitleStyle(Workbook workbook, ExportSheetParam exportSheetParam);
+	CellStyle columnTitleStyle(Workbook workbook, String fontName);
 
 }

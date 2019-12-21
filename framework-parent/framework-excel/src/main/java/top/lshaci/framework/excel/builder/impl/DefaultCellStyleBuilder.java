@@ -1,24 +1,18 @@
 package top.lshaci.framework.excel.builder.impl;
 
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
-
-import top.lshaci.framework.excel.entity.ExportSheetParam;
 import top.lshaci.framework.excel.builder.CellStyleBuilder;
 
 /**
- * 默认的单元格样式构建者
+ * <p>默认的单元格样式构建者</p><br>
+ *
+ * <b>1.0.6: </b>将样式创建方法的入参<code>ExportSheetParam</code>修改为<code>fontName</code>
  *
  * @author lshaci
  * @since 1.0.2
+ * @version 1.0.6
  */
 public class DefaultCellStyleBuilder implements CellStyleBuilder {
 
@@ -31,38 +25,38 @@ public class DefaultCellStyleBuilder implements CellStyleBuilder {
 	}
 
 	@Override
-	public CellStyle contentStyle(Workbook workbook, ExportSheetParam exportSheetParam) {
+	public CellStyle contentStyle(Workbook workbook, String fontName) {
 		CellStyle style = workbook.createCellStyle();
 		style.setWrapText(true);
 		setBorder(style);
 		setCenter(style);
 
-		Font font = createFont(workbook, IndexedColors.BLACK, (short) 10, false, exportSheetParam.getFontName());
+		Font font = createFont(workbook, IndexedColors.BLACK, (short) 10, false, fontName);
 		style.setFont(font);
 
 		return style;
 	}
 
 	@Override
-	public CellStyle sheetTitleStyle(Workbook workbook, ExportSheetParam exportSheetParam) {
+	public CellStyle sheetTitleStyle(Workbook workbook, String fontName) {
 		CellStyle style = workbook.createCellStyle();
 		style.setWrapText(true);
 		setBorder(style);
 		setCenter(style);
 
-		Font font = createFont(workbook, IndexedColors.BLACK, (short) 20, true, exportSheetParam.getFontName());
+		Font font = createFont(workbook, IndexedColors.BLACK, (short) 20, true, fontName);
 		style.setFont(font);
 
 		return style;
 	}
 
 	@Override
-	public CellStyle columnTitleStyle(Workbook workbook, ExportSheetParam exportSheetParam) {
+	public CellStyle columnTitleStyle(Workbook workbook, String fontName) {
 		CellStyle style = workbook.createCellStyle();
 		setBorder(style);
 		setCenter(style);
 
-		Font font = createFont(workbook, IndexedColors.BLACK, (short) 12, true, exportSheetParam.getFontName());
+		Font font = createFont(workbook, IndexedColors.BLACK, (short) 12, true, fontName);
 		style.setFont(font);
 
 		return style;

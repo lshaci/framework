@@ -1,19 +1,16 @@
 package top.lshaci.framework.excel.handle;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import top.lshaci.framework.excel.annotation.ExportSheet;
-import top.lshaci.framework.excel.enums.ExcelType;
+import top.lshaci.framework.excel.entity.ExportSheetParam;
 import top.lshaci.framework.excel.enums.ExportError;
 import top.lshaci.framework.excel.exception.ExportHandlerException;
+import top.lshaci.framework.excel.service.DefaultExportService;
 import top.lshaci.framework.excel.service.ExportService;
+import top.lshaci.framework.utils.ReflectionUtils;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Excel导出处理器
@@ -24,11 +21,6 @@ import top.lshaci.framework.excel.service.ExportService;
 public class ExportHandler {
 
 	/**
-	 * Excel类型为XLSX最大的数据量
-	 */
-	private static final int XLSX_MAX_SIZE = 10000;
-
-	/**
 	 * 根据导出实体类信息和数据条数导出Excel WorkBook
 	 *
 	 * @param cls 导出实体类信息
@@ -36,7 +28,7 @@ public class ExportHandler {
 	 * @return Excel WorkBook
 	 */
 	public static <E> Workbook export(Class<E> cls, List<E> datas) {
-		return export(cls, datas, null);
+		return export(cls, datas, null, null);
 	}
 
 	/**
@@ -48,10 +40,35 @@ public class ExportHandler {
 	 * @return Excel WorkBook
 	 */
 	public static <E> Workbook export(Class<E> cls, List<E> datas, String sheetTitle) {
+		ExportSheetParam sheetParam = ExportSheetParam.build(cls.getAnnotation(ExportSheet.class)).setTitle(sheetTitle);
+		return export(cls, datas, sheetParam, null);
+	}
+
+	/**
+	 * 根据导出实体类信息和数据条数导出Excel WorkBook
+	 *
+	 * @param cls 导出实体类信息
+	 * @param datas 需要导出的数据
+	 * @param serviceClass 生成Excel的业务类
+	 * @return Excel WorkBook
+	 */
+	public static <E> Workbook export(Class<E> cls, List<E> datas, Class<? extends ExportService> serviceClass) {
 		verifyParam(cls);
-		Workbook workbook = getWorkbook(cls, CollectionUtils.isEmpty(datas) ? 0 : datas.size());
-		new ExportService(cls, datas, workbook, sheetTitle).create();
-		return workbook;
+		return service(serviceClass).create(cls, datas, sheetParam(cls, null));
+	}
+
+	/**
+	 * 根据导出实体类信息和数据条数导出Excel WorkBook
+	 *
+	 * @param cls 导出实体类信息
+	 * @param datas 需要导出的数据
+	 * @param sheetParam sheet中的参数
+	 * @param serviceClass 生成Excel的业务类
+	 * @return Excel WorkBook
+	 */
+	public static <E> Workbook export(Class<E> cls, List<E> datas, ExportSheetParam sheetParam, Class<? extends ExportService> serviceClass) {
+		verifyParam(cls);
+		return service(serviceClass).create(cls, datas, sheetParam(cls, sheetParam));
 	}
 
 	/**
@@ -65,26 +82,12 @@ public class ExportHandler {
 		}
 	}
 
-	/**
-	 * 根据导出实体类信息和数据条数创建Excel WorkBook
-	 *
-	 * @param cls 导出实体类信息
-	 * @param size 导出数据条数
-	 * @return Excel WorkBook
-	 */
-	private static Workbook getWorkbook(Class<?> cls, int size) {
-		ExportSheet exportSheet = cls.getAnnotation(ExportSheet.class);
-		if (Objects.isNull(exportSheet)) {
-			return new XSSFWorkbook();
-		}
+	private static ExportSheetParam sheetParam(Class<?> cls, ExportSheetParam sheetParam) {
+		return Objects.nonNull(sheetParam) ? sheetParam : ExportSheetParam.build(cls.getAnnotation(ExportSheet.class));
+	}
 
-        if (ExcelType.XLS.equals(exportSheet.type())) {
-            return new HSSFWorkbook();
-        } else if (size < XLSX_MAX_SIZE) {
-            return new XSSFWorkbook();
-        } else {
-            return new SXSSFWorkbook();
-        }
-    }
+	private static ExportService service(Class<? extends ExportService> serviceClass) {
+		return Objects.isNull(serviceClass) ? new DefaultExportService() : ReflectionUtils.newInstance(serviceClass);
+	}
 
 }

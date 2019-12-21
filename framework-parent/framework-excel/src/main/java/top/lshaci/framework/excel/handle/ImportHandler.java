@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.excel.entity.ImportSheetParam;
 import top.lshaci.framework.excel.enums.ImportError;
 import top.lshaci.framework.excel.exception.ImportHandlerException;
-import top.lshaci.framework.excel.service.ImportService;
+import top.lshaci.framework.excel.service.DefaultImportService;
 import top.lshaci.framework.utils.FileTypeUtil;
 import top.lshaci.framework.utils.StreamUtils;
 import top.lshaci.framework.utils.enums.FileType;
@@ -62,7 +62,7 @@ public class ImportHandler {
 		ByteArrayOutputStream buffer = StreamUtils.copyInputStream(is);
 
         Workbook workbook = getWorkBook(buffer);
-        return (List<E>) new ImportService(cls, workbook, sheetParam).fetch();
+        return (List<E>) new DefaultImportService(cls, workbook, sheetParam).fetch();
 	}
 
 	/**

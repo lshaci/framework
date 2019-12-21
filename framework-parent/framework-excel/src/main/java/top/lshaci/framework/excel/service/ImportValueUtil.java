@@ -57,7 +57,7 @@ class ImportValueUtil extends BaseValueUtil {
 	 * @param titleParam 列参数信息
 	 * @return 字段的值
 	 */
-	public static Object getTargetValue(Cell cell, ImportTitleParam titleParam) {
+	static Object getTargetValue(Cell cell, ImportTitleParam titleParam) {
 		String cellValue = getCellValue(cell, titleParam);
 		if (Objects.isNull(cellValue)) {
 			return null;

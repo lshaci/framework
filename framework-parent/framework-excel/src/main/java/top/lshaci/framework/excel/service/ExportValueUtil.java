@@ -24,20 +24,20 @@ class ExportValueUtil extends BaseValueUtil {
 	 * @param data 行数据
 	 * @return 对应单元格的值
 	 */
-	public static String fetch(ExportTitleParam titleParam, Object data) {
+	static String fetch(ExportTitleParam titleParam, Object data) {
 		// 是否是序号列
 		if (titleParam.isIndex()) {
 			return titleParam.getIndexNumber();
 		}
 
 		if (Objects.isNull(data)) {
-			log.warn("当前行数据为空");
+			log.info("当前行数据为空");
 			return "";
 		}
 
 		Object value = fetchOriginalValue(titleParam, data);
 		if (Objects.isNull(value)) {
-			log.warn("{}的原始值为空", titleParam.getTitle());
+			log.info("{}的原始值为空", titleParam.getTitle());
 			return "";
 		}
 
@@ -53,7 +53,7 @@ class ExportValueUtil extends BaseValueUtil {
 
 		String result = value.toString();
 		if (StringUtils.isBlank(result)) {
-			log.warn("单元格的值为空字符，不作其它处理");
+			log.info("单元格的值为空字符，不作其它处理");
 			return "";
 		}
 
@@ -61,7 +61,7 @@ class ExportValueUtil extends BaseValueUtil {
 		if (MapUtils.isNotEmpty(titleParam.getReplaceMap())) {
 			result = titleParam.getReplaceMap().get(result);
 			if (StringUtils.isBlank(result)) {
-				log.warn("替换后单元格的值为空字符，不作其它处理");
+				log.info("替换后单元格的值为空字符，不作其它处理");
 				return "";
 			}
 		}
@@ -79,7 +79,7 @@ class ExportValueUtil extends BaseValueUtil {
 	private static String getEnumValue(ExportTitleParam titleParam, Object value) {
 		Object enumValue = ReflectionUtils.invokeMethod(value, titleParam.getEnumMethod());
 		if (Objects.isNull(enumValue)) {
-			log.warn("执行枚举方法后获取到的值为空");
+			log.info("执行枚举方法后获取到的值为空");
 			return "";
 		}
 		return enumValue.toString();
@@ -95,7 +95,6 @@ class ExportValueUtil extends BaseValueUtil {
 	private static Object fetchOriginalValue(ExportTitleParam titleParam, Object data) {
 		Object value = null;
 		if (Objects.nonNull(titleParam.getEntityField()) && !titleParam.isCollection()) {
-			log.debug("当前字段为内嵌对象的字段");
 			Object obj = ReflectionUtils.getFieldValue(data, titleParam.getEntityField());
 			if (Objects.nonNull(obj)) {
 				value = ReflectionUtils.invokeMethod(obj, titleParam.getMethod());
