@@ -7,16 +7,18 @@ import top.lshaci.framework.excel.enums.ExportError;
 import top.lshaci.framework.excel.exception.ExportHandlerException;
 import top.lshaci.framework.excel.service.DefaultExportService;
 import top.lshaci.framework.excel.service.ExportService;
-import top.lshaci.framework.utils.ReflectionUtils;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Excel导出处理器
+ * <p>Excel导出处理器</p><br>
+ *
+ * <b>1.0.6:</b>添加参数<code>exportService</code>
  *
  * @author lshaci
  * @since 1.0.2
+ * @version 1.0.6
  */
 public class ExportHandler {
 
@@ -25,50 +27,13 @@ public class ExportHandler {
 	 *
 	 * @param cls 导出实体类信息
 	 * @param datas 需要导出的数据
-	 * @return Excel WorkBook
-	 */
-	public static <E> Workbook export(Class<E> cls, List<E> datas) {
-		return export(cls, datas, null, null);
-	}
-
-	/**
-	 * 根据导出实体类信息和数据条数导出Excel WorkBook
-	 *
-	 * @param cls 导出实体类信息
-	 * @param datas 需要导出的数据
-	 * @param sheetTitle sheet中的标题, 会覆盖注解{@code @ExportSheet}中的title属性
-	 * @return Excel WorkBook
-	 */
-	public static <E> Workbook export(Class<E> cls, List<E> datas, String sheetTitle) {
-		ExportSheetParam sheetParam = ExportSheetParam.build(cls.getAnnotation(ExportSheet.class)).setTitle(sheetTitle);
-		return export(cls, datas, sheetParam, null);
-	}
-
-	/**
-	 * 根据导出实体类信息和数据条数导出Excel WorkBook
-	 *
-	 * @param cls 导出实体类信息
-	 * @param datas 需要导出的数据
-	 * @param serviceClass 生成Excel的业务类
-	 * @return Excel WorkBook
-	 */
-	public static <E> Workbook export(Class<E> cls, List<E> datas, Class<? extends ExportService> serviceClass) {
-		verifyParam(cls);
-		return service(serviceClass).create(cls, datas, sheetParam(cls, null));
-	}
-
-	/**
-	 * 根据导出实体类信息和数据条数导出Excel WorkBook
-	 *
-	 * @param cls 导出实体类信息
-	 * @param datas 需要导出的数据
 	 * @param sheetParam sheet中的参数
-	 * @param serviceClass 生成Excel的业务类
+	 * @param exportService 生成Excel的业务类
 	 * @return Excel WorkBook
 	 */
-	public static <E> Workbook export(Class<E> cls, List<E> datas, ExportSheetParam sheetParam, Class<? extends ExportService> serviceClass) {
+	public static <E> Workbook export(Class<E> cls, List<E> datas, ExportSheetParam sheetParam, ExportService exportService) {
 		verifyParam(cls);
-		return service(serviceClass).create(cls, datas, sheetParam(cls, sheetParam));
+		return service(exportService).create(cls, datas, sheetParam(cls, sheetParam));
 	}
 
 	/**
@@ -82,12 +47,26 @@ public class ExportHandler {
 		}
 	}
 
+	/**
+	 * 传入的Sheet导出参数为空, 则通过导出类型上的<code>ExportSheet</code>注解进行创建
+	 *
+	 * @param cls 导出对象类型
+	 * @param sheetParam Sheet导出参数
+	 * @return Sheet导出参数
+	 */
 	private static ExportSheetParam sheetParam(Class<?> cls, ExportSheetParam sheetParam) {
 		return Objects.nonNull(sheetParam) ? sheetParam : ExportSheetParam.build(cls.getAnnotation(ExportSheet.class));
 	}
 
-	private static ExportService service(Class<? extends ExportService> serviceClass) {
-		return Objects.isNull(serviceClass) ? new DefaultExportService() : ReflectionUtils.newInstance(serviceClass);
+	/**
+	 * 生成Excel的业务类为空, 则使用<code>DefaultExportService</code>
+	 *
+	 * @see DefaultExportService
+	 * @param exportService  生成Excel的业务类
+	 * @return 生成Excel的业务类
+	 */
+	private static ExportService service(ExportService exportService) {
+		return Objects.isNull(exportService) ? new DefaultExportService() : exportService;
 	}
 
 }

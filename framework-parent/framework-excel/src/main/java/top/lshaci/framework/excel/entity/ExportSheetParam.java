@@ -11,8 +11,6 @@ import top.lshaci.framework.excel.builder.impl.DefaultCellStyleBuilder;
 import top.lshaci.framework.excel.builder.impl.DefaultIndexBuilder;
 import top.lshaci.framework.utils.ReflectionUtils;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -97,11 +95,6 @@ public class ExportSheetParam {
 	private IndexBuilder indexBuilder = new DefaultIndexBuilder();
 
 	/**
-	 * 其它自定义的参数信息
-	 */
-	private Map<String, Object> otherParamMap = new HashMap<>();
-
-	/**
 	 * 根据实体类上的{@code @ExportSheet}注解和需要导出的数据总条数创建Sheet的参数
 	 *
 	 * @see ExportSheet
@@ -147,6 +140,12 @@ public class ExportSheetParam {
 		return param;
 	}
 
+	/**
+	 * 根据导出数据总条数, 设置Sheet数量和每个Sheet需要填充的数据条数
+	 *
+	 * @param total 导出数据总条数
+	 * @return 当前的ExportSheetParam对象
+	 */
 	public ExportSheetParam setSizeAndNumber(int total) {
 		if (total > 0 && total / this.number > 0) {
 			Double size = Math.ceil(total / (this.number * 1.0));
@@ -156,15 +155,6 @@ public class ExportSheetParam {
 			this.number = 1;
 		}
 		return this;
-	}
-
-	public ExportSheetParam putOtherParam(String key, Object value) {
-		this.otherParamMap.put(key, value);
-		return this;
-	}
-
-	public Object getOtherParam(String key) {
-		return this.otherParamMap.get(key);
 	}
 
 }

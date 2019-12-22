@@ -323,7 +323,7 @@ public abstract class AbstractExportService implements ExportService {
      * @param firstCol 起始列号
      * @param lastCol 终止列号
      */
-    private void cellMerge(Row row, CellStyle cellStyle, String value, int firstRow, int lastRow, int firstCol, int lastCol) {
+    protected void cellMerge(Row row, CellStyle cellStyle, String value, int firstRow, int lastRow, int firstCol, int lastCol) {
         CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
         sheet.addMergedRegion(region);
         Cell cell = row.createCell(firstCol);

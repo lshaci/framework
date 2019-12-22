@@ -31,7 +31,7 @@ public class ExcelExportUtils {
 	 * @param os 需要将Excel工作簿写到的输出流
 	 */
 	public static <E> void export(Class<E> cls, List<E> datas, OutputStream os) {
-		export(cls, datas, os, null);
+		export(cls, datas, os, null, null);
 	}
 
 	/**
@@ -40,9 +40,10 @@ public class ExcelExportUtils {
 	 * @param cls 导出实体类信息
 	 * @param datas 需要导出的数据
 	 * @param os 需要将Excel工作簿写到的输出流
+	 * @param exportService 生成Excel的业务类
 	 */
-	public static <E> void export(Class<E> cls, List<E> datas, OutputStream os, Class<? extends ExportService> serviceClass) {
-		export(cls, datas, os, null, serviceClass);
+	public static <E> void export(Class<E> cls, List<E> datas, OutputStream os, ExportService exportService) {
+		export(cls, datas, os, null, exportService);
 	}
 	
 	/**
@@ -51,18 +52,10 @@ public class ExcelExportUtils {
 	 * @param cls 导出实体类信息
 	 * @param datas 需要导出的数据
 	 * @param sheetParam sheet中的参数
-	 * @param serviceClass 生成Excel的业务类
 	 * @param os 需要将Excel工作簿写到的输出流
 	 */
-	public static <E> void export(Class<E> cls, List<E> datas, OutputStream os, ExportSheetParam sheetParam, Class<? extends ExportService> serviceClass) {
-		try (
-				Workbook workbook = ExportHandler.export(cls, datas, sheetParam, serviceClass)
-		) {
-			workbook.write(os);
-		} catch (IOException e) {
-			log.error("导出Excel工作簿时发生错误", e);
-			throw new ExcelHandlerException("导出Excel工作簿时发生错误", e);
-		}
+	public static <E> void export(Class<E> cls, List<E> datas, OutputStream os, ExportSheetParam sheetParam) {
+		export(cls, datas, os, sheetParam, null);
 	}
 
 	/**
@@ -70,12 +63,13 @@ public class ExcelExportUtils {
 	 *
 	 * @param cls 导出实体类信息
 	 * @param datas 需要导出的数据
-	 * @param sheetTitle sheet中的标题, 会覆盖注解{@code @ExportSheet}中的title属性
+	 * @param sheetParam sheet中的参数
+	 * @param exportService 生成Excel的业务类
 	 * @param os 需要将Excel工作簿写到的输出流
 	 */
-	public static <E> void export(Class<E> cls, List<E> datas, String sheetTitle, OutputStream os) {
+	public static <E> void export(Class<E> cls, List<E> datas, OutputStream os, ExportSheetParam sheetParam, ExportService exportService) {
 		try (
-				Workbook workbook = ExportHandler.export(cls, datas, sheetTitle)
+				Workbook workbook = ExportHandler.export(cls, datas, sheetParam, exportService)
 		) {
 			workbook.write(os);
 		} catch (IOException e) {
