@@ -1,4 +1,4 @@
-package top.lshaci.framework.excel.service;
+package top.lshaci.framework.excel.service.impl;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -7,6 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.excel.enums.ExcelType;
+import top.lshaci.framework.excel.service.ExportService;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -55,7 +56,7 @@ public class DefaultExportService extends AbstractExportService {
 
 		if (ExcelType.XLS.equals(exportSheet.type())) {
 			return new HSSFWorkbook();
-		} else if (size < XLSX_MAX_SIZE) {
+		} else if (size < ExportService.XLSX_MAX_SIZE) {
 			return new XSSFWorkbook();
 		} else {
 			return new SXSSFWorkbook();

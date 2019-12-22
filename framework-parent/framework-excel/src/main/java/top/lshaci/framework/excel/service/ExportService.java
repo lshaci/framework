@@ -2,6 +2,7 @@ package top.lshaci.framework.excel.service;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import top.lshaci.framework.excel.entity.ExportSheetParam;
+import top.lshaci.framework.excel.service.impl.DefaultExportService;
 
 import java.util.List;
 
@@ -28,4 +29,13 @@ public interface ExportService {
      * @return Excel工作簿
      */
     Workbook create(Class<?> cls, List<?> datas, ExportSheetParam sheetParam);
+
+    /**
+     * 获取默认的Excel导出业务类
+     *
+     * @return <code>DefaultExportService</code>
+     */
+    static ExportService get() {
+        return new DefaultExportService();
+    }
 }

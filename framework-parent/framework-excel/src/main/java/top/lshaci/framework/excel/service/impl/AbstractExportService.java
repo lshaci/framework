@@ -1,4 +1,4 @@
-package top.lshaci.framework.excel.service;
+package top.lshaci.framework.excel.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -11,6 +11,7 @@ import top.lshaci.framework.excel.entity.ExportSheetParam;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.excel.enums.ExportError;
 import top.lshaci.framework.excel.exception.ExportHandlerException;
+import top.lshaci.framework.excel.service.ExportService;
 import top.lshaci.framework.utils.ClassUtils;
 import top.lshaci.framework.utils.ReflectionUtils;
 
@@ -20,8 +21,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static top.lshaci.framework.excel.service.impl.ExportValueUtil.fetch;
 
 /**
  * Excel 导出业务实现
@@ -103,7 +106,7 @@ public abstract class AbstractExportService implements ExportService {
     /**
      * 填充表格数据
      */
-    private void fillData() {
+    protected void fillData() {
         Stream.iterate(1, n -> n + 1).limit(sheetParam.getNumber()).forEach(n -> {
             crn = 0;
             sheetParam.getIndexBuilder().reset();
@@ -139,16 +142,13 @@ public abstract class AbstractExportService implements ExportService {
      *
      * @param data 行数据
      */
-    private void setRowContent(Object data) {
+    protected void setRowContent(Object data) {
         if (Objects.nonNull(this.collectionTitleParam)) {
             handleHasCollection(data);
         } else {
             Row row = sheet.createRow(crn++);
-            for (int i = 0; i < this.contentParams.size(); i++) {
-                ExportTitleParam titleParam = this.contentParams.get(i);
-                String cellValue = ExportValueUtil.fetch(titleParam, data);
-                setContentCellValue(row, titleParam.getHeight(), i, cellValue);
-            }
+            AtomicInteger i = new AtomicInteger();
+            this.contentParams.forEach(t -> setContentCellValue(row, t.getHeight(), i.getAndIncrement(), fetch(t, data)));
         }
     }
 
@@ -157,13 +157,13 @@ public abstract class AbstractExportService implements ExportService {
      *
      * @param data 行数据
      */
-    private void handleHasCollection(Object data) {
+    protected void handleHasCollection(Object data) {
         Row row = sheet.createRow(crn);
         Collection<?> collectionValue = (Collection<?>) ReflectionUtils.getFieldValue(data, this.collectionTitleParam.getEntityField());
         for (int i = 0; i < this.contentParams.size(); i++) {
             ExportTitleParam titleParam = this.contentParams.get(i);
             if (CollectionUtils.isEmpty(collectionValue)) {
-                String cellValue = titleParam.isCollection() ? "" : ExportValueUtil.fetch(titleParam, data);
+                String cellValue = titleParam.isCollection() ? "" : fetch(titleParam, data);
                 setContentCellValue(row, titleParam.getHeight(), i, cellValue);
                 continue;
             }
@@ -172,11 +172,11 @@ public abstract class AbstractExportService implements ExportService {
                 String cellValue;
                 // 如果当前列是集合列
                 if (titleParam.isCollection()) {
-                    cellValue = Objects.isNull(value) ? "" : value.toString();
+                    cellValue = isNull(value) ? "" : value.toString();
                     // 如果集合列中的泛型未标记为@ExcelEntity, 则直接使用集合中元素的值
-                    cellValue = Objects.isNull(titleParam.getMethod()) ? cellValue : ExportValueUtil.fetch(titleParam, value);
+                    cellValue = isNull(titleParam.getMethod()) ? cellValue : fetch(titleParam, value);
                 } else {
-                    cellValue = ExportValueUtil.fetch(titleParam, data);
+                    cellValue = fetch(titleParam, data);
                 }
                 Row nextRow = sheet.getRow(crn) == null ? sheet.createRow(crn) : sheet.getRow(crn);
                 // 非集合列, 集合数据大于1条, 指定合并行
@@ -203,7 +203,7 @@ public abstract class AbstractExportService implements ExportService {
      * @param columnNumber 单元格所在列
      * @param cellValue 单元格的值
      */
-    private void setContentCellValue(Row row, int rowHeight, int columnNumber, String cellValue) {
+    protected void setContentCellValue(Row row, int rowHeight, int columnNumber, String cellValue) {
         row.setHeight((short) (rowHeight * 20));
         Cell cell = row.createCell(columnNumber);
         cell.setCellValue(cellValue);
@@ -213,7 +213,7 @@ public abstract class AbstractExportService implements ExportService {
     /**
      * 设置列标题
      */
-    private void setColumnTitles() {
+    protected void setColumnTitles() {
         Row row1 = sheet.createRow(crn);
         row1.setHeight(sheetParam.getColumnTitleHeight());
 
@@ -225,9 +225,8 @@ public abstract class AbstractExportService implements ExportService {
             crn += 2;
         } else {
             // 不存在二级标题
-            for (int i = 0; i < this.titleParams.size(); i++) {
-                columnTitleCell(row1, i, this.titleParams.get(i).getTitle());
-            }
+            AtomicInteger i = new AtomicInteger();
+            this.titleParams.forEach(t -> columnTitleCell(row1, i.getAndIncrement(), t.getTitle()));
             crn++;
         }
     }
@@ -238,7 +237,7 @@ public abstract class AbstractExportService implements ExportService {
      * @param row1 第一行标题的行信息
      * @param row2 第二行标题的行信息
      */
-    private void setColumnTitles(Row row1, Row row2) {
+    protected void setColumnTitles(Row row1, Row row2) {
         final AtomicInteger cn = new AtomicInteger(); // 列号
         for (ExportTitleParam titleParam : this.titleParams) {
             List<ExportTitleParam> children = titleParam.getChildren();
@@ -264,7 +263,7 @@ public abstract class AbstractExportService implements ExportService {
      * @param cn 列号
      * @param title 列标题
      */
-    private void columnTitleCell(Row row, int cn, String title) {
+    protected void columnTitleCell(Row row, int cn, String title) {
         Cell childrenCell = row.createCell(cn);
         childrenCell.setCellValue(title);
         childrenCell.setCellStyle(columnTitleStyle);
@@ -273,7 +272,7 @@ public abstract class AbstractExportService implements ExportService {
     /**
      * 设置Sheet标题
      */
-    private void setSheetTitle() {
+    protected void setSheetTitle() {
         String title = sheetParam.getTitle();
         if (isBlank(title)) {
             return;
@@ -286,14 +285,12 @@ public abstract class AbstractExportService implements ExportService {
     /**
      * 设置列宽
      */
-    private void setColumnWidth() {
+    protected void setColumnWidth() {
         // set default column width
         this.sheet.setDefaultColumnWidth(12);
         // set column width
-        for (int i = 0; i < this.contentParams.size(); i++) {
-            ExportTitleParam titleParam = this.contentParams.get(i);
-            this.sheet.setColumnWidth(i, titleParam.getWidth() * 256);
-        }
+        AtomicInteger i = new AtomicInteger();
+        this.contentParams.forEach(t -> this.sheet.setColumnWidth(i.getAndIncrement(), t.getWidth() * 256));
     }
 
     /**
@@ -303,7 +300,7 @@ public abstract class AbstractExportService implements ExportService {
      * @param datas 导出数据集合
      * @param sheetParam Sheet的参数
      */
-    private void init(Class<?> cls, List<?> datas, ExportSheetParam sheetParam) {
+    protected void init(Class<?> cls, List<?> datas, ExportSheetParam sheetParam) {
         this.cls = cls;
         this.datas = datas;
         int total = CollectionUtils.isEmpty(datas) ? 0 : datas.size();
@@ -336,7 +333,7 @@ public abstract class AbstractExportService implements ExportService {
     /**
      * 处理需要导出列的参数信息
      */
-    private void handleTitleParams() {
+    protected void handleTitleParams() {
         List<ExportTitleParam> titleParams = fetchTitleParams(this.cls);
         titleParams.addAll(getEntities(this.cls));
         titleParams.addAll(getCollections(this.cls));
@@ -385,7 +382,7 @@ public abstract class AbstractExportService implements ExportService {
      * @param cls 实体类型
      * @return 列参数集合
      */
-    private List<ExportTitleParam> fetchTitleParams(Class<?> cls) {
+    protected List<ExportTitleParam> fetchTitleParams(Class<?> cls) {
         Map<String, ExportTitleParam> titleParamMap = new HashMap<>();
         getFields(cls, titleParamMap);
         getMethods(cls, titleParamMap);
@@ -398,7 +395,7 @@ public abstract class AbstractExportService implements ExportService {
      * @param cls 实体类型
      * @param titleParamMap 列信息Map
      */
-    private void getFields(Class<?> cls, Map<String, ExportTitleParam> titleParamMap) {
+    protected void getFields(Class<?> cls, Map<String, ExportTitleParam> titleParamMap) {
         if (cls == Object.class) {
             return;
         }
@@ -421,7 +418,7 @@ public abstract class AbstractExportService implements ExportService {
      * @param cls 实体类型
      * @param titleParamMap 列信息Map
      */
-    private void getMethods(Class<?> cls, Map<String, ExportTitleParam> titleParamMap) {
+    protected void getMethods(Class<?> cls, Map<String, ExportTitleParam> titleParamMap) {
         if (cls == Object.class) {
             return;
         }
@@ -445,13 +442,13 @@ public abstract class AbstractExportService implements ExportService {
      * @param cls 导出类型
      * @return 内嵌实体中需要导出的列参数集合
      */
-    private List<ExportTitleParam> getEntities(Class<?> cls) {
+    protected List<ExportTitleParam> getEntities(Class<?> cls) {
         return Arrays.stream(cls.getDeclaredFields())
                 .filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
                 .filter(f -> f.getAnnotation(ExportTitle.class).isEntity())
                 .filter(f -> {
                     ExcelEntity excelEntity = f.getType().getAnnotation(ExcelEntity.class);
-                    if (Objects.isNull(excelEntity)) {
+                    if (isNull(excelEntity)) {
                         log.error("{}未使用ExcelEntity注解标记", f.getType());
                         throw new ExportHandlerException(ExportError.NOT_EXCEL_ENTITY);
                     }
@@ -473,7 +470,7 @@ public abstract class AbstractExportService implements ExportService {
      * @param cls 导出类型
      * @return 集合字段中需要导出的列参数集合
      */
-    private List<ExportTitleParam> getCollections(Class<?> cls) {
+    protected List<ExportTitleParam> getCollections(Class<?> cls) {
         long count = Arrays.stream(cls.getDeclaredFields())
                 .filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
                 .filter(f -> f.getAnnotation(ExportTitle.class).isCollection())

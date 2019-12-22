@@ -1,4 +1,4 @@
-package top.lshaci.framework.excel.service;
+package top.lshaci.framework.excel.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
@@ -7,6 +7,8 @@ import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.utils.ReflectionUtils;
 
 import java.util.Objects;
+
+import static java.util.Objects.nonNull;
 
 /**
  * 获取单元格值的工具类
@@ -42,12 +44,12 @@ class ExportValueUtil extends BaseValueUtil {
 		}
 
 		// 转换方法存在, 则使用转换方法对原始只进行处理
-		if (Objects.nonNull(titleParam.getConvertMethod())) {
+		if (nonNull(titleParam.getConvertMethod())) {
 			value = getConvertValue(titleParam.getConvertClass(), titleParam.getConvertMethod(), value);
 			return Objects.isNull(value) ? "" : value.toString();
 		}
 		// 枚举方法存在, 则使用枚举方法对原始只进行处理
-		if (Objects.nonNull(titleParam.getEnumMethod())) {
+		if (nonNull(titleParam.getEnumMethod())) {
 			return getEnumValue(titleParam, value);
 		}
 
@@ -94,9 +96,9 @@ class ExportValueUtil extends BaseValueUtil {
 	 */
 	private static Object fetchOriginalValue(ExportTitleParam titleParam, Object data) {
 		Object value = null;
-		if (Objects.nonNull(titleParam.getEntityField()) && !titleParam.isCollection()) {
+		if (nonNull(titleParam.getEntityField()) && !titleParam.isCollection()) {
 			Object obj = ReflectionUtils.getFieldValue(data, titleParam.getEntityField());
-			if (Objects.nonNull(obj)) {
+			if (nonNull(obj)) {
 				value = ReflectionUtils.invokeMethod(obj, titleParam.getMethod());
 			}
 		} else {
