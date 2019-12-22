@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 导入时的错误信息
+ * 导出Excel时的错误信息
  *
  * @author lshaci
  * @since 1.0.2
