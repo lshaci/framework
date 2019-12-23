@@ -1,18 +1,18 @@
 package top.lshaci.framework.excel.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import top.lshaci.framework.excel.annotation.ImportTitle;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-import top.lshaci.framework.excel.annotation.ImportTitle;
 
 /**
  * 导入列定义的相关参数
@@ -23,6 +23,7 @@ import top.lshaci.framework.excel.annotation.ImportTitle;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class ImportTitleParam extends BaseTitleParam implements Comparable<ImportTitleParam> {
 
