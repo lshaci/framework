@@ -6,6 +6,7 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.core.annotation.Order;
 import top.lshaci.framework.web.common.utils.HttpRequestUtils;
 import top.lshaci.framework.web.common.utils.HttpSessionUtils;
+import top.lshaci.framework.web.helper.annotation.PreventRepeatSubmit;
 import top.lshaci.framework.web.helper.exception.RepeatSubmitException;
 import top.lshaci.framework.web.helper.service.PreventRepeat;
 
@@ -41,13 +42,13 @@ public class PreventRepeatSubmitAspect {
 	public void preventRepeatSubmit() {
 	}
 
-	@Before("preventRepeatSubmit()")
-	public void doBefore() {
+	@Before("@annotation(preventRepeatSubmit)")
+	public void doBefore(PreventRepeatSubmit preventRepeatSubmit) {
 		String submitKey = submitKey();
 		log.debug("PreventRepeatSubmitAspect: the submit key is: {}.", submitKey);
 		try {
 			lock.lock();
-            String value = preventRepeat.getAndSet(submitKey);
+            String value = preventRepeat.getAndSet(submitKey, preventRepeatSubmit.timeout());
 			if (Objects.nonNull(value)) {
 				log.warn("In operation...");
 				throw new RepeatSubmitException();
