@@ -5,13 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.annotation.Order;
 import top.lshaci.framework.web.common.utils.HttpRequestUtils;
-import top.lshaci.framework.web.common.utils.HttpSessionUtils;
 import top.lshaci.framework.web.helper.annotation.PreventRepeatSubmit;
 import top.lshaci.framework.web.helper.exception.RepeatSubmitException;
 import top.lshaci.framework.web.helper.service.PreventRepeat;
+import top.lshaci.framework.web.helper.service.PreventRepeatKey;
 
 import java.util.Objects;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <p>Prevent repeat submit aspect</p>
@@ -25,15 +24,15 @@ import java.util.concurrent.locks.ReentrantLock;
 @AllArgsConstructor
 public class PreventRepeatSubmitAspect {
 
-	/**
-	 * 用于获取数据的锁
-	 */
-	private static ReentrantLock lock = new ReentrantLock();
-
     /**
      * 防重复
      */
     private final PreventRepeat preventRepeat;
+
+    /**
+     * 防重复key
+     */
+    private final PreventRepeatKey preventRepeatKey;
 
 	/**
 	 * The prevent repeat submit point cut
@@ -46,16 +45,12 @@ public class PreventRepeatSubmitAspect {
 	public void doBefore(PreventRepeatSubmit preventRepeatSubmit) {
 		String submitKey = submitKey();
 		log.debug("PreventRepeatSubmitAspect: the submit key is: {}.", submitKey);
-		try {
-			lock.lock();
-            String value = preventRepeat.getAndSet(submitKey, preventRepeatSubmit.timeout());
-			if (Objects.nonNull(value)) {
-				log.warn("In operation...");
-				throw new RepeatSubmitException();
-			}
-		} finally {
-		    lock.unlock();
-		}
+
+        String value = preventRepeat.getAndSet(submitKey, preventRepeatSubmit.timeout());
+        if (Objects.nonNull(value)) {
+            log.warn("In operation...");
+            throw new RepeatSubmitException();
+        }
 	}
 
 	@AfterReturning("preventRepeatSubmit()")
@@ -82,6 +77,6 @@ public class PreventRepeatSubmitAspect {
 	 * @return 提交地址的key
 	 */
 	private String submitKey() {
-		return HttpSessionUtils.get().getId() + ":" + HttpRequestUtils.get().getMethod() + ":" + HttpRequestUtils.get().getRequestURI();
+		return preventRepeatKey.key(HttpRequestUtils.get());
 	}
 }

@@ -9,9 +9,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import top.lshaci.framework.web.common.utils.HttpRequestUtils;
+import top.lshaci.framework.web.common.utils.HttpSessionUtils;
 import top.lshaci.framework.web.helper.aspect.PreventRepeatSubmitAspect;
 import top.lshaci.framework.web.helper.properties.FrameworkWebHelperProperties;
 import top.lshaci.framework.web.helper.service.PreventRepeat;
+import top.lshaci.framework.web.helper.service.PreventRepeatKey;
 import top.lshaci.framework.web.helper.service.impl.RedisPreventRepeat;
 import top.lshaci.framework.web.helper.service.impl.TimedCachePreventRepeat;
 
@@ -37,9 +40,9 @@ public class FrameworkWebHelperConfig {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "framework.web.helper.prevent-repeat-submit.enabled", havingValue = "true", matchIfMissing = true)
-    public PreventRepeatSubmitAspect preventRepeatSubmitAspect(PreventRepeat preventRepeat) {
+    public PreventRepeatSubmitAspect preventRepeatSubmitAspect(PreventRepeat preventRepeat, PreventRepeatKey preventRepeatKey) {
         log.debug("Config prevent repeat submit aspect...");
-        return new PreventRepeatSubmitAspect(preventRepeat);
+        return new PreventRepeatSubmitAspect(preventRepeat, preventRepeatKey);
     }
 
     /**
@@ -52,7 +55,7 @@ public class FrameworkWebHelperConfig {
     @ConditionalOnMissingBean
     @ConditionalOnBean(StringRedisTemplate.class)
     public PreventRepeat redisPreventRepeat(StringRedisTemplate stringRedisTemplate){
-        log.debug("Config redis prevent repeat...");
+        log.debug("Config redis prevent repeat service...");
         return new RedisPreventRepeat(properties.getPreventRepeatSubmit().getTimeout(), stringRedisTemplate);
     }
 
@@ -64,9 +67,20 @@ public class FrameworkWebHelperConfig {
     @Bean
     @ConditionalOnMissingBean(StringRedisTemplate.class)
     public PreventRepeat timedCachePreventRepeat(){
-        log.debug("Config timed cache prevent repeat...");
+        log.debug("Config timed cache prevent repeat service...");
         return new TimedCachePreventRepeat(properties.getPreventRepeatSubmit().getTimeout());
     }
 
+    /**
+     * Config prevent repeat submit key service, Conditional on missing bean
+     *
+     * @return the prevent repeat submit key bean
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public PreventRepeatKey preventRepeatKey() {
+        log.debug("Config prevent repeat submit key service...");
+        return request -> request.getSession().getId() + ":" + request.getMethod() + ":" + request.getRequestURI();
+    }
 
 }
