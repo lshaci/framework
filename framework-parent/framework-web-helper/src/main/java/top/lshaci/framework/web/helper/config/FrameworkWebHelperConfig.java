@@ -9,20 +9,22 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import top.lshaci.framework.web.common.utils.HttpRequestUtils;
-import top.lshaci.framework.web.common.utils.HttpSessionUtils;
 import top.lshaci.framework.web.helper.aspect.PreventRepeatSubmitAspect;
 import top.lshaci.framework.web.helper.properties.FrameworkWebHelperProperties;
 import top.lshaci.framework.web.helper.service.PreventRepeat;
 import top.lshaci.framework.web.helper.service.PreventRepeatKey;
 import top.lshaci.framework.web.helper.service.impl.RedisPreventRepeat;
 import top.lshaci.framework.web.helper.service.impl.TimedCachePreventRepeat;
+import top.lshaci.framework.web.helper.utils.FreemarkerUtil;
 
 /**
- * <p>Framework web helper config</p>
+ * <p>Framework web helper config</p><br>
+ *
+ * <b>1.0.7:</b>Add freemarker util bean
  *
  * @author lshaci
  * @since 1.0.5
+ * @version 1.0.7
  */
 @Slf4j
 @Configuration
@@ -81,6 +83,18 @@ public class FrameworkWebHelperConfig {
     public PreventRepeatKey preventRepeatKey() {
         log.debug("Config prevent repeat submit key service...");
         return request -> request.getSession().getId() + ":" + request.getMethod() + ":" + request.getRequestURI();
+    }
+
+    /**
+     * Config freemarker util
+     *
+     * @return freemarker util bean
+     */
+    @Bean
+    @ConditionalOnBean(freemarker.template.Configuration.class)
+    public FreemarkerUtil freemarkerUtil() {
+        log.debug("Config freemarker util...");
+        return new FreemarkerUtil();
     }
 
 }

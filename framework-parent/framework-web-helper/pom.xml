@@ -39,6 +39,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- spring boot freemarker -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- apache commons lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
