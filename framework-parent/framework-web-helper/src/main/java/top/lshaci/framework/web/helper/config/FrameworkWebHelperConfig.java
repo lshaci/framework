@@ -3,6 +3,7 @@ package top.lshaci.framework.web.helper.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -91,7 +92,7 @@ public class FrameworkWebHelperConfig {
      * @return freemarker util bean
      */
     @Bean
-    @ConditionalOnBean(freemarker.template.Configuration.class)
+    @ConditionalOnClass(freemarker.template.Configuration.class)
     public FreemarkerUtil freemarkerUtil() {
         log.debug("Config freemarker util...");
         return new FreemarkerUtil();
