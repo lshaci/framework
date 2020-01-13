@@ -92,7 +92,7 @@ public class FrameworkWebHelperConfig {
      * @return freemarker util bean
      */
     @Bean
-    @ConditionalOnClass(freemarker.template.Configuration.class)
+    @ConditionalOnBean(freemarker.template.Configuration.class)
     public FreemarkerUtil freemarkerUtil() {
         log.debug("Config freemarker util...");
         return new FreemarkerUtil();
