@@ -1,9 +1,8 @@
 package top.lshaci.framework.web.helper.config;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -29,11 +28,11 @@ import top.lshaci.framework.web.helper.utils.FreemarkerUtil;
  */
 @Slf4j
 @Configuration
+@AllArgsConstructor
 @EnableConfigurationProperties(FrameworkWebHelperProperties.class)
 public class FrameworkWebHelperConfig {
 
-    @Autowired
-    private FrameworkWebHelperProperties properties;
+    private final FrameworkWebHelperProperties properties;
 
     /**
      * Config prevent repeat submit aspect
