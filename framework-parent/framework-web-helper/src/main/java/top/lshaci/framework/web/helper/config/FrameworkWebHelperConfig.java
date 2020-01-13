@@ -1,7 +1,7 @@
 package top.lshaci.framework.web.helper.config;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,12 +15,11 @@ import top.lshaci.framework.web.helper.service.PreventRepeat;
 import top.lshaci.framework.web.helper.service.PreventRepeatKey;
 import top.lshaci.framework.web.helper.service.impl.RedisPreventRepeat;
 import top.lshaci.framework.web.helper.service.impl.TimedCachePreventRepeat;
-import top.lshaci.framework.web.helper.utils.FreemarkerUtil;
 
 /**
  * <p>Framework web helper config</p><br>
  *
- * <b>1.0.7:</b>Add freemarker util bean
+ * <b>1.0.7:</b>Add <code>PreventRepeatKey</code> bean
  *
  * @author lshaci
  * @since 1.0.5
@@ -28,11 +27,11 @@ import top.lshaci.framework.web.helper.utils.FreemarkerUtil;
  */
 @Slf4j
 @Configuration
-@AllArgsConstructor
 @EnableConfigurationProperties(FrameworkWebHelperProperties.class)
 public class FrameworkWebHelperConfig {
 
-    private final FrameworkWebHelperProperties properties;
+    @Autowired
+    private FrameworkWebHelperProperties properties;
 
     /**
      * Config prevent repeat submit aspect
@@ -83,18 +82,6 @@ public class FrameworkWebHelperConfig {
     public PreventRepeatKey preventRepeatKey() {
         log.debug("Config prevent repeat submit key service...");
         return request -> request.getSession().getId() + ":" + request.getMethod() + ":" + request.getRequestURI();
-    }
-
-    /**
-     * Config freemarker util
-     *
-     * @return freemarker util bean
-     */
-    @Bean
-    @ConditionalOnBean(freemarker.template.Configuration.class)
-    public FreemarkerUtil freemarkerUtil() {
-        log.debug("Config freemarker util...");
-        return new FreemarkerUtil();
     }
 
 }

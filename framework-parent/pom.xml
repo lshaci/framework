@@ -12,6 +12,7 @@
 		<module>framework-archetype</module>
 		<module>framework-common</module>
 		<module>framework-utils</module>
+		<module>framework-utils-spring</module>
 		<module>framework-mybatis</module>
 		<module>framework-excel</module>
 		<module>framework-swagger</module>
@@ -130,6 +131,12 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-utils</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework spring utils module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-utils-spring</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework pdf utils module -->

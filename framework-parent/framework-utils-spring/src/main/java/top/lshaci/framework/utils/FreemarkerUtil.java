@@ -1,4 +1,4 @@
-package top.lshaci.framework.web.helper.utils;
+package top.lshaci.framework.utils;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
