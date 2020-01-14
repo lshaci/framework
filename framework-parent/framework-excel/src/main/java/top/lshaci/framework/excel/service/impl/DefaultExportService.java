@@ -17,12 +17,14 @@ import top.lshaci.framework.utils.ReflectionUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static top.lshaci.framework.excel.entity.ExportTitleParam.indexTitle;
 import static top.lshaci.framework.excel.service.impl.ExportValueUtil.fetch;
 
 /**
@@ -142,7 +144,7 @@ public class DefaultExportService implements ExportService {
      * @param data 行数据
      */
     protected void setRowContent(Object data) {
-        if (Objects.nonNull(this.collectionTitleParam)) {
+        if (nonNull(this.collectionTitleParam)) {
             handleHasCollection(data);
         } else {
             Row row = sheet.createRow(crn++);
@@ -338,14 +340,14 @@ public class DefaultExportService implements ExportService {
         titleParams.addAll(getCollections(this.cls));
 
         if (this.sheetParam.isAddIndex()) {
-            titleParams.add(ExportTitleParam.indexTitle(this.sheetParam));
+            titleParams.add(indexTitle(this.sheetParam));
         }
 
         List<ExportTitleParam> groupTitleParams = new ArrayList<>();
         titleParams.stream()
                 .filter(e -> StringUtils.isNotBlank(e.getGroupName()))
                 .sorted()
-                .collect(Collectors.groupingBy(ExportTitleParam::getGroupName))
+                .collect(groupingBy(ExportTitleParam::getGroupName))
                 .forEach((k, v) -> {
                     List<ExportTitleParam> children = v.stream().sorted().collect(toList());
                     ExportTitleParam titleParam = new ExportTitleParam()
@@ -399,7 +401,7 @@ public class DefaultExportService implements ExportService {
             return;
         }
         Arrays.stream(cls.getDeclaredFields())
-                .filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
+                .filter(f -> nonNull(f.getAnnotation(ExportTitle.class)))
                 .filter(f -> {
                     ExportTitle exportTitle = f.getAnnotation(ExportTitle.class);
                     return !(exportTitle.isEntity() || exportTitle.isCollection());
@@ -423,7 +425,7 @@ public class DefaultExportService implements ExportService {
         }
 
         Arrays.stream(cls.getMethods())
-                .filter(m -> Objects.nonNull(m.getAnnotation(ExportTitle.class)))
+                .filter(m -> nonNull(m.getAnnotation(ExportTitle.class)))
                 .filter(f -> {
                     ExportTitle exportTitle = f.getAnnotation(ExportTitle.class);
                     return !(exportTitle.isEntity() || exportTitle.isCollection());
@@ -443,7 +445,7 @@ public class DefaultExportService implements ExportService {
      */
     protected List<ExportTitleParam> getEntities(Class<?> cls) {
         return Arrays.stream(cls.getDeclaredFields())
-                .filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
+                .filter(f -> nonNull(f.getAnnotation(ExportTitle.class)))
                 .filter(f -> f.getAnnotation(ExportTitle.class).isEntity())
                 .filter(f -> {
                     ExcelEntity excelEntity = f.getType().getAnnotation(ExcelEntity.class);
@@ -471,14 +473,14 @@ public class DefaultExportService implements ExportService {
      */
     protected List<ExportTitleParam> getCollections(Class<?> cls) {
         long count = Arrays.stream(cls.getDeclaredFields())
-                .filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
+                .filter(f -> nonNull(f.getAnnotation(ExportTitle.class)))
                 .filter(f -> f.getAnnotation(ExportTitle.class).isCollection())
                 .count();
         if (count > 1) {
             throw new ExportHandlerException(ExportError.ONLY_ONE_COLLECTION);
         }
         return Arrays.stream(cls.getDeclaredFields())
-                .filter(f -> Objects.nonNull(f.getAnnotation(ExportTitle.class)))
+                .filter(f -> nonNull(f.getAnnotation(ExportTitle.class)))
                 .filter(f -> f.getAnnotation(ExportTitle.class).isCollection())
                 .filter(f -> {
                     if (!Collection.class.isAssignableFrom(f.getType())) {
@@ -490,7 +492,7 @@ public class DefaultExportService implements ExportService {
                     ExportTitle exportTitle = f.getAnnotation(ExportTitle.class);
                     Class<?> fieldGenericType = ClassUtils.getFieldGenericType(f);
                     ExcelEntity excelEntity = fieldGenericType.getAnnotation(ExcelEntity.class);
-                    if (Objects.nonNull(excelEntity)) {
+                    if (nonNull(excelEntity)) {
                         return this.fetchTitleParams(fieldGenericType)
                                 .stream()
                                 .map(e -> e.setEntityField(f)
