@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 import top.lshaci.framework.utils.FreemarkerUtil;
-import top.lshaci.framework.utils.SpringUtil;
+import top.lshaci.framework.utils.SpringBeanUtil;
 
 import java.util.Properties;
 
@@ -52,9 +52,9 @@ public class FrameworkSpringUtilsConfig {
      * @return spring util bean
      */
     @Bean
-    public SpringUtil springUtil() {
-        log.debug("Config spring util...");
-        return new SpringUtil();
+    public SpringBeanUtil springUtil() {
+        log.debug("Config spring bean util...");
+        return new SpringBeanUtil();
     }
 
 }

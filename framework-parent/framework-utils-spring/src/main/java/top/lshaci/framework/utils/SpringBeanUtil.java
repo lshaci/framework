@@ -10,18 +10,15 @@ import org.springframework.context.ApplicationContextAware;
  * @author lshaci
  * @since 1.0.7
  */
-public class SpringUtil implements ApplicationContextAware {
+public class SpringBeanUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        SpringUtil.applicationContext = applicationContext;
+        SpringBeanUtil.applicationContext = applicationContext;
     }
 
-    /**
-     * 获取applicationContext
-     */
     /**
      * Get application context
      *
@@ -61,6 +58,5 @@ public class SpringUtil implements ApplicationContextAware {
     public static <T> T getBean(String name, Class<T> clazz) {
         return applicationContext.getBean(name, clazz);
     }
-
 
 }
