@@ -13,10 +13,11 @@ import java.util.List;
  * <p>Framework web properties</p>
  *
  * <p><b>1.0.4: </b>添加自定义异常信息属性{@code exceptionMessages}</p><br>
+ * <p><b>1.0.7: </b>整理配置信息, 添加防重复提交配置</p><br>
  *
  * @author lshaci
  * @since 1.0.2
- * @version 1.0.4
+ * @version 1.0.7
  */
 @Data
 @ConfigurationProperties(prefix = "framework.web")

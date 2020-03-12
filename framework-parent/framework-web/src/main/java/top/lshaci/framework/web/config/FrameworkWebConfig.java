@@ -26,10 +26,10 @@ import top.lshaci.framework.web.utils.GlobalExceptionUtils;
 /**
  * <p>Framework web config</p>
  *
- * <p><b>0.0.4: </b>Add setDownloadCacheSize method; Add config GlobalExceptionHandler, WebLogAspect, PreventRepeatSubmitAspect</p><br>
- * <p><b>1.0.2: </b>修改配置属性前缀；删除DownloadUtil cacheSize, RequestContextListener配置</p><br>
- * <p><b>1.0.4: </b>添加配置中的全局异常处理信息</p><br>
- * <p><b>1.0.7: </b>防重复提交配置</p><br>
+ * <p><b>0.0.4: </b>Add setDownloadCacheSize method; Add config GlobalExceptionHandler, WebLogAspect, PreventRepeatSubmitAspect</p>
+ * <p><b>1.0.2: </b>修改配置属性前缀；删除DownloadUtil cacheSize, RequestContextListener配置</p>
+ * <p><b>1.0.4: </b>添加配置中的全局异常处理信息</p>
+ * <p><b>1.0.7: </b>删除webLog、删除角色控制配置, 添加防重复提交配置</p>
  *
  * @author lshaci
  * @since 0.0.3
@@ -50,7 +50,7 @@ public class FrameworkWebConfig {
      */
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "framework.web.global-exception-handler.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "framework.web.global-exception-handle.enabled", havingValue = "true", matchIfMissing = true)
     public GlobalExceptionHandler globalExceptionHandler() {
         log.debug("Config global exception handler...");
         List<ExceptionMessage> exceptionMessages = properties.getGlobalExceptionHandle().getMessages();
