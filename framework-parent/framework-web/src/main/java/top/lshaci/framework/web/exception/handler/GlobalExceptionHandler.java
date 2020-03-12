@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import top.lshaci.framework.common.exception.BaseException;
 import top.lshaci.framework.common.model.JsonResponse;
-import top.lshaci.framework.web.enums.ErrorCode;
 import top.lshaci.framework.web.model.ExceptionMessage;
 import top.lshaci.framework.web.utils.GlobalExceptionUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Global exception handler<br><br>
@@ -43,28 +40,26 @@ public class GlobalExceptionHandler {
 	/**
 	 * Base exception handler
 	 *
-	 * @param req the http servlet request
 	 * @param e the exception
 	 * @return json response
 	 */
     @ExceptionHandler(BaseException.class)
-    public JsonResponse<Object> baseExceptionHandler(HttpServletRequest req, Exception e) {
+    public JsonResponse<Object> baseExceptionHandler(BaseException e) {
     	log.error(SYSTEM_EXCEPTION, e);
 
         return JsonResponse
         		.failure(e.getMessage())
-        		.setCode(ErrorCode.INTERNAL_PROGRAM_ERROR.getCode());
+        		.setCode(e.getCode());
     }
 
 	/**
 	 * BindException and MethodArgumentNotValidException handler
 	 *
-	 * @param req the http servlet request
 	 * @param e the exception
 	 * @return json response
 	 */
     @ExceptionHandler(value = { BindException.class, MethodArgumentNotValidException.class })
-    public JsonResponse<Object> argumentExceptionHandler(HttpServletRequest req, Exception e) {
+    public JsonResponse<Object> argumentExceptionHandler(Exception e) {
     	log.error(SYSTEM_EXCEPTION, e);
 
         StringBuilder message = new StringBuilder();
@@ -91,12 +86,11 @@ public class GlobalExceptionHandler {
 	/**
 	 * Default exception handler
 	 *
-	 * @param req the http servlet request
 	 * @param e the exception
 	 * @return json response
 	 */
     @ExceptionHandler(Exception.class)
-    public JsonResponse<Object> defaultExceptionHandler(HttpServletRequest req, Exception e) {
+    public JsonResponse<Object> defaultExceptionHandler(Exception e) {
     	log.error(SYSTEM_EXCEPTION, e);
 
 		ExceptionMessage message = GlobalExceptionUtils.get(e.getClass());

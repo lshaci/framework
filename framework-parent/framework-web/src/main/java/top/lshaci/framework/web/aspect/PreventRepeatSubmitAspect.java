@@ -1,14 +1,14 @@
-package top.lshaci.framework.web.helper.aspect;
+package top.lshaci.framework.web.aspect;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.annotation.Order;
-import top.lshaci.framework.web.common.utils.HttpRequestUtils;
-import top.lshaci.framework.web.helper.annotation.PreventRepeatSubmit;
-import top.lshaci.framework.web.helper.exception.RepeatSubmitException;
-import top.lshaci.framework.web.helper.service.PreventRepeat;
-import top.lshaci.framework.web.helper.service.PreventRepeatKey;
+import top.lshaci.framework.web.annotation.PreventRepeatSubmit;
+import top.lshaci.framework.web.exception.RepeatSubmitException;
+import top.lshaci.framework.web.service.PreventRepeat;
+import top.lshaci.framework.web.service.PreventRepeatKey;
+import top.lshaci.framework.web.utils.HttpRequestUtils;
 
 import java.util.Objects;
 
@@ -37,7 +37,7 @@ public class PreventRepeatSubmitAspect {
 	/**
 	 * The prevent repeat submit point cut
 	 */
-	@Pointcut("@annotation(top.lshaci.framework.web.helper.annotation.PreventRepeatSubmit)")
+	@Pointcut("@annotation(top.lshaci.framework.web.annotation.PreventRepeatSubmit)")
 	public void preventRepeatSubmit() {
 	}
 

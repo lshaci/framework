@@ -1,4 +1,4 @@
-package top.lshaci.framework.web.helper.exception;
+package top.lshaci.framework.web.exception;
 
 /**
  * Repeat Submit Exception

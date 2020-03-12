@@ -1,4 +1,4 @@
-package top.lshaci.framework.web.common.utils;
+package top.lshaci.framework.web.utils;
 
 import javax.servlet.http.HttpSession;
 import java.util.Objects;

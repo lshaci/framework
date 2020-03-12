@@ -1,8 +1,8 @@
-package top.lshaci.framework.web.helper.service.impl;
+package top.lshaci.framework.web.service.impl;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
-import top.lshaci.framework.web.helper.service.PreventRepeat;
+import top.lshaci.framework.web.service.PreventRepeat;
 
 /**
  * <p>Time cache prevent repeat submit</p><br>

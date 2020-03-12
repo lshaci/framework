@@ -1,4 +1,4 @@
-package top.lshaci.framework.web.helper.annotation;
+package top.lshaci.framework.web.annotation;
 
 import java.lang.annotation.*;
 
@@ -17,9 +17,9 @@ import java.lang.annotation.*;
 public @interface PreventRepeatSubmit {
 
     /**
-     * Operation timeout, default value 500 millisecond
+     * Operation timeout, default value -1 millisecond
      *
      * @return the operation timeout
      */
-    long timeout() default 500;
+    long timeout() default -1;
 }

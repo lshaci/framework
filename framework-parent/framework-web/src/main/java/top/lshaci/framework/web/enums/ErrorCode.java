@@ -18,36 +18,23 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-	/**
-	 * com.lshaci.framework.common.exception.BaseException
-	 */
-	INTERNAL_PROGRAM_ERROR(50000, "程序内部错误，操作失败", "top.lshaci.framework.common.exception.BaseException"),
-
-	/**
-	 * top.lshaci.framework.web.exception.LoginException
-	 */
-	LOGIN_EXCEPTION(40001, "登录失效，请重新登录", "top.lshaci.framework.web.exception.LoginException"),
-	/**
-     * top.lshaci.framework.web.exception.RolePermissionException
-     */
-    ROLE_PERMISSION_EXCEPTION(40002, "无权限进行此操作", "top.lshaci.framework.web.exception.RolePermissionException"),
     /**
      * top.lshaci.framework.web.exception.RepeatSubmitException
      */
-    REPEAT_SUBMIT_EXCEPTION(40003, "上次操作未完成，请勿重复操作", "top.lshaci.framework.web.helper.exception.RepeatSubmitException"),
+    REPEAT_SUBMIT_EXCEPTION(40003, "上次操作未完成，请勿重复操作", "top.lshaci.framework.web.exception.RepeatSubmitException"),
 
     /**
      * java.lang.ArithmeticException
      */
-    ARITHMETIC_EXCEPTION(50001, "数学运算异常", "java.lang.ArithmeticException"),
+    ARITHMETIC_EXCEPTION(50001, "异常算术条件", "java.lang.ArithmeticException"),
     /**
      * java.lang.SecurityException
      */
-    SECURITY_EXCEPTION(50002, "违背安全原则异常", "java.lang.SecurityException"),
+    SECURITY_EXCEPTION(50002, "违反安全规定", "java.lang.SecurityException"),
     /**
      * java.lang.ClassCastException
      */
-    CLASS_CAST_EXCEPTION(50003, "类型强制转换错误", "java.lang.ClassCastException"),
+    CLASS_CAST_EXCEPTION(50003, "对象强制转换错误", "java.lang.ClassCastException"),
     /**
      * java.lang.NullPointerException
      */
@@ -55,7 +42,7 @@ public enum ErrorCode {
     /**
      * java.lang.NoSuchMethodException
      */
-    NO_SUCH_METHOD_EXCEPTION(50005, "方法未找到异常", "java.lang.NoSuchMethodException"),
+    NO_SUCH_METHOD_EXCEPTION(50005, "未找到指定方法", "java.lang.NoSuchMethodException"),
     /**
      * java.lang.ClassNotFoundException
      */
@@ -65,37 +52,37 @@ public enum ErrorCode {
      */
     ILLEGAL_ARGUMENT_EXCEPTION(50007, "参数错误或非法", "java.lang.IllegalArgumentException"),
     /**
-     * java.lang.ArrayIndexOutOfBoundsException
+     * java.lang.IndexOutOfBoundsException
      */
-    ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION(50008, "数组下标越界", "java.lang.ArrayIndexOutOfBoundsException"),
+    INDEX_OUT_OF_BOUNDS_EXCEPTION(50008, "索引超出范围", "java.lang.IndexOutOfBoundsException"),
 
 	/**
 	 * org.springframework.dao.DataAccessException
 	 */
-    DATA_ACCESS_EXCEPTION(51101, "数据库操作失败", "org.springframework.dao.DataAccessException"),
+    DATA_ACCESS_EXCEPTION(51101, "数据访问失败", "org.springframework.dao.DataAccessException"),
     /**
      * org.springframework.dao.DataIntegrityViolationException
      */
     DATA_INTEGRITY_VIOLATION_EXCEPTION(51102, "数据异常, 操作失败", "org.springframework.dao.DataIntegrityViolationException"),
 
     /**
-     * org.springframework.http.converter.HttpMessageNotReadableException
+     * org.springframework.http.converter.HttpMessageConversionException
      */
-    HTTP_MESSAGE_NOT_READABLE_EXCEPTION(51201, "参数转换异常", "org.springframework.http.converter.HttpMessageNotReadableException"),
+    HTTP_MESSAGE_CONVERSION_EXCEPTION(51201, "参数转换异常", "org.springframework.http.converter.HttpMessageConversionException"),
 
     /**
      * org.springframework.web.HttpRequestMethodNotSupportedException
      */
     HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(51301, "请求方法不支持", "org.springframework.web.HttpRequestMethodNotSupportedException"),
     /**
-     * org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+     * org.springframework.beans.TypeMismatchException
      */
-    METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION(51302, "参数信息异常", "org.springframework.web.method.annotation.MethodArgumentTypeMismatchException"),
+    TYPE_MISMATCH_EXCEPTION(51302, "参数类型不匹配", "org.springframework.beans.TypeMismatchException"),
 
     /**
      * com.mysql.cj.jdbc.exceptions.CommunicationsException
      */
-    COMMUNICATIONS_EXCEPTION(52001, "数据库连接中断", "com.mysql.cj.jdbc.exceptions.CommunicationsException"),
+    COMMUNICATIONS_EXCEPTION(52001, "数据库通信错误", "com.mysql.cj.jdbc.exceptions.CommunicationsException"),
 
     /**
      * java.io.IOException
@@ -122,11 +109,25 @@ public enum ErrorCode {
     /**
      * java.util.concurrent.CancellationException
      */
-    CANCELLATION_EXCEPTION(50501, "任务已被取消的异常", "java.util.concurrent.CancellationException"),
+    CANCELLATION_EXCEPTION(50501, "任务已被取消", "java.util.concurrent.CancellationException"),
+
+    /**
+     * java.lang.Exception
+     */
+    INTERNAL_PROGRAM_ERROR(50000, "程序内部错误，操作失败", "java.lang.Exception"),
     ;
 
+    /**
+     * 异常编码
+     */
 	private int code;
+    /**
+     * 异常消息
+     */
 	private String msg;
+    /**
+     * 异常类
+     */
 	private String exceptionClass;
 
 }

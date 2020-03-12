@@ -1,4 +1,4 @@
-package top.lshaci.framework.web.helper.service;
+package top.lshaci.framework.web.service;
 
 /**
  * <p>This use for get, set, remove the submit key</p><br>

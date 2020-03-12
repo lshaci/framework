@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import top.lshaci.framework.web.model.ExceptionMessage;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,35 +23,54 @@ import java.util.List;
 public class FrameworkWebProperties {
 
     /**
-     * 需要开启的功能
+     * 全局异常处理配置
      */
-    private Enabled enabled = new Enabled();
+    private GlobalExceptionHandle globalExceptionHandle = new GlobalExceptionHandle();
 
     /**
-     * 异常信息
+     * 防重复提交的配置
      */
-    private List<ExceptionMessage> exceptionMessages = new ArrayList<>();
+    @Valid
+    private PreventRepeatSubmit preventRepeatSubmit = new PreventRepeatSubmit();
 
     /**
-     * framework web中的功能
+     * Global Exception Handle
+     *
+     * @author lshaci
+     * @since 1.0.7
      */
     @Data
-    class Enabled {
+    public class GlobalExceptionHandle {
 
         /**
-         * 是否开启角色名称控制(默认开启)
+         * 是否开启全局异常处理
          */
-        private Boolean userRole = true;
+        private boolean enabled = true;
 
         /**
-         * 是否开启全局异常处理(默认开启)
+         * 异常信息
          */
-        private Boolean globalExceptionHandler = true;
+        private List<ExceptionMessage> messages = new ArrayList<>();
+    }
+
+    /**
+     * Prevent Repeat Submit
+     *
+     * @author lshaci
+     * @since 1.0.7
+     */
+    @Data
+    public class PreventRepeatSubmit {
 
         /**
-         * 是否开启web日志(默认关闭)
+         * 是否开启防重复提交
          */
-        private Boolean webLog = false;
+        private boolean enabled = true;
 
+        /**
+         * 提交地址的超时时间(ms)
+         */
+        @Min(value = 1000, message = "防重复提交超时时间必须大于1000")
+        private long timeout = 2000;
     }
 }

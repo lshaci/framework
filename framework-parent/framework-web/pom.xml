@@ -19,10 +19,37 @@
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-utils</artifactId>
 		</dependency>
-		<!-- framework web common module -->
+		<!-- hutool cache -->
 		<dependency>
-			<groupId>top.lshaci</groupId>
-			<artifactId>framework-web-common</artifactId>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-cache</artifactId>
+			<version>${hutool.version}</version>
+		</dependency>
+		<!-- spring boot configuration -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+		</dependency>
+		<!-- spring boot web -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!-- spring boot aop -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<!-- fastjson -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+		</dependency>
+		<!-- spring boot data redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<!-- spring boot configuration -->
 		<dependency>

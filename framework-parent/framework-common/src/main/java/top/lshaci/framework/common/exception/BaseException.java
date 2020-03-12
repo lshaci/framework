@@ -1,7 +1,8 @@
 package top.lshaci.framework.common.exception;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * <p>Framework common base exception</p> <br>
@@ -11,8 +12,9 @@ import lombok.NoArgsConstructor;
  * @since 0.0.1
  * @version 1.0.4
  */
-@Getter
+@Data
 @NoArgsConstructor
+@Accessors(chain = true)
 public class BaseException extends RuntimeException {
 
 	private static final long serialVersionUID = -8170023045088441807L;

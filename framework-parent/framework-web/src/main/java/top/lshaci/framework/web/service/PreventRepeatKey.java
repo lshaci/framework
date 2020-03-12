@@ -1,4 +1,4 @@
-package top.lshaci.framework.web.helper.service;
+package top.lshaci.framework.web.service;
 
 import javax.servlet.http.HttpServletRequest;
 

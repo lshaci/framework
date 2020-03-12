@@ -1,4 +1,4 @@
-package top.lshaci.framework.web.common.utils;
+package top.lshaci.framework.web.utils;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.http.MediaType;
@@ -41,8 +41,17 @@ public class HttpResponseUtils {
 	 * @throws IOException
 	 */
 	public static <R> void responseJson(JsonResponse<R> jsonResponse) throws IOException {
-		HttpServletResponse response = get();
+		responseJson(get(), jsonResponse);
+	}
 
+	/**
+	 * Response json use the http servlet response
+	 *
+	 * @param response the http servlet response
+	 * @param jsonResponse the json response
+	 * @throws IOException
+	 */
+	public static <R> void responseJson(HttpServletResponse response, JsonResponse<R> jsonResponse) throws IOException {
 		response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
 		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 		response.getWriter().write(JSON.toJSONString(jsonResponse));

@@ -1,8 +1,8 @@
-package top.lshaci.framework.web.helper.service.impl;
+package top.lshaci.framework.web.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import top.lshaci.framework.web.helper.service.PreventRepeat;
+import top.lshaci.framework.web.service.PreventRepeat;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 

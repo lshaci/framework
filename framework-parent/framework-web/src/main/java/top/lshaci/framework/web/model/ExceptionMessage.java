@@ -1,10 +1,11 @@
 package top.lshaci.framework.web.model;
 
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 import top.lshaci.framework.web.enums.ErrorCode;
 
 /**
@@ -53,7 +54,8 @@ public class ExceptionMessage {
      *
      * @param errorCode 错误码
      */
-    public ExceptionMessage(ErrorCode errorCode) {
+    @SuppressWarnings("unchecked")
+	public ExceptionMessage(ErrorCode errorCode) {
         Assert.notNull(errorCode, "The error code must not be null!");
         this.code = errorCode.getCode();
         this.message = errorCode.getMsg();
