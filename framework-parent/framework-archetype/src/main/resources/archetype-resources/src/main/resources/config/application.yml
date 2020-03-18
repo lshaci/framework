@@ -18,3 +18,7 @@ logging:
 mybatis-plus:
   type-aliases-package: ${groupId}.${artifactId}.entity,${groupId}.${artifactId}.model.*
   mapper-locations: classpath:mappers/*Mapper.xml
+# mysql
+mysql:
+  url:
+    params: useUnicode=true&characterEncoding=utf8&&serverTimezone=GMT%2B8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&useSSL=false
