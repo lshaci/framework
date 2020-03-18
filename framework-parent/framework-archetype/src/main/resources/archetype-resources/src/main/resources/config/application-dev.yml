@@ -5,9 +5,12 @@ spring:
     # druid
     druid:
       url: jdbc:mysql://host:port/database?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=GMT%2B8
-      username: 
-      password: 
-# log
+      username:
+      password:
+# logging
 logging:
   level:
     ${groupId}.${artifactId}: debug
+# logs
+logs:
+  path: ./logs

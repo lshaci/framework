@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-	
+
+	<springProperty scope="context" name="logPath" source="logs.path" defaultValue="${home}/logs"/>
+	<property name="LOG_HOME" value="${logPath}"/>
+
 	<!-- 控制台输出 -->
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder charset="UTF-8">	<!-- encoder 可以指定字符集，对于中文输出有意义 -->
@@ -9,7 +12,7 @@
 			</pattern>
 		</encoder>
 	</appender>
-	
+
 	<!-- 时间滚动输出 level为 DEBUG 日志 -->
 	<appender name="file-debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -18,7 +21,7 @@
 			<onMismatch>DENY </onMismatch>
 		</filter>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>./logs/debug.%d{yyyy-MM-dd}.log</FileNamePattern>
+			<FileNamePattern>${LOG_HOME}/debug.%d{yyyy-MM-dd}.log</FileNamePattern>
 			<MaxHistory>30</MaxHistory>
 		</rollingPolicy>
 		<encoder>
@@ -36,7 +39,7 @@
 			<onMismatch>DENY </onMismatch>
 		</filter>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>./logs/info.%d{yyyy-MM-dd}.log</FileNamePattern>
+			<FileNamePattern>${LOG_HOME}/info.%d{yyyy-MM-dd}.log</FileNamePattern>
 			<MaxHistory>30</MaxHistory>
 		</rollingPolicy>
 		<encoder>
@@ -54,7 +57,7 @@
 			<onMismatch>DENY </onMismatch>
 		</filter>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>./logs/warn.%d{yyyy-MM-dd}.log</FileNamePattern>
+			<FileNamePattern>${LOG_HOME}/warn.%d{yyyy-MM-dd}.log</FileNamePattern>
 			<MaxHistory>30</MaxHistory>
 		</rollingPolicy>
 		<encoder>
@@ -72,7 +75,7 @@
 			<onMismatch>DENY </onMismatch>
 		</filter>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>./logs/error.%d{yyyy-MM-dd}.log</FileNamePattern>
+			<FileNamePattern>${LOG_HOME}/error.%d{yyyy-MM-dd}.log</FileNamePattern>
 			<MaxHistory>30</MaxHistory>
 		</rollingPolicy>
 		<encoder>
@@ -85,7 +88,7 @@
 	<!-- 很多人使用Mybatis的时候，控制台不能输出SQL语句，造成调试困难。只需要让DAO层的日志级别调整为DEBUG就可以了 -->
 	<logger name="top.lshaci" level="info" />
 	<logger name="${groupId}.${artifactId}" level="debug" />
-	
+
 	<!-- 指定项目可输出的最低级别日志 -->
 	<root level="error">
 		<appender-ref ref="console" />
