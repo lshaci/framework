@@ -1,5 +1,8 @@
 # spring
 spring:
+  # application
+  application:
+    name: ${artifactId}
   # profiles
   profiles:
     active: local
