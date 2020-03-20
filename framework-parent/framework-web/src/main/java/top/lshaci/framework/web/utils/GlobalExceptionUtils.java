@@ -30,7 +30,7 @@ public class GlobalExceptionUtils {
     /**
      * 默认的异常消息
      */
-    private static final ExceptionMessage DEFAULT_MESSAGE = new ExceptionMessage(ErrorCode.INTERNAL_PROGRAM_ERROR);
+    private static final ExceptionMessage DEFAULT_MESSAGE = new ExceptionMessage(ErrorCode.Exception);
 
     static {
         /**

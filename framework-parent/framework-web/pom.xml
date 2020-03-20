@@ -25,11 +25,6 @@
 			<artifactId>hutool-cache</artifactId>
 			<version>${hutool.version}</version>
 		</dependency>
-		<!-- spring boot configuration -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-		</dependency>
 		<!-- spring boot web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -45,8 +45,6 @@ public class GlobalExceptionHandler {
 	 */
     @ExceptionHandler(BaseException.class)
     public JsonResponse<Object> baseExceptionHandler(BaseException e) {
-    	log.error(SYSTEM_EXCEPTION, e);
-
         return JsonResponse
         		.failure(e.getMessage())
         		.setCode(e.getCode());
