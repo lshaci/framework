@@ -293,7 +293,7 @@ public class FastDFSClient {
         }
         log.debug("Download file, the file path is: {}, filename: {}", filepath, filename);
 
-        setResponseHeader(filename, response);
+		setResponseHeader(filename, response);
         try {
 			write(filepath, response.getOutputStream());
 		} catch (IOException e) {
@@ -342,7 +342,7 @@ public class FastDFSClient {
 		TrackerServer trackerServer = pool.borrowObject();
 		StorageClient1 storageClient = new StorageClient1(trackerServer, null);
 
-		byte[] fileByte = null;
+		byte[] fileByte;
 		try {
 			// download file from fastdfs
 			fileByte = storageClient.download_file1(filepath);
@@ -369,7 +369,6 @@ public class FastDFSClient {
 			while ((len = is.read(buffer)) > 0) {
 				_os.write(buffer, 0, len);
 			}
-			_os.flush();
 		} catch (IOException e) {
 			log.error(ErrorCode.FILE_WRITE_FAILED.getCode(), e);
 			throw new FastDFSException(ErrorCode.FILE_WRITE_FAILED);
