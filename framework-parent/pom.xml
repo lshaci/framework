@@ -46,6 +46,7 @@
 		<apollo.version>1.4.0</apollo.version>
 		<swagger.version>2.9.2</swagger.version>
 
+		<hutool.version>5.2.4</hutool.version>
 		<framework.version>1.0.7</framework.version>
 		<fastjson.version>1.2.47</fastjson.version>
 		<commons.compress.version>1.18</commons.compress.version>
