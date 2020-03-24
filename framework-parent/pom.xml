@@ -46,7 +46,6 @@
 		<apollo.version>1.4.0</apollo.version>
 		<swagger.version>2.9.2</swagger.version>
 
-		<hutool.version>5.1.0</hutool.version>
 		<framework.version>1.0.7</framework.version>
 		<fastjson.version>1.2.47</fastjson.version>
 		<commons.compress.version>1.18</commons.compress.version>
@@ -57,6 +56,7 @@
 		<spring.boot.version>2.1.4.RELEASE</spring.boot.version>
 		<spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
 		<druid.spring.boot.version>1.1.18</druid.spring.boot.version>
+		<spring.cloud.alibaba.version>2.1.0.RELEASE</spring.cloud.alibaba.version>
 		<mybatis.plus.spring.boot.version>3.1.2</mybatis.plus.spring.boot.version>
 		<flying.saucer.pdf.itext5.version>9.0.6</flying.saucer.pdf.itext5.version>
 		<baomidou.dynamic.datasource.spring.boot.version>2.5.5</baomidou.dynamic.datasource.spring.boot.version>
@@ -255,6 +255,14 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+            <!-- alibaba spring cloud dependencies -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 

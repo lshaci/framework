@@ -91,10 +91,4 @@ public class GlobalExceptionUtils {
                 .findFirst()
                 .orElse(DEFAULT_MESSAGE);
     }
-
-    public static void main(String[] args) {
-        ExceptionMessage exceptionMessage = get(ArrayIndexOutOfBoundsException.class);
-        System.err.println(exceptionMessage);
-    }
-
 }

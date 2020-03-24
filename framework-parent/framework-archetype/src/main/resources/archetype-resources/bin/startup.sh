@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ -z "$JAVA_HOME" ]; then
-    error_exit "Please set the JAVA_HOME variable in your environment, We need java(x64)! jdk8 or later is better!"
+    exit "Please set the JAVA_HOME variable in your environment, We need java(x64)! jdk8 or later is better!"
 fi
 
 export SERVER="${artifactId}"
