@@ -23,12 +23,6 @@
         <dependency>
             <groupId>top.lshaci</groupId>
             <artifactId>framework-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- top lshaci framework swagger module -->
         <dependency>
@@ -47,11 +41,6 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
-        <!-- spring boot undertow -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
         <!-- mybatis plus generator -->
         <dependency>
             <groupId>com.baomidou</groupId>
