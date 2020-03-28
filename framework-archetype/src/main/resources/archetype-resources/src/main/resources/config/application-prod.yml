@@ -1,0 +1,14 @@
+# spring
+spring:
+  # datasource
+  datasource:
+    # druid
+    druid:
+      url: jdbc:mysql://host:port/database?${mysql.url.params}
+      username:
+      password:
+# framework
+framework:
+  # swagger
+  swagger:
+    enabled: false
