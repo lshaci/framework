@@ -2,7 +2,8 @@
 *.project
 *.classpath
 *.factorypath
-/.idea/
+**/.idea/
 **/target/
 **/.settings/
+**/logs/
 
