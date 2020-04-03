@@ -5,7 +5,7 @@ import lombok.Getter;
 
 /**
  * File type
- * 
+ *
  * @author lshaci
  * @since 0.0.1
  */
@@ -13,6 +13,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum FileType {
 
+	/**
+	 * JPG.
+	 */
+	JPG("FFD8FF"),
 	/**
 	 * JEPG.
 	 */
@@ -112,7 +116,7 @@ public enum FileType {
 	 * WPS文字wps、表格et、演示dps都是一样的
 	 */
 	WPS("D0CF11E0A1B11AE10000"),
-	
+
 	/**
 	 * WPS文字wps、表格et、演示dps都是一样的
 	 */
@@ -255,7 +259,7 @@ public enum FileType {
 
 	/**
 	 * Get the file type with the file stream header
-	 * 
+	 *
 	 * @param fileHead the file stream header
 	 * @return the file type enum
 	 */
