@@ -1,9 +1,5 @@
-# spring
-spring:
-  # datasource
-  datasource:
-    # druid
-    druid:
-      url: jdbc:mysql://host:port/database?${mysql.url.params}
-      username:
-      password:
+# db
+db:
+  server: localhost:3306
+  username: root
+  password: admin

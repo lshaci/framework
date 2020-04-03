@@ -6,6 +6,13 @@ spring:
   # profiles
   profiles:
     active: local
+  # datasource
+  datasource:
+    # druid
+    druid:
+      url: jdbc:mysql://${db.server}/DATABASE_NAME?${mysql.url.params}
+      username: ${db.username}
+      password: ${db.password}
 # framework
 framework:
   # swagger
