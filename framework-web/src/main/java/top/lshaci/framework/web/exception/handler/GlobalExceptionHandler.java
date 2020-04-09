@@ -95,8 +95,7 @@ public class GlobalExceptionHandler {
 
 		return JsonResponse
     			.failure(message.getMessage())
-    			.setCode(message.getCode())
-    			.addOtherData("detail", e.getMessage());
+    			.setCode(message.getCode());
     }
 
 }
