@@ -20,20 +20,27 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import top.lshaci.framework.swagger.model.DocketInfo;
 import top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties;
-import top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties.DocketInfo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.google.common.base.Predicates.and;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.base.Predicates.or;
+import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
+import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
+
 /**
- * Swagger auto configuration<br><br>
- * <b>1.0.1: </b>Add grouping configuration
+ * <p>Swagger auto configuration</p><br>
+ * <b>1.0.1: </b>Add grouping configuration<br>
+ * <b>1.0.7: </b>添加全局参数配置<br>
  *
  * @author lshaci
  * @since 0.0.4
- * @version 1.0.1
+ * @version 1.0.7
  */
 @Slf4j
 @Configuration
@@ -84,36 +91,19 @@ public class FrameworkSwaggerConfig implements BeanFactoryAware {
 	 * @return swagger docket
 	 */
 	private Docket docket(String groupName, DocketInfo docketInfo) {
-		// handle base path
-        // If not set, add [/**]
-        if (docketInfo.getBasePath().isEmpty()) {
-        	docketInfo.getBasePath().add("/**");
-        }
-
-        List<Predicate<String>> basePath = new ArrayList<>();
-        for (String path : docketInfo.getBasePath()) {
-            basePath.add(PathSelectors.ant(path));
-        }
-
-        // handle exclude path
-        List<Predicate<String>> excludePath = new ArrayList<>();
-        for (String path : docketInfo.getExcludePath()) {
-            excludePath.add(PathSelectors.ant(path));
-        }
-
-		return new Docket(DocumentationType.SWAGGER_2)
+		return new Docket(SWAGGER_2)
 				.apiInfo(apiInfo(docketInfo))
 				.groupName(groupName)
 				.directModelSubstitute(Byte.class, Integer.class)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage(docketInfo.getBasePackage()))
+				.apis(basePackage(docketInfo.getBasePackage()))
 				.paths(
-						Predicates.and(
-                                Predicates.not(Predicates.or(excludePath)),
-                                Predicates.or(basePath)
-                        )
+					and(
+						not(or(docketInfo.excludePath())),
+						or(docketInfo.basePath())
+					)
                 )
-				.build();
+				.build().globalOperationParameters(properties.globalParameter());
 	}
 
 	/**
@@ -140,35 +130,18 @@ public class FrameworkSwaggerConfig implements BeanFactoryAware {
 	 * @return swagger docket
 	 */
 	private Docket defaultDocket() {
-		// handle base path
-        // If not set, add [/**]
-        if (properties.getBasePath().isEmpty()) {
-        	properties.getBasePath().add("/**");
-        }
-
-        List<Predicate<String>> basePath = new ArrayList<>();
-        for (String path : properties.getBasePath()) {
-            basePath.add(PathSelectors.ant(path));
-        }
-
-        // handle exclude path
-        List<Predicate<String>> excludePath = new ArrayList<>();
-        for (String path : properties.getExcludePath()) {
-            excludePath.add(PathSelectors.ant(path));
-        }
-
-		return new Docket(DocumentationType.SWAGGER_2)
+		return new Docket(SWAGGER_2)
 				.apiInfo(defaultApiInfo())
 				.directModelSubstitute(Byte.class, Integer.class)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage(properties.getBasePackage()))
+				.apis(basePackage(properties.getBasePackage()))
 				.paths(
-						Predicates.and(
-                                Predicates.not(Predicates.or(excludePath)),
-                                Predicates.or(basePath)
-                        )
+					and(
+						not(or(properties.excludePath())),
+						or(properties.basePath())
+					)
                 )
-				.build();
+				.build().globalOperationParameters(properties.globalParameter());
 	}
 
 	/**
