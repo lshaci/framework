@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static java.time.LocalDate.now;
+import static org.apache.commons.lang3.StringUtils.leftPad;
 
 /**
  * RedisId
@@ -96,8 +97,7 @@ public class RedisId {
             throw new BaseException("流水号生成失败");
         }
         redisTemplate.expireAt(key, nextDate());
-        String format = new StringBuilder("%1$0").append(serialLength).append("d").toString();
-        return String.format(format, id);
+        return leftPad(id.toString(), serialLength, "0");
     }
 
     /**
