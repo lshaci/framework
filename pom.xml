@@ -23,6 +23,7 @@
 		<module>framework-thread</module>
 		<module>framework-fescar</module>
 		<module>framework-web</module>
+		<module>framework-redis</module>
 	</modules>
 
 	<name>framework-parent</name>
@@ -94,6 +95,12 @@
 			<dependency>
 				<groupId>top.lshaci</groupId>
 				<artifactId>framework-mybatis</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework redis module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-redis</artifactId>
 				<version>${framework.version}</version>
 			</dependency>
 			<!-- framework swagger module -->

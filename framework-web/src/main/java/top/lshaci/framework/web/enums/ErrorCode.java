@@ -2,7 +2,6 @@ package top.lshaci.framework.web.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.web.bind.MissingRequestHeaderException;
 
 /**
  * Error code enum<br><br>
