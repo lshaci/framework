@@ -119,4 +119,5 @@ public class RedisId {
     public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
         RedisId.redisTemplate = redisTemplate;
     }
+
 }

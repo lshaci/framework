@@ -28,7 +28,9 @@ public class FrameworkRedisConfig {
     private final FrameworkRedisProperties properties;
 
     /**
-     * Redis中值的序列化方式
+     * 定义redis中值的序列化方式
+     *
+     * @return GenericFastJsonRedisSerializer
      */
     @Bean
     public GenericFastJsonRedisSerializer valueSerializer() {
