@@ -13,6 +13,11 @@
     </parent>
 
     <dependencies>
+        <!-- framework common module -->
+        <dependency>
+            <groupId>top.lshaci</groupId>
+            <artifactId>framework-common</artifactId>
+        </dependency>
         <!-- fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -22,6 +27,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- spring boot configuration -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>
