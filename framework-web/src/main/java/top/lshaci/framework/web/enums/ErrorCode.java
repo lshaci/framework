@@ -2,6 +2,7 @@ package top.lshaci.framework.web.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.web.bind.MissingRequestHeaderException;
 
 /**
  * Error code enum<br><br>
@@ -74,16 +75,20 @@ public enum ErrorCode {
      * org.springframework.web.HttpRequestMethodNotSupportedException
      */
     HttpRequestMethodNotSupportedException(51301, "请求方法不支持", "org.springframework.web.HttpRequestMethodNotSupportedException"),
+    /**
+     * org.springframework.beans.TypeMismatchException
+     */
+    TypeMismatchException(51302, "参数类型不匹配", "org.springframework.beans.TypeMismatchException"),
+    /**
+     * org.springframework.beans.TypeMismatchException
+     */
+    MethodArgumentTypeMismatchException(51303, "请求参数类型不匹配", "org.springframework.web.method.annotation.MethodArgumentTypeMismatchException"),
 
     /**
      * MissingRequestHeaderException
      */
     MissingRequestHeaderException(51401, "请求参数错误", "org.springframework.web.bind.MissingRequestHeaderException"),
 
-    /**
-     * org.springframework.beans.TypeMismatchException
-     */
-    TypeMismatchException(51302, "参数类型不匹配", "org.springframework.beans.TypeMismatchException"),
 
     /**
      * com.mysql.cj.jdbc.exceptions.CommunicationsException
