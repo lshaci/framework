@@ -21,5 +21,5 @@ public class FrameworkRedisProperties {
      * 生成流水号的长度
      */
     @Min(3)
-    private int serialLength = 6;
+    private int serialLength = 5;
 }
