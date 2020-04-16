@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
 
-	<springProperty scope="context" name="logPath" source="logs.path" defaultValue="${home}/logs"/>
+	<springProperty scope="context" name="logPath" source="logs.path" defaultValue="./logs"/>
 	<property name="LOG_HOME" value="${logPath}"/>
 
 	<!-- 控制台输出 -->
