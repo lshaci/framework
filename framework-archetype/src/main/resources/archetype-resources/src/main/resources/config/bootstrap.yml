@@ -1,0 +1,24 @@
+NACOS_SERVER: 192.168.2.167:8848
+
+spring:
+  # profiles
+  profiles:
+    active: local
+  # application
+  application:
+    name: ${artifactId}
+  # cloud
+  cloud:
+    # nacos
+    nacos:
+      # discovery
+      discovery:
+        server-addr: ${NACOS_SERVER}
+      # config
+      config:
+        server-addr: ${NACOS_SERVER}
+        file-extension: yaml
+        ext-config:
+        - data-id: database.yaml
+          group: GLOBAL_GROUP
+          refresh: true
