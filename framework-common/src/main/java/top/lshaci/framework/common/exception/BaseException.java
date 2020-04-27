@@ -3,6 +3,7 @@ package top.lshaci.framework.common.exception;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import top.lshaci.framework.common.constants.BaseExceptionCode;
 
 /**
  * <p>Framework common base exception</p> <br>
@@ -53,6 +54,16 @@ public class BaseException extends RuntimeException {
 
 	public BaseException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
+	}
+
+    /**
+     * If the data not exists, Constructs a base exception with the specified detail message, The default code is <code>-1</code>
+     *
+     * @param message the detail message.
+     * @return data not exists exception
+     */
+	public static BaseException dataNotExists(String message) {
+		return new BaseException(BaseExceptionCode.DATA_NOT_EXISTS, message);
 	}
 
 }
