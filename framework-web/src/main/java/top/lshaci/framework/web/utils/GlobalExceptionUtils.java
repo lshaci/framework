@@ -1,7 +1,7 @@
 package top.lshaci.framework.web.utils;
 
+import cn.hutool.core.collection.CollectionUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import top.lshaci.framework.web.enums.ErrorCode;
 import top.lshaci.framework.web.model.ExceptionMessage;
 
@@ -60,7 +60,7 @@ public class GlobalExceptionUtils {
      * @param exceptionMessages 自定义的异常消息
      */
     public static void putAll(List<ExceptionMessage> exceptionMessages) {
-        if (CollectionUtils.isEmpty(exceptionMessages)) {
+        if (CollectionUtil.isEmpty(exceptionMessages)) {
             log.info("The exception message list is empty!");
         }
 

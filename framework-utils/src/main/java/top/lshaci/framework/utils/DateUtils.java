@@ -1,7 +1,7 @@
 package top.lshaci.framework.utils;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.utils.constants.Constants;
 
 import java.text.SimpleDateFormat;
@@ -12,13 +12,14 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
- * Date utils<br><br>
+ * <p>Date utils</p><br>
  *
- * <b>0.0.4:</b> Add method format Date, format Msec Date, Date and LocalDate interconvert
+ * <b>0.0.4:</b> Add method format Date, format Msec Date, Date and LocalDate convert<br>
+ * <b>1.0.7: </b>使用hutool替换commons lang3<br>
  *
  * @author lshaci
  * @since 0.0.1
- * @version 0.0.4
+ * @version 1.0.7
  */
 @Slf4j
 public abstract class DateUtils {
@@ -77,7 +78,7 @@ public abstract class DateUtils {
 			return null;
 		}
 
-		if (StringUtils.isBlank(pattern)) {
+		if (StrUtil.isBlank(pattern)) {
 			log.warn("the pattern is empty!");
 			return null;
 		}

@@ -1,8 +1,8 @@
 package top.lshaci.framework.excel.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import top.lshaci.framework.excel.annotation.ExcelEntity;
@@ -23,7 +23,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static top.lshaci.framework.excel.entity.ExportTitleParam.indexTitle;
 import static top.lshaci.framework.excel.service.impl.ExportValueUtil.fetch;
 
@@ -275,7 +274,7 @@ public class DefaultExportService implements ExportService {
      */
     protected void setSheetTitle() {
         String title = sheetParam.getTitle();
-        if (isBlank(title)) {
+        if (StrUtil.isBlank(title)) {
             return;
         }
         Row row = sheet.createRow(crn++);
@@ -345,7 +344,7 @@ public class DefaultExportService implements ExportService {
 
         List<ExportTitleParam> groupTitleParams = new ArrayList<>();
         titleParams.stream()
-                .filter(e -> StringUtils.isNotBlank(e.getGroupName()))
+                .filter(e -> StrUtil.isNotBlank(e.getGroupName()))
                 .sorted()
                 .collect(groupingBy(ExportTitleParam::getGroupName))
                 .forEach((k, v) -> {
@@ -357,7 +356,7 @@ public class DefaultExportService implements ExportService {
                 });
 
         this.titleParams = Stream.concat(
-                        titleParams.stream().filter(e -> isBlank(e.getGroupName())),
+                        titleParams.stream().filter(e -> StrUtil.isBlank(e.getGroupName())),
                         groupTitleParams.stream()
                 ).filter(columnFilter())
                 .sorted().collect(toList());

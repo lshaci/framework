@@ -1,13 +1,13 @@
 package top.lshaci.framework.excel.entity;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.excel.annotation.ExportTitle;
 import top.lshaci.framework.excel.builder.IndexBuilder;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
@@ -164,7 +164,7 @@ public class ExportTitleParam extends BaseTitleParam implements Comparable<Expor
 	 * @param exportTitle 字段上标记的列信息
 	 */
 	private void buildEnumMethod(Field field, ExportTitle exportTitle) {
-		if (field.getType().isEnum() && StringUtils.isNotBlank(exportTitle.enumMethod())) {
+		if (field.getType().isEnum() && StrUtil.isNotBlank(exportTitle.enumMethod())) {
 			try {
 				this.enumMethod = field.getType().getMethod(exportTitle.enumMethod());
 			} catch (NoSuchMethodException | SecurityException e) {
@@ -180,7 +180,7 @@ public class ExportTitleParam extends BaseTitleParam implements Comparable<Expor
 	 * @param exportTitle 方法上标记的列信息
 	 */
 	private void buildEnumMethod(Method method, ExportTitle exportTitle) {
-		if (method.getReturnType().isEnum() && StringUtils.isNotBlank(exportTitle.enumMethod())) {
+		if (method.getReturnType().isEnum() && StrUtil.isNotBlank(exportTitle.enumMethod())) {
 			try {
 				this.enumMethod = method.getReturnType().getMethod(exportTitle.enumMethod());
 			} catch (NoSuchMethodException | SecurityException e) {
@@ -202,13 +202,13 @@ public class ExportTitleParam extends BaseTitleParam implements Comparable<Expor
 		this.merge = exportTitle.merge();
 		this.fillSame = exportTitle.fillSame();
 		this.fillValue = exportTitle.fillValue();
-		if (StringUtils.isNotBlank(exportTitle.prefix())) {
+		if (StrUtil.isNotBlank(exportTitle.prefix())) {
 			this.prefix = exportTitle.prefix();
 		}
-		if (StringUtils.isNotBlank(exportTitle.suffix())) {
+		if (StrUtil.isNotBlank(exportTitle.suffix())) {
 			this.suffix = exportTitle.suffix();
 		}
-		if (StringUtils.isNotBlank(exportTitle.title())) {
+		if (StrUtil.isNotBlank(exportTitle.title())) {
 			this.title = exportTitle.title();
 		}
 		if (exportTitle.width() > 0) {
@@ -217,10 +217,10 @@ public class ExportTitleParam extends BaseTitleParam implements Comparable<Expor
 		if (exportTitle.height() > 0) {
 			this.height = exportTitle.height();
 		}
-		if (StringUtils.isNotBlank(exportTitle.groupName())) {
+		if (StrUtil.isNotBlank(exportTitle.groupName())) {
 			this.groupName = exportTitle.groupName();
 		}
-		if (ArrayUtils.isNotEmpty(exportTitle.replaces())) {
+		if (ArrayUtil.isNotEmpty(exportTitle.replaces())) {
 			this.replaceMap = Arrays.stream(exportTitle.replaces())
 					.filter(r -> r.contains("__"))
 					.map(r -> r.split("__"))

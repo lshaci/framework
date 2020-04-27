@@ -1,10 +1,10 @@
 package top.lshaci.framework.excel.entity;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.excel.exception.ExcelHandlerException;
 
 import java.lang.reflect.Field;
@@ -70,7 +70,7 @@ class BaseTitleParam {
 	 * @param args 方法参数类型
 	 */
 	protected void buildConvertMethod(Class<?> convertClass, String methodName, Class<?>...args) {
-		if (Void.class != convertClass && StringUtils.isNotBlank(methodName)) {
+		if (Void.class != convertClass && StrUtil.isNotBlank(methodName)) {
 			try {
 				this.convertClass = convertClass;
 				this.convertMethod = convertClass.getMethod(methodName, args);

@@ -2,7 +2,6 @@ package top.lshaci.framework.mybatis.config;
 
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -15,11 +14,12 @@ import top.lshaci.framework.mybatis.properties.FrameworkMybatisProperties;
 /**
  * <p>Mybatis plus config</p><br>
  *
- * <b>1.0.3: </b>添加SQL执行效率插件Bean配置
+ * <b>1.0.3: </b>添加SQL执行效率插件Bean配置<br>
+ * <b>1.0.7: </b>升级mybatis plus3.3.1版本, 官方删除SQL执行效率插件Bean配置; 推荐使用第三方插件https://mybatis.plus/guide/p6spy.html<br>
  *
  * @author lshaci
  * @since 1.0.2
- * @version 1.0.3
+ * @version 1.0.7
  */
 @Slf4j
 @Configuration
@@ -48,23 +48,10 @@ public class MybatisPlusConfig {
      */
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "framework.mybatis.optimistic-locker.enabled", havingValue = "true")
+    @ConditionalOnProperty(value = "framework.mybatis.optimistic-locker.enabled", havingValue = "true", matchIfMissing = true)
     public OptimisticLockerInterceptor optimisticLockerInterceptor() {
         log.debug("Config mybatis plus optimistic locker interceptor.");
         return new OptimisticLockerInterceptor();
     }
 
-    /**
-     * SQL执行效率插件
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "framework.mybatis.performance.enabled", havingValue = "true")
-    public PerformanceInterceptor performanceInterceptor() {
-        log.debug("Config mybatis plus performance interceptor.");
-        PerformanceInterceptor interceptor = new PerformanceInterceptor();
-        interceptor.setFormat(properties.getPerformance().isFormat());
-        interceptor.setMaxTime(properties.getPerformance().getMaxTime());
-        return interceptor;
-    }
 }

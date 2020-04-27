@@ -1,12 +1,12 @@
 package top.lshaci.framework.excel.entity;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.excel.annotation.ImportTitle;
 
 import java.lang.reflect.Field;
@@ -66,16 +66,16 @@ public class ImportTitleParam extends BaseTitleParam implements Comparable<Impor
 	 */
 	private void build(ImportTitle importTitle) {
 		this.required = importTitle.required();
-		if (StringUtils.isNotBlank(importTitle.prefix())) {
+		if (StrUtil.isNotBlank(importTitle.prefix())) {
 			this.prefix = importTitle.prefix();
 		}
-		if (StringUtils.isNotBlank(importTitle.suffix())) {
+		if (StrUtil.isNotBlank(importTitle.suffix())) {
 			this.suffix = importTitle.suffix();
 		}
-		if (StringUtils.isNotBlank(importTitle.title())) {
+		if (StrUtil.isNotBlank(importTitle.title())) {
 			this.title = importTitle.title();
 		}
-		if (ArrayUtils.isNotEmpty(importTitle.replaces())) {
+		if (ArrayUtil.isNotEmpty(importTitle.replaces())) {
 			this.replaceMap = Arrays.stream(importTitle.replaces())
 					.filter(r -> r.contains("__"))
 					.map(r -> r.split("__"))

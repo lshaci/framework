@@ -1,29 +1,31 @@
 package top.lshaci.framework.utils.string.converter;
 
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.utils.constants.Constants;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
-import top.lshaci.framework.utils.constants.Constants;
-
 /**
- * 将字符串类型的时间转换为{@code LocalTime}
- * 
+ * <p>将字符串类型的时间转换为{@code LocalTime}</p><br>
+ *
+ * <b>1.0.7: </b>使用hutool替换commons lang3<br>
+ *
  * @author lshaci
  * @since 1.0.2
+ * @version 1.0.7
  */
 @Slf4j
 public class String2LocalTimeConverter implements StringConverter<LocalTime> {
-	
+
 	@Override
 	public LocalTime convert(String source) {
 		log.debug("The string is : " + source);
 
-        if (StringUtils.isBlank(source)) {
+        if (StrUtil.isBlank(source)) {
             return null;
         }
         source = trimSource(source);

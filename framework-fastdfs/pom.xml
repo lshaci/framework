@@ -17,15 +17,11 @@
             <groupId>top.lshaci</groupId>
             <artifactId>framework-common</artifactId>
         </dependency>
-        <!-- apache commons lang3 -->
+		<!-- hutool core -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
-		<!-- apache commons collections4 -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-collections4</artifactId>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-core</artifactId>
+			<version>${hutool.version}</version>
 		</dependency>
 		<!-- apache commons pool -->
 		<dependency>

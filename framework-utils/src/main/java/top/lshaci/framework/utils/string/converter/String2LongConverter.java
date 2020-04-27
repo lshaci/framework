@@ -1,14 +1,16 @@
 package top.lshaci.framework.utils.string.converter;
 
-import org.apache.commons.lang3.StringUtils;
-
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Convert the string to long
- * 
+ * <p>Convert the string to long</p><br>
+ *
+ * <b>1.0.7: </b>使用hutool替换commons lang3<br>
+ *
  * @author lshaci
- * @since 0.0.1
+ * @since 1.0.2
+ * @version 1.0.7
  */
 @Slf4j
 public class String2LongConverter implements StringConverter<Long> {
@@ -17,7 +19,7 @@ public class String2LongConverter implements StringConverter<Long> {
 	public Long convert(String source) {
 		log.debug("The string is : " + source);
 
-        if (StringUtils.isBlank(source)) {
+        if (StrUtil.isBlank(source)) {
             return null;
         }
         source = trimSource(source);

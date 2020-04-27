@@ -1,10 +1,10 @@
 package top.lshaci.framework.fastdfs.util;
 
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.FileInfo;
@@ -98,7 +98,7 @@ public class FastDFSClient {
 	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
 	 */
 	public static String uploadWithFilepath(String filepath, Map<String, String> descriptions) {
-		if(StringUtils.isBlank(filepath)){
+		if(StrUtil.isBlank(filepath)){
             throw new FastDFSException(ErrorCode.FILE_PATH_IS_NULL);
         }
         File file = new File(filepath.trim());
@@ -150,7 +150,7 @@ public class FastDFSClient {
 	 * 		<i><b>example：</b><code>group1/M00/00/00/wKgDwFv-MoSAAvKrAAUC5Uh8n8c53.jpeg</code></i>
 	 */
 	public static String uploadWithBase64(String base64, String filename, Map<String, String> descriptions) {
-        if(StringUtils.isBlank(base64)){
+        if(StrUtil.isBlank(base64)){
             throw new FastDFSException(ErrorCode.FILE_IS_EMPTY);
         }
         return upload(new ByteArrayInputStream(Base64.decodeBase64(base64)), filename, descriptions);
@@ -210,7 +210,7 @@ public class FastDFSClient {
 			// upload
 			String path = storageClient.upload_file1(fileBuff, suffix, nvps);
 
-			if (StringUtils.isBlank(path)) {
+			if (StrUtil.isBlank(path)) {
 				throw new FastDFSException(ErrorCode.FILE_UPLOAD_FAILED);
 			}
 
@@ -253,11 +253,11 @@ public class FastDFSClient {
 		List<NameValuePair> nvpsList = new ArrayList<>();
 
 		// the file name
-		if (StringUtils.isNotBlank(filename)) {
+		if (StrUtil.isNotBlank(filename)) {
 			nvpsList.add(new NameValuePair(FastDFSConstant.FILE_DESCRIPTION_FILE_NAME, filename));
 		}
 		// the file descriptions
-		if (MapUtils.isNotEmpty(descriptions)) {
+		if (MapUtil.isNotEmpty(descriptions)) {
 			descriptions.forEach((key, value) -> nvpsList.add(new NameValuePair(key, value)));
 		}
 
@@ -288,7 +288,7 @@ public class FastDFSClient {
 
         filepath = toLocal(filepath.trim());
         // Get the file name
-        if (StringUtils.isBlank(filename)) {
+        if (StrUtil.isBlank(filename)) {
             filename = getOriginalFilename(filepath);
         }
         log.debug("Download file, the file path is: {}, filename: {}", filepath, filename);
@@ -309,7 +309,7 @@ public class FastDFSClient {
 	 * @param response the http servlet response
 	 */
 	private static void setResponseHeader(String filename, HttpServletResponse response) {
-		if (StringUtils.isBlank(filename)) {
+		if (StrUtil.isBlank(filename)) {
 			log.warn("Set response header failed, because the file name is blank.");
 			return;
 		}
@@ -317,7 +317,7 @@ public class FastDFSClient {
 		try {
 			String encoderName = URLEncoder.encode(filename, "UTF-8");
 			String contentType = FileSuffixContentType.getContentType(getFilenameSuffix(filename));
-			if (StringUtils.isNotBlank(contentType)) {
+			if (StrUtil.isNotBlank(contentType)) {
 				response.setContentType(contentType + ";charset=UTF-8");
 			}
 		    response.setHeader("Accept-Ranges", "bytes");
@@ -394,7 +394,7 @@ public class FastDFSClient {
 	 * @param filepath the fastdfs file path
 	 */
 	private static void verifyFilepath(String filepath) {
-		if(StringUtils.isBlank(filepath)){
+		if(StrUtil.isBlank(filepath)){
 			throw new FastDFSException(ErrorCode.FILE_PATH_IS_NULL);
 		}
 	}
@@ -496,7 +496,7 @@ public class FastDFSClient {
 
 		Map<String, String> infoMap = null;
 
-		if (ArrayUtils.isNotEmpty(nvps)) {
+		if (ArrayUtil.isNotEmpty(nvps)) {
 			infoMap = Arrays.stream(nvps)
 					.collect(toMap(NameValuePair::getName, NameValuePair::getValue, (k1, k2) -> k1));
 		}
@@ -512,7 +512,7 @@ public class FastDFSClient {
 	 */
 	private static String getOriginalFilename(String filepath) {
 		Map<String, String> descriptions = getFileDescriptions(filepath);
-		if (MapUtils.isNotEmpty(descriptions)) {
+		if (MapUtil.isNotEmpty(descriptions)) {
 			return descriptions.get(FastDFSConstant.FILE_DESCRIPTION_FILE_NAME);
 		}
 		return null;
@@ -526,7 +526,7 @@ public class FastDFSClient {
 	 */
 	private static String getFilenameSuffix(String filename) {
 		String suffix = null;
-		if (StringUtils.isNotBlank(filename)) {
+		if (StrUtil.isNotBlank(filename)) {
 			if (filename.contains(FastDFSConstant.DOT)) {
 				suffix = filename.substring(filename.lastIndexOf(FastDFSConstant.DOT) + 1);
 			} else {
@@ -543,7 +543,7 @@ public class FastDFSClient {
 	 * @return The converted path
 	 */
 	private static String toLocal(String path) {
-        if (StringUtils.isNotBlank(path)) {
+        if (StrUtil.isNotBlank(path)) {
             path = path.replaceAll("\\\\", FastDFSConstant.SEPARATOR);
 
             if (path.contains(FastDFSConstant.DOT)) {

@@ -1,8 +1,8 @@
 package top.lshaci.framework.excel.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.utils.ReflectionUtils;
 
@@ -54,7 +54,7 @@ class ExportValueUtil extends BaseValueUtil {
 		}
 
 		String result = value.toString();
-		if (StringUtils.isBlank(result)) {
+		if (StrUtil.isBlank(result)) {
 			log.info("单元格的值为空字符，不作其它处理");
 			return "";
 		}
@@ -62,7 +62,7 @@ class ExportValueUtil extends BaseValueUtil {
 		// 替换信息存在, 则对原始值进行替换处理
 		if (MapUtils.isNotEmpty(titleParam.getReplaceMap())) {
 			result = titleParam.getReplaceMap().get(result);
-			if (StringUtils.isBlank(result)) {
+			if (StrUtil.isBlank(result)) {
 				log.info("替换后单元格的值为空字符，不作其它处理");
 				return "";
 			}

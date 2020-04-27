@@ -1,9 +1,9 @@
 package top.lshaci.framework.excel.entity;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang3.StringUtils;
 import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.builder.CellStyleBuilder;
 import top.lshaci.framework.excel.builder.IndexBuilder;
@@ -58,7 +58,7 @@ public class ExportSheetParam {
 	 * 是否合并序号列
 	 */
 	private boolean mergeIndex = true;
-	
+
 	/**
 	 * 是否冻结标题
 	 */
@@ -112,16 +112,16 @@ public class ExportSheetParam {
 		param.cellStyleBuilder = ReflectionUtils.newInstance(exportSheet.cellStyleBuilder());
 		param.indexBuilder = ReflectionUtils.newInstance(exportSheet.indexBuilder());
 
-		if (StringUtils.isNotBlank(exportSheet.fontName())) {
+		if (StrUtil.isNotBlank(exportSheet.fontName())) {
 			param.fontName = exportSheet.fontName();
 		}
-		if (StringUtils.isNotBlank(exportSheet.indexName())) {
+		if (StrUtil.isNotBlank(exportSheet.indexName())) {
 			param.indexName = exportSheet.indexName();
 		}
-		if (StringUtils.isNotBlank(exportSheet.title())) {
+		if (StrUtil.isNotBlank(exportSheet.title())) {
 			param.title = exportSheet.title();
 		}
-		if (StringUtils.isNotBlank(exportSheet.name())) {
+		if (StrUtil.isNotBlank(exportSheet.name())) {
 			param.name = exportSheet.name();
 		}
 		if (exportSheet.indexWidth() > 0) {

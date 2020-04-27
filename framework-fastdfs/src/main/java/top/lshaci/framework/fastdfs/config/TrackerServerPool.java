@@ -1,8 +1,8 @@
 package top.lshaci.framework.fastdfs.config;
 
+import cn.hutool.core.map.MapUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.csource.fastdfs.ClientGlobal;
@@ -68,7 +68,7 @@ public class TrackerServerPool {
      */
 	private void clientInit(Map<String, String> properties) throws Exception {
         Properties fastDFSProperties = new Properties();
-        if (MapUtils.isNotEmpty(properties)) {
+        if (MapUtil.isNotEmpty(properties)) {
             properties.forEach((k, v) -> fastDFSProperties.put("fastdfs." + k, v));
         }
         ClientGlobal.initByProperties(fastDFSProperties);

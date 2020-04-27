@@ -1,33 +1,35 @@
 package top.lshaci.framework.utils;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
+import top.lshaci.framework.utils.enums.FileType;
+import top.lshaci.framework.utils.exception.UtilException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
-import top.lshaci.framework.utils.enums.FileType;
-import top.lshaci.framework.utils.exception.UtilException;
-
 /**
- * File type util
- * 
+ * <p>File type util</p><br>
+ *
+ * <b>1.0.7: </b>使用hutool替换commons lang3<br>
+ *
  * @author lshaci
  * @since 0.0.1
+ * @version 1.0.7
  */
 @Slf4j
 public abstract class FileTypeUtil {
 
 	/**
 	 * Get the file type with file
-	 * 
+	 *
 	 * @param file the file
 	 * @return the file type
-	 * 
+	 *
 	 * @throws UtilException if read the file has exception throw this
 	 */
 	public static FileType getType(File file) throws UtilException {
@@ -44,7 +46,7 @@ public abstract class FileTypeUtil {
 
 	/**
 	 * Get the file type with input stream
-	 * 
+	 *
 	 * @param is the input stream
 	 * @return the file type
 	 * @throws UtilException if read the file has exception throw this
@@ -54,7 +56,7 @@ public abstract class FileTypeUtil {
 
 		String fileHead = getFileHeader(is);
 
-		if (StringUtils.isBlank(fileHead)) {
+		if (StrUtil.isBlank(fileHead)) {
 			return null;
 		}
 
@@ -73,13 +75,13 @@ public abstract class FileTypeUtil {
 
 	/**
 	 * Bytes file header to hex string
-	 * 
+	 *
 	 * @param src the file header byter
 	 * @return the hex string
 	 */
 	private static String bytesToHexString(byte[] src) {
 		StringBuilder stringBuilder = new StringBuilder();
-		if (ArrayUtils.isEmpty(src)) {
+		if (ArrayUtil.isEmpty(src)) {
 			return null;
 		}
 		for (int i = 0; i < src.length; i++) {
@@ -95,7 +97,7 @@ public abstract class FileTypeUtil {
 
 	/**
 	 * Get the file header with input stream
-	 * 
+	 *
 	 * @param is the input stream
 	 * @return the file header
 	 * @throws UtilException if read the file has exception throw this

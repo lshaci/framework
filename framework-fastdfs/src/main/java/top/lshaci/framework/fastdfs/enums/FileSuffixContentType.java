@@ -1,7 +1,6 @@
 package top.lshaci.framework.fastdfs.enums;
 
-import org.apache.commons.lang3.StringUtils;
-
+import cn.hutool.core.util.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -98,7 +97,7 @@ public enum FileSuffixContentType {
 	 * @return the content type corresponding to the suffix name
 	 */
 	public static String getContentType(String suffix) {
-		if (StringUtils.isBlank(suffix)) {
+		if (StrUtil.isBlank(suffix)) {
 			return null;
 		}
 

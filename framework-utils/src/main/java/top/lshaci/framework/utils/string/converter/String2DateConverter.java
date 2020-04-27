@@ -1,19 +1,20 @@
 package top.lshaci.framework.utils.string.converter;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.utils.constants.Constants;
 
+import java.util.Date;
+
 /**
- * Convert the string to date<br><br>
- * <b>0.0.4</b>: Add millisecond conversion
- * 
+ * <p>Convert the string to date</p><br>
+ *
+ * <b>0.0.4: </b>Add millisecond conversion<br>
+ * <b>1.0.7: </b>使用hutool替换commons lang3<br>
+ *
  * @author lshaci
  * @since 0.0.1
- * @version 0.0.4
+ * @version 1.0.7
  */
 @Slf4j
 public class String2DateConverter implements StringConverter<Date> {
@@ -22,7 +23,7 @@ public class String2DateConverter implements StringConverter<Date> {
 	public Date convert(String source) {
 		log.debug("The string is : " + source);
 
-        if (StringUtils.isBlank(source)) {
+        if (StrUtil.isBlank(source)) {
             return null;
         }
         source = trimSource(source);

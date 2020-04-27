@@ -1,8 +1,8 @@
 package top.lshaci.framework.excel.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -122,7 +122,7 @@ public class DefaultImportService {
 	 */
 	private Sheet fetchSheet(Workbook workbook) {
 		Sheet sheet = null;
-		if (StringUtils.isNotBlank(this.sheetParam.getName())) {
+		if (StrUtil.isNotBlank(this.sheetParam.getName())) {
 			sheet = workbook.getSheet(this.sheetParam.getName());
 		} else {
 			sheet = workbook.getSheetAt(this.sheetParam.getIndex());
@@ -197,7 +197,7 @@ public class DefaultImportService {
 				.filter(f -> Objects.nonNull(f.getAnnotation(ImportTitle.class)))
 				.forEach(f -> {
 					String title = f.getAnnotation(ImportTitle.class).title();
-					if (StringUtils.isNotBlank(title)) {
+					if (StrUtil.isNotBlank(title)) {
 						titleParamMap.put(title, new ImportTitleParam(f, cls));
 					}
 				});
