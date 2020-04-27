@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.utils.ReflectionUtils;
+import top.lshaci.framework.utils.constants.Constants;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static java.util.Objects.nonNull;
@@ -53,8 +55,8 @@ class ExportValueUtil extends BaseValueUtil {
 			return getEnumValue(titleParam, value);
 		}
 
-		String result = value.toString();
-		if (StrUtil.isBlank(result)) {
+        String result = obj2Str(value);
+        if (StrUtil.isBlank(result)) {
 			log.info("单元格的值为空字符，不作其它处理");
 			return "";
 		}
@@ -71,7 +73,20 @@ class ExportValueUtil extends BaseValueUtil {
 		return concat(titleParam, result);
 	}
 
-	/**
+    /**
+     * 将Object类型转换为String
+     *
+     * @param value the value
+     * @return the value of string type
+     */
+    private static String obj2Str(Object value) {
+        if (value instanceof LocalDateTime) {
+            return Constants.LONG_DATE_TIME_FORMATTER.format((LocalDateTime) value);
+        }
+        return value.toString();
+    }
+
+    /**
 	 * 根据列参数信息和单元格的原始值获取枚举的值
 	 *
 	 * @param titleParam 列参数信息
