@@ -9,7 +9,7 @@
     <parent>
         <artifactId>framework-parent</artifactId>
         <groupId>top.lshaci</groupId>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
     </parent>
 
     <dependencies>
