@@ -29,17 +29,6 @@
             <groupId>top.lshaci</groupId>
             <artifactId>framework-swagger</artifactId>
         </dependency>
-        <!-- top lshaci framework test module -->
-        <dependency>
-            <groupId>top.lshaci</groupId>
-            <artifactId>framework-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
         <!-- alibaba nacos discovery -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -51,6 +40,19 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- top lshaci framework test module -->
+        <dependency>
+            <groupId>top.lshaci</groupId>
+            <artifactId>framework-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- mybatis plus generator -->
         <dependency>
             <groupId>com.baomidou</groupId>
