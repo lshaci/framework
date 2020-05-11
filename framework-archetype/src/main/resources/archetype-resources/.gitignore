@@ -1,11 +1,25 @@
+# git
+*.gitkeep
+
+# jrebel
+rebel.xml
+
+# idea
 *.iml
-*.log
+**/.idea/
+
+# eclipse
 *.project
 *.classpath
 *.factorypath
-**/.idea/
-**/logs/
-**/target/
 **/.settings/
+
+# log
+*.log
+**/logs/
+
+# maven
+**/target/
+
+# custom
 **/test/
-*.gitkeep
