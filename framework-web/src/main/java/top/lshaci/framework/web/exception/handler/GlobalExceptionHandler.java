@@ -13,14 +13,15 @@ import top.lshaci.framework.web.model.ExceptionMessage;
 import top.lshaci.framework.web.utils.GlobalExceptionUtils;
 
 /**
- * Global exception handler<br><br>
+ * <p>Global exception handler</p><br>
  *
  * <b>0.0.4: </b>Add method argumentExceptionHandler<br>
- * <b>1.0.4: </b>使用GlobalExceptionUtils来获取自定义的异常消息
+ * <b>1.0.4: </b>使用GlobalExceptionUtils来获取自定义的异常消息<br>
+ * <b>1.0.8: </b>删除参数验证失败异常中的日志信息<br>
  *
  * @author lshaci
  * @since 0.0.3
- * @version 1.0.4
+ * @version 1.0.8
  */
 @Slf4j
 @RestController
@@ -32,11 +33,6 @@ public class GlobalExceptionHandler {
      */
     private static final String SYSTEM_EXCEPTION = "System anomaly!";
 
-    /**
-     * Argument exception log message
-     */
-	private final static String FIELD = "字段:";
-
 	/**
 	 * Base exception handler
 	 *
@@ -45,9 +41,7 @@ public class GlobalExceptionHandler {
 	 */
     @ExceptionHandler(BaseException.class)
     public JsonResponse<Object> baseExceptionHandler(BaseException e) {
-        return JsonResponse
-        		.failure(e.getMessage())
-        		.setCode(e.getCode());
+        return JsonResponse.failure(e.getMessage()).setCode(e.getCode());
     }
 
 	/**
@@ -58,8 +52,6 @@ public class GlobalExceptionHandler {
 	 */
     @ExceptionHandler(value = { BindException.class, MethodArgumentNotValidException.class })
     public JsonResponse<Object> argumentExceptionHandler(Exception e) {
-    	log.error(SYSTEM_EXCEPTION, e);
-
         StringBuilder message = new StringBuilder();
         FieldError fieldError = null;
 
@@ -73,9 +65,9 @@ public class GlobalExceptionHandler {
 
         if (fieldError != null) {
         	String field = fieldError.getField();
-        	log.warn(FIELD + field);
         	String msg = fieldError.getDefaultMessage();
         	message.append(msg);
+        	log.warn("字段:{} => {}", field, msg);
 		}
 
         return JsonResponse.failure(message.toString());
