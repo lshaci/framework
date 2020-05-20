@@ -8,7 +8,7 @@ import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import top.lshaci.framework.common.constants.Constants;
+import top.lshaci.framework.utils.constants.Constants;
 
 import java.util.ArrayList;
 import java.util.HashSet;
