@@ -45,6 +45,7 @@
 			<artifactId>spring-boot-starter-freemarker</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<!-- top lshaci utils spring -->
 		<dependency>
 			<groupId>top.lshaci</groupId>
 			<artifactId>framework-utils-spring</artifactId>

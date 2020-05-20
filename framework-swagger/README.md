@@ -2,7 +2,8 @@
 该模块基于swagger UI和spring boot web构建的restful风格的api文档
 > latest-version: 1.0.4
 
-# Start
+# swagger api使用
+
 ## 1.引入依赖
 ```xml
 <dependency>
@@ -12,7 +13,7 @@
 </dependency>
 ```
 
-### 1.1 启用(默认开启)
+## 2.启用(默认开启)
 在yml配置文件中添加如下配置:
 ```yaml
 framework:
@@ -20,7 +21,7 @@ framework:
     enabled: true # 生产环境中可设为false, 以关闭swagger ui
 ```
 
-### 1.2 无分组配置
+## 3.无分组配置
 在yml配置文件中添加swagger必须的配置：
 ```yaml
 framework:
@@ -36,7 +37,7 @@ framework:
 更多配置信息请查看: 
 > top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties
 
-### 1.3 分组配置
+## 4.分组配置
 在yml配置文件中添加swagger必须的配置：
 ```yaml
 framework:
@@ -57,5 +58,66 @@ framework:
         description: XXX项目API文档描述
         version: 1.0
 ```
+
+## 5.全局参数配置
+在yml配置文件中添加swagger必须的配置：
+```yaml
+# framework
+framework:
+  # swagger
+  swagger:
+    global-parameters:
+    - name: Auth
+      type: header
+      required: true
+      modelRef: string
+      description: 登录凭证
+```
 更多配置信息请查看: 
 > top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties$DocketInfo
+
+# Swagger2Doc使用
+
+## 1.引入依赖
+```xml
+<dependency>
+    <groupId>top.lshaci</groupId>
+    <artifactId>framework-utils-spring</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-freemarker</artifactId>
+</dependency>
+<dependency>
+    <groupId>cn.hutool</groupId>
+    <artifactId>hutool-core</artifactId>
+    <version>${hutool.version}</version>
+</dependency>
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>fastjson</artifactId>
+</dependency>
+```
+
+## 2.配置
+```yaml
+# spring
+spring:
+  # freemarker
+  freemarker:
+    prefer-file-system-access: false
+    settings:
+      classic_compatible: true
+      number_format: 0
+```
+
+## 3.使用
+```java
+public class Swagger2DocTest {
+    public void test() {
+        String json = ""; // 获取到的swagger api json字符串
+        FileOutputStream os = new FileOutputStream("E:/swagger.doc");
+        Swagger2Doc.generate(json, os);
+    }
+}
+```
