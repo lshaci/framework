@@ -9,19 +9,19 @@ import top.lshaci.framework.excel.service.ExportService;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
-import static java.util.Objects.nonNull;
 import static top.lshaci.framework.excel.entity.ExportSheetParam.build;
-import static top.lshaci.framework.excel.service.ExportService.get;
 
 /**
  * <p>Excel导出处理器</p><br>
  *
  * <b>1.0.6:</b>添加参数<code>exportService</code>
+ * <b>1.0.8:</b>使用Optional替换if else
  *
  * @author lshaci
  * @since 1.0.2
- * @version 1.0.6
+ * @version 1.0.8
  */
 public class ExportHandler {
 
@@ -39,8 +39,8 @@ public class ExportHandler {
 			throw new ExportHandlerException(ExportError.ENTITY_IS_NULL);
 		}
 
-		sheetParam = nonNull(sheetParam) ? sheetParam : build(cls.getAnnotation(ExportSheet.class));
-		exportService = nonNull(exportService) ? exportService : get();
+		sheetParam = Optional.of(sheetParam).orElse(build(cls.getAnnotation(ExportSheet.class)));
+		exportService = Optional.of(exportService).orElseGet(ExportService::get);
 
 		return exportService.create(cls, datas, sheetParam);
 	}
