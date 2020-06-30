@@ -1,0 +1,11 @@
+*.iml
+*.log
+*.project
+*.classpath
+*.factorypath
+**/.idea/
+**/logs/
+**/target/
+**/.settings/
+**/test/
+*.gitkeep

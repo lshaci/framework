@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>framework-utils-spring</artifactId>
+
+	<name>framework-utils-spring</name>
+	<description>framework spring utils</description>
+
+	<parent>
+		<groupId>top.lshaci</groupId>
+		<artifactId>framework-parent</artifactId>
+		<version>1.0.7</version>
+	</parent>
+
+	<dependencies>
+		<!-- framework common module -->
+		<dependency>
+			<groupId>top.lshaci</groupId>
+			<artifactId>framework-common</artifactId>
+		</dependency>
+		<!-- spring boot configuration -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!-- spring boot freemarker -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-freemarker</artifactId>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+
+</project>

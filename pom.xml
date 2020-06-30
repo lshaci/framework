@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>top.lshaci</groupId>
+	<artifactId>framework-parent</artifactId>
+	<version>1.0.7</version>
+
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>framework-archetype</module>
+		<module>framework-common</module>
+		<module>framework-utils</module>
+		<module>framework-utils-spring</module>
+		<module>framework-mybatis</module>
+		<module>framework-excel</module>
+		<module>framework-swagger</module>
+	    <module>framework-apollo</module>
+		<module>framework-fastdfs</module>
+		<module>framework-pdfUtils</module>
+		<module>framework-test</module>
+		<module>framework-thread</module>
+		<module>framework-fescar</module>
+		<module>framework-web</module>
+		<module>framework-redis</module>
+	</modules>
+
+	<name>framework-parent</name>
+	<url>www.lshaci.top</url>
+	<description>framework parent</description>
+
+	<developers>
+		<developer>
+			<id>lshaci</id>
+			<name>liangxu</name>
+			<email>lshaci@qq.com</email>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+
+		<poi.version>3.17</poi.version>
+		<apollo.version>1.4.0</apollo.version>
+		<swagger.version>2.9.2</swagger.version>
+
+		<hutool.version>5.3.2</hutool.version>
+		<framework.version>1.0.7</framework.version>
+		<fastjson.version>1.2.47</fastjson.version>
+		<commons.compress.version>1.18</commons.compress.version>
+		<fastdfs.client.version>1.27.0.0</fastdfs.client.version>
+		<commons.collections4.version>4.3</commons.collections4.version>
+		<mybatis.plus.generator.version>3.3.1</mybatis.plus.generator.version>
+
+		<spring.boot.version>2.1.4.RELEASE</spring.boot.version>
+		<spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
+		<druid.spring.boot.version>1.1.18</druid.spring.boot.version>
+		<spring.cloud.alibaba.version>2.1.1.RELEASE</spring.cloud.alibaba.version>
+		<mybatis.plus.spring.boot.version>3.3.1</mybatis.plus.spring.boot.version>
+		<flying.saucer.pdf.itext5.version>9.0.6</flying.saucer.pdf.itext5.version>
+		<baomidou.dynamic.datasource.spring.boot.version>3.0.0</baomidou.dynamic.datasource.spring.boot.version>
+	</properties>
+
+	<dependencies>
+		<!-- lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- logback core -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
+		<!-- logback classic -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- framework common module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-common</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework mybatis module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-mybatis</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework redis module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-redis</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework swagger module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-swagger</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework apollo module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-apollo</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework web module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-web</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework utils module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-utils</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework spring utils module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-utils-spring</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework pdf utils module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-pdfUtils</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework excel module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-excel</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework thread module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-thread</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework fastdfs module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-fastdfs</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- framework test module -->
+			<dependency>
+				<groupId>top.lshaci</groupId>
+				<artifactId>framework-test</artifactId>
+				<version>${framework.version}</version>
+			</dependency>
+			<!-- fastjson -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson.version}</version>
+			</dependency>
+			<!-- spring boot druid -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid-spring-boot-starter</artifactId>
+				<version>${druid.spring.boot.version}</version>
+			</dependency>
+			<!-- spring boot mybatis plus -->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<version>${mybatis.plus.spring.boot.version}</version>
+			</dependency>
+            <!-- spring boot baomidou dynamic datasource -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${baomidou.dynamic.datasource.spring.boot.version}</version>
+            </dependency>
+			<!-- mybatis plus generator -->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-generator</artifactId>
+				<version>${mybatis.plus.generator.version}</version>
+			</dependency>
+			<!-- springfox swagger2 -->
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<!-- springfox swagger ui -->
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<!-- poi -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${poi.version}</version>
+			</dependency>
+			<!-- poi ooxml -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
+				<version>${poi.version}</version>
+			</dependency>
+			<!-- apache commons collections4 -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-collections4</artifactId>
+				<version>${commons.collections4.version}</version>
+			</dependency>
+			<!-- apache common compress -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-compress</artifactId>
+				<version>${commons.compress.version}</version>
+			</dependency>
+			<!-- flying saucer pdf itext5 -->
+			<dependency>
+				<groupId>org.xhtmlrenderer</groupId>
+				<artifactId>flying-saucer-pdf-itext5</artifactId>
+				<version>${flying.saucer.pdf.itext5.version}</version>
+			</dependency>
+			<!-- fast dfs client -->
+			<dependency>
+				<groupId>net.oschina.zcx7878</groupId>
+				<artifactId>fastdfs-client-java</artifactId>
+				<version>${fastdfs.client.version}</version>
+			</dependency>
+			<!-- apollo client -->
+			<dependency>
+			    <groupId>com.ctrip.framework.apollo</groupId>
+			    <artifactId>apollo-client</artifactId>
+			    <version>${apollo.version}</version>
+			</dependency>
+			<!-- spring boot dependencies -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring.boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- spring cloud dependencies -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring.cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+            <!-- alibaba spring cloud dependencies -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git@github.com:lshaci/framework.git</connection>
+		<developerConnection>scm:git:git@github.com:lshaci/framework.git</developerConnection>
+		<url>git@github.com:lshaci/framework.git</url>
+	</scm>
+
+    <build>
+		<plugins>
+			<!-- Source -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- compiler -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+            <!-- surefire -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+		</plugins>
+    </build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- nexus staging -->
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.3</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>oss</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+					<!-- GPG -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+				</snapshotRepository>
+				<repository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+		<profile>
+			<id>company</id>
+			<distributionManagement>
+				<repository>
+					<id>releases</id>
+					<name>Nexus Release Repository</name>
+					<url>http://basic.xdbigdata.com/nexus/content/repositories/releases/</url>
+				</repository>
+				<snapshotRepository>
+					<id>snapshots</id>
+					<name>Nexus Snapshot Repository</name>
+					<url>http://basic.xdbigdata.com/nexus/content/repositories/snapshots/</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
+</project>
