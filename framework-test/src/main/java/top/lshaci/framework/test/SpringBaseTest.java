@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  * @param <B> The test bean type
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest
+@RunWith(SpringRunner.class)
 public abstract class SpringBaseTest<B> {
 
     @Autowired

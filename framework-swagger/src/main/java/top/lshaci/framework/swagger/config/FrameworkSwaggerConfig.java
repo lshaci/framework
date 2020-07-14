@@ -1,12 +1,9 @@
 package top.lshaci.framework.swagger.config;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -14,24 +11,19 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import top.lshaci.framework.swagger.model.DocketInfo;
 import top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.google.common.base.Predicates.and;
-import static com.google.common.base.Predicates.not;
-import static com.google.common.base.Predicates.or;
+import static com.google.common.base.Predicates.*;
 import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
 import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
+import static top.lshaci.framework.swagger.properties.FrameworkSwaggerProperties.SWAGGER_PREFIX;
 
 /**
  * <p>Swagger auto configuration</p><br>
@@ -46,13 +38,16 @@ import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 @Configuration
 @EnableSwagger2
 @EnableConfigurationProperties(FrameworkSwaggerProperties.class)
-@ConditionalOnProperty(prefix = FrameworkSwaggerProperties.SWAGGER_PREFIX, value = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = SWAGGER_PREFIX, value = "enabled", havingValue = "true", matchIfMissing = true)
 public class FrameworkSwaggerConfig implements BeanFactoryAware {
 
-	@Autowired
-	private FrameworkSwaggerProperties properties;
+	private final FrameworkSwaggerProperties properties;
 
 	private BeanFactory beanFactory;
+
+	public FrameworkSwaggerConfig(FrameworkSwaggerProperties properties) {
+		this.properties = properties;
+	}
 
 	/**
 	 * Config swagger docket bean
