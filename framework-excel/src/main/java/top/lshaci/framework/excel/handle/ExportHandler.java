@@ -39,8 +39,8 @@ public class ExportHandler {
 			throw new ExportHandlerException(ExportError.ENTITY_IS_NULL);
 		}
 
-		sheetParam = Optional.of(sheetParam).orElse(build(cls.getAnnotation(ExportSheet.class)));
-		exportService = Optional.of(exportService).orElseGet(ExportService::get);
+		sheetParam = Optional.ofNullable(sheetParam).orElse(build(cls.getAnnotation(ExportSheet.class)));
+		exportService = Optional.ofNullable(exportService).orElseGet(ExportService::get);
 
 		return exportService.create(cls, datas, sheetParam);
 	}
