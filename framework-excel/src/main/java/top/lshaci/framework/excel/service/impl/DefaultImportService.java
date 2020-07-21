@@ -12,6 +12,7 @@ import top.lshaci.framework.excel.entity.ImportSheetParam;
 import top.lshaci.framework.excel.entity.ImportTitleParam;
 import top.lshaci.framework.excel.enums.ImportError;
 import top.lshaci.framework.excel.exception.ImportHandlerException;
+import top.lshaci.framework.excel.helper.ImportValueHelper;
 import top.lshaci.framework.utils.ReflectionUtils;
 
 import java.util.*;
@@ -89,7 +90,7 @@ public class DefaultImportService {
 		List<Object> values = new ArrayList<>();
 		this.titleParams.forEach(p -> {
 			Cell cell = row.getCell(p.getColNum());
-			Object value = ImportValueUtil.getTargetValue(cell, p);
+			Object value = ImportValueHelper.getTargetValue(cell, p);
 			verifyValue(row, p, value);
 			ReflectionUtils.invokeMethod(obj, p.getMethod(), value);
 			values.add(value);
@@ -145,7 +146,7 @@ public class DefaultImportService {
 		}
 
 		row.forEach(c -> {
-			String title = ImportValueUtil.get(c);
+			String title = ImportValueHelper.get(c);
 			if (Objects.isNull(title)) {
 				return;
 			}

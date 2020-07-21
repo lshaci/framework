@@ -24,13 +24,16 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static top.lshaci.framework.excel.entity.ExportTitleParam.indexTitle;
-import static top.lshaci.framework.excel.service.impl.ExportValueUtil.fetch;
+import static top.lshaci.framework.excel.helper.ExportValueHelper.fetch;
 
 /**
- * Excel 导出业务实现
+ * <p>Excel 导出业务实现</p>
+ *
+ * <p>1.0.8: 行高处理</p>
  *
  * @author lshaci
  * @since 1.0.6
+ * @version 1.0.8
  */
 @Slf4j
 public class DefaultExportService implements ExportService {
@@ -64,6 +67,11 @@ public class DefaultExportService implements ExportService {
      * 用于生成内容的参数
      */
     protected List<ExportTitleParam> contentParams;
+
+    /**
+     * 最大的行高
+     */
+    protected int maxRowHeight;
 
     /**
      * 当前行号<b>current row number</b>
@@ -107,6 +115,8 @@ public class DefaultExportService implements ExportService {
      * 填充表格数据
      */
     protected void fillData() {
+        maxRowHeight = this.contentParams.stream().mapToInt(ExportTitleParam::getHeight).max().orElse(-1);
+
         Stream.iterate(1, n -> n + 1).limit(sheetParam.getNumber()).forEach(n -> {
             crn = 0;
             sheetParam.getIndexBuilder().reset();
@@ -130,7 +140,7 @@ public class DefaultExportService implements ExportService {
             }
 
             int size = sheetParam.getSize();
-            int end = n * size > datas.size() ? datas.size() : n * size;
+            int end = Math.min(n * size, datas.size());
             datas.subList((n - 1) * size, end).forEach(this::setRowContent);
 
             afterSetRowContent();
@@ -147,8 +157,9 @@ public class DefaultExportService implements ExportService {
             handleHasCollection(data);
         } else {
             Row row = sheet.createRow(crn++);
+            setRowHeight(row);
             AtomicInteger i = new AtomicInteger();
-            this.contentParams.forEach(t -> setContentCellValue(row, t.getHeight(), i.getAndIncrement(), fetch(t, data)));
+            this.contentParams.forEach(t -> setContentCellValue(row, i.getAndIncrement(), fetch(t, data), t));
         }
     }
 
@@ -159,12 +170,13 @@ public class DefaultExportService implements ExportService {
      */
     protected void handleHasCollection(Object data) {
         Row row = sheet.createRow(crn);
+        setRowHeight(row);
         Collection<?> collectionValue = (Collection<?>) ReflectionUtils.getFieldValue(data, this.collectionTitleParam.getEntityField());
         for (int i = 0; i < this.contentParams.size(); i++) {
             ExportTitleParam titleParam = this.contentParams.get(i);
             if (CollectionUtils.isEmpty(collectionValue)) {
                 String cellValue = titleParam.isCollection() ? "" : fetch(titleParam, data);
-                setContentCellValue(row, titleParam.getHeight(), i, cellValue);
+                setContentCellValue(row, i, cellValue, titleParam);
                 continue;
             }
             int crn = this.crn;
@@ -179,6 +191,7 @@ public class DefaultExportService implements ExportService {
                     cellValue = fetch(titleParam, data);
                 }
                 Row nextRow = sheet.getRow(crn) == null ? sheet.createRow(crn) : sheet.getRow(crn);
+                setRowHeight(nextRow);
                 // 非集合列, 集合数据大于1条, 指定合并行
                 if (!titleParam.isCollection() && collectionValue.size() > 1 && titleParam.isMerge()) {
                     cellMerge(row, contentStyle, cellValue, this.crn, this.crn + collectionValue.size() - 1, i, i);
@@ -188,23 +201,34 @@ public class DefaultExportService implements ExportService {
                 if (!(titleParam.isCollection() || titleParam.isFillSame() || crn == this.crn)) {
                     cellValue = titleParam.getFillValue();
                 }
-                setContentCellValue(nextRow, titleParam.getHeight(), i, cellValue);
+                setContentCellValue(nextRow, i, cellValue, titleParam);
                 crn++;
             }
         }
         crn += (CollectionUtils.isEmpty(collectionValue) ? 1 : collectionValue.size());
     }
 
+
+    /**
+     * 设置行高
+     *
+     * @param row 指定的行
+     */
+    protected void setRowHeight(Row row) {
+        if (maxRowHeight > 0) {
+            row.setHeight((short) (maxRowHeight * 20));
+        }
+    }
+
     /**
      * 设置内容单元格的值
      *
      * @param row 单元格所在行
-     * @param rowHeight 行高
      * @param columnNumber 单元格所在列
      * @param cellValue 单元格的值
+     * @param titleParam 列参数信息
      */
-    protected void setContentCellValue(Row row, int rowHeight, int columnNumber, String cellValue) {
-        row.setHeight((short) (rowHeight * 20));
+    protected void setContentCellValue(Row row, int columnNumber, String cellValue, ExportTitleParam titleParam) {
         Cell cell = row.createCell(columnNumber);
         cell.setCellValue(cellValue);
         cell.setCellStyle(contentStyle);

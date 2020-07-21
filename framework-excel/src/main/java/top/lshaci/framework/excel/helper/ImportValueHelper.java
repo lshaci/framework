@@ -1,4 +1,4 @@
-package top.lshaci.framework.excel.service.impl;
+package top.lshaci.framework.excel.helper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
@@ -18,7 +18,7 @@ import java.util.Objects;
  * @since 1.0.2
  */
 @Slf4j
-class ImportValueUtil extends BaseValueUtil {
+public class ImportValueHelper extends BaseValueUtil {
 
 	/**
 	 * 获取单元格的值
@@ -57,7 +57,7 @@ class ImportValueUtil extends BaseValueUtil {
 	 * @param titleParam 列参数信息
 	 * @return 字段的值
 	 */
-	static Object getTargetValue(Cell cell, ImportTitleParam titleParam) {
+	public static Object getTargetValue(Cell cell, ImportTitleParam titleParam) {
 		String cellValue = getCellValue(cell, titleParam);
 		if (Objects.isNull(cellValue)) {
 			return null;

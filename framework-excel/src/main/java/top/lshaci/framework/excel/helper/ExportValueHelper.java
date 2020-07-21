@@ -1,4 +1,4 @@
-package top.lshaci.framework.excel.service.impl;
+package top.lshaci.framework.excel.helper;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import static java.util.Objects.nonNull;
  * @since 1.0.2
  */
 @Slf4j
-class ExportValueUtil extends BaseValueUtil {
+public class ExportValueHelper extends BaseValueUtil {
 
 	/**
 	 * 根据列参数信息和行数据获取对应单元格的值
@@ -28,7 +28,7 @@ class ExportValueUtil extends BaseValueUtil {
 	 * @param data 行数据
 	 * @return 对应单元格的值
 	 */
-	static String fetch(ExportTitleParam titleParam, Object data) {
+	public static String fetch(ExportTitleParam titleParam, Object data) {
 		// 是否是序号列
 		if (titleParam.isIndex()) {
 			return titleParam.getIndexNumber();

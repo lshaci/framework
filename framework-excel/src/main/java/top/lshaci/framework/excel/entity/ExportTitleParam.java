@@ -21,10 +21,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * 导出列定义的相关参数
+ * <p>导出列定义的相关参数</p>
+ *
+ * <p>1.0.8: 将行高的默认值修改为-1</p>
  *
  * @author lshaci
  * @since 1.0.2
+ * @version 1.0.8
  */
 @Slf4j
 @Data
@@ -52,7 +55,7 @@ public class ExportTitleParam extends BaseTitleParam implements Comparable<Expor
 	/**
 	 * 内容行高
 	 */
-	private int height = 20;
+	private int height = -1;
 
 	/**
 	 * 分组下的二级标题信息

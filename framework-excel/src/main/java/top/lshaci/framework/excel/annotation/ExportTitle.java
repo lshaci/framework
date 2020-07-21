@@ -7,10 +7,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 将一个字段或者公共方法标记为需要导出的列
+ * <p>将一个字段或者公共方法标记为需要导出的列</p>
+ *
+ * <p>1.0.8: 将行高的默认值修改为-1</p>
  *
  * @author lshaci
  * @since 1.0.2
+ * @version 1.0.8
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -43,7 +46,7 @@ public @interface ExportTitle {
 	 *
 	 * @return 内容的行高
 	 */
-	int height() default 20;
+	int height() default -1;
 
 	/**
 	 * 导出数据拼接前缀
