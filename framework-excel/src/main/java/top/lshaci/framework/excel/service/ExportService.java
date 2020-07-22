@@ -3,7 +3,6 @@ package top.lshaci.framework.excel.service;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import top.lshaci.framework.excel.annotation.ExportSheet;
 import top.lshaci.framework.excel.entity.ExportSheetParam;
@@ -23,11 +22,6 @@ import java.util.function.Predicate;
  */
 @FunctionalInterface
 public interface ExportService {
-
-    /**
-     * Excel类型为XLSX最大的数据量
-     */
-     int XLSX_MAX_SIZE = 10000;
 
     /**
      * 创建Excel工作簿{@code Workbook}
@@ -79,21 +73,18 @@ public interface ExportService {
      * 根据导出实体类信息和数据条数创建Excel WorkBook
      *
      * @param cls 对象类型
-     * @param size 导出数据条数
      * @return Excel WorkBook
      */
-    default Workbook workbook(Class<?> cls, int size) {
+    default Workbook workbook(Class<?> cls) {
         ExportSheet exportSheet = cls.getAnnotation(ExportSheet.class);
         if (Objects.isNull(exportSheet)) {
             return new XSSFWorkbook();
         }
 
-        if (ExcelType.XLS.equals(exportSheet.type())) {
-            return new HSSFWorkbook();
-        } else if (size < ExportService.XLSX_MAX_SIZE) {
+        if (ExcelType.XLSX.equals(exportSheet.type())) {
             return new XSSFWorkbook();
         } else {
-            return new SXSSFWorkbook();
+            return new HSSFWorkbook();
         }
     }
 

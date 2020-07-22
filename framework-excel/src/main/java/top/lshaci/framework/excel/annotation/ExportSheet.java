@@ -101,7 +101,7 @@ public @interface ExportSheet {
 	 *
 	 * @return 生成Excel的类型
 	 */
-	ExcelType type() default ExcelType.XLSX;
+	ExcelType type() default ExcelType.XLS;
 
 	/**
 	 * Sheet中单元格样式构造类

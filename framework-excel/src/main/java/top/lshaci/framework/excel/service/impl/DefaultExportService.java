@@ -153,6 +153,7 @@ public class DefaultExportService implements ExportService {
      * @param data 行数据
      */
     protected void setRowContent(Object data) {
+        long start = System.currentTimeMillis();
         if (nonNull(this.collectionTitleParam)) {
             handleHasCollection(data);
         } else {
@@ -161,6 +162,9 @@ public class DefaultExportService implements ExportService {
             AtomicInteger i = new AtomicInteger();
             this.contentParams.forEach(t -> setContentCellValue(row, i.getAndIncrement(), fetch(t, data), t));
         }
+
+        long end = System.currentTimeMillis();
+        System.err.println("填充一行数据的时间：" + (end - start));
     }
 
     /**
@@ -262,7 +266,7 @@ public class DefaultExportService implements ExportService {
      * @param row2 第二行标题的行信息
      */
     protected void setColumnTitles(Row row1, Row row2) {
-        final AtomicInteger cn = new AtomicInteger(); // 列号
+        final AtomicInteger cn = new AtomicInteger();
         for (ExportTitleParam titleParam : this.titleParams) {
             List<ExportTitleParam> children = titleParam.getChildren();
 
@@ -329,7 +333,7 @@ public class DefaultExportService implements ExportService {
         this.datas = datas;
         int total = CollectionUtils.isEmpty(datas) ? 0 : datas.size();
         this.sheetParam = sheetParam.setSizeAndNumber(total);
-        this.workbook = workbook(cls, total);
+        this.workbook = workbook(cls);
         handleStyle();
     }
 
@@ -346,7 +350,7 @@ public class DefaultExportService implements ExportService {
      */
     protected void cellMerge(Row row, CellStyle cellStyle, String value, int firstRow, int lastRow, int firstCol, int lastCol) {
         CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
-        sheet.addMergedRegion(region);
+        sheet.addMergedRegionUnsafe(region);
         Cell cell = row.createCell(firstCol);
         cell.setCellValue(value);
         cell.setCellStyle(cellStyle);
