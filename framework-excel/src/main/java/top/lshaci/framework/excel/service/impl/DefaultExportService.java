@@ -1,6 +1,8 @@
 package top.lshaci.framework.excel.service.impl;
 
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.TypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -12,8 +14,6 @@ import top.lshaci.framework.excel.entity.ExportTitleParam;
 import top.lshaci.framework.excel.enums.ExportError;
 import top.lshaci.framework.excel.exception.ExportHandlerException;
 import top.lshaci.framework.excel.service.ExportService;
-import top.lshaci.framework.utils.ClassUtils;
-import top.lshaci.framework.utils.ReflectionUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -171,7 +171,7 @@ public class DefaultExportService implements ExportService {
     protected void handleHasCollection(Object data) {
         Row row = sheet.createRow(crn);
         setRowHeight(row);
-        Collection<?> collectionValue = (Collection<?>) ReflectionUtils.getFieldValue(data, this.collectionTitleParam.getEntityField());
+        Collection<?> collectionValue = (Collection<?>) ReflectUtil.getFieldValue(data, this.collectionTitleParam.getEntityField());
         for (int i = 0; i < this.contentParams.size(); i++) {
             ExportTitleParam titleParam = this.contentParams.get(i);
             if (CollectionUtils.isEmpty(collectionValue)) {
@@ -513,7 +513,7 @@ public class DefaultExportService implements ExportService {
                     return true;
                 }).flatMap(f -> {
                     ExportTitle exportTitle = f.getAnnotation(ExportTitle.class);
-                    Class<?> fieldGenericType = ClassUtils.getFieldGenericType(f);
+                    Class<?> fieldGenericType = (Class<?>) TypeUtil.getTypeArgument(f.getType());
                     ExcelEntity excelEntity = fieldGenericType.getAnnotation(ExcelEntity.class);
                     if (nonNull(excelEntity)) {
                         return this.fetchTitleParams(fieldGenericType)

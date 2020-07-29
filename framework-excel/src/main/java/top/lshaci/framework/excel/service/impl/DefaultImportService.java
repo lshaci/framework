@@ -1,5 +1,6 @@
 package top.lshaci.framework.excel.service.impl;
 
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
@@ -13,7 +14,6 @@ import top.lshaci.framework.excel.entity.ImportTitleParam;
 import top.lshaci.framework.excel.enums.ImportError;
 import top.lshaci.framework.excel.exception.ImportHandlerException;
 import top.lshaci.framework.excel.helper.ImportValueHelper;
-import top.lshaci.framework.utils.ReflectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,13 +86,13 @@ public class DefaultImportService {
 	 * @return 行数据对应的对象
 	 */
 	private Object row2Obj(Row row) {
-		Object obj = ReflectionUtils.newInstance(this.cls);
+		Object obj = ReflectUtil.newInstance(this.cls);
 		List<Object> values = new ArrayList<>();
 		this.titleParams.forEach(p -> {
 			Cell cell = row.getCell(p.getColNum());
 			Object value = ImportValueHelper.getTargetValue(cell, p);
 			verifyValue(row, p, value);
-			ReflectionUtils.invokeMethod(obj, p.getMethod(), value);
+			ReflectUtil.invoke(obj, p.getMethod(), value);
 			values.add(value);
 		});
 		// 对象中所有的值为空, 则返回空, 在上一层中过滤掉

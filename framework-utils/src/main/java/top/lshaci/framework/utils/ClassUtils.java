@@ -6,7 +6,6 @@ import top.lshaci.framework.utils.exception.UtilException;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.JarURLConnection;
@@ -59,61 +58,6 @@ public abstract class ClassUtils {
 		}
 	}
 
-	/**
-	 * 获取字段的第一个泛型类型
-	 *
-	 * @param field 带有泛型的字段
-	 * @return 第一个泛型类型
-	 * @since 1.0.2
-	 */
-	public static Class<?> getFieldGenericType(Field field) {
-		return getFieldGenericType(field, 0);
-	}
-
-	/**
-	 * 获取字段的泛型类型
-	 *
-	 * @param field 带有泛型的字段
-	 * @param genericTypeIndex 第几个泛型类型
-	 * @return 字段的泛型类型
-	 * @since 1.0.2
-	 */
-	public static Class<?> getFieldGenericType(Field field, int genericTypeIndex) {
-		Objects.requireNonNull(field, "The field is must not be null!");
-		Type type = field.getGenericType();
-		if (type instanceof ParameterizedType) {
-			return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[genericTypeIndex];
-		}
-		throw new UtilException("This field has no generic type");
-	}
-
-	/**
-	 * 获取类继承的第一个泛型类型
-	 *
-	 * @param clazz 类
-	 * @return 第一个泛型类型
-	 */
-	public static Class<?> getSuperClassGenericType(Class<?> clazz) {
-		return getSuperClassGenericType(clazz, 0);
-	}
-
-	/**
-	 * 获取类继承父类的泛型类型
-	 *
-	 * @param clazz 类
-	 * @param genericTypeIndex 第几个泛型类型
-	 * @return 类的泛型类型
-	 */
-	public static Class<?> getSuperClassGenericType(Class<?> clazz, int genericTypeIndex) {
-		Objects.requireNonNull(clazz, "The class is must not be null!");
-
-		Type superclass = clazz.getGenericSuperclass();
-		if (superclass instanceof ParameterizedType) {
-			return (Class<?>) ((ParameterizedType) superclass).getActualTypeArguments()[genericTypeIndex];
-		}
-
-		throw new UtilException("This class has no generic type");
-	}
 
 	/**
 	 * 获取类实现第一个接口的第一个泛型类型

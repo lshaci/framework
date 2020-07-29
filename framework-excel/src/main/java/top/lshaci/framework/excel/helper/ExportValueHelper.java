@@ -1,10 +1,10 @@
 package top.lshaci.framework.excel.helper;
 
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import top.lshaci.framework.excel.entity.ExportTitleParam;
-import top.lshaci.framework.utils.ReflectionUtils;
 import top.lshaci.framework.utils.constants.Constants;
 
 import java.time.LocalDateTime;
@@ -94,7 +94,7 @@ public class ExportValueHelper extends BaseValueUtil {
 	 * @return 枚举的值
 	 */
 	private static String getEnumValue(ExportTitleParam titleParam, Object value) {
-		Object enumValue = ReflectionUtils.invokeMethod(value, titleParam.getEnumMethod());
+		Object enumValue = ReflectUtil.invoke(value, titleParam.getEnumMethod());
 		if (Objects.isNull(enumValue)) {
 			log.info("执行枚举方法后获取到的值为空");
 			return "";
@@ -112,12 +112,12 @@ public class ExportValueHelper extends BaseValueUtil {
 	private static Object fetchOriginalValue(ExportTitleParam titleParam, Object data) {
 		Object value = null;
 		if (nonNull(titleParam.getEntityField()) && !titleParam.isCollection()) {
-			Object obj = ReflectionUtils.getFieldValue(data, titleParam.getEntityField());
+			Object obj = ReflectUtil.getFieldValue(data, titleParam.getEntityField());
 			if (nonNull(obj)) {
-				value = ReflectionUtils.invokeMethod(obj, titleParam.getMethod());
+				value = ReflectUtil.invoke(obj, titleParam.getMethod());
 			}
 		} else {
-			value = ReflectionUtils.invokeMethod(data, titleParam.getMethod());
+			value = ReflectUtil.invoke(data, titleParam.getMethod());
 		}
 		return value;
 	}

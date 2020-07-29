@@ -1,5 +1,6 @@
 package top.lshaci.framework.excel.entity;
 
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,6 @@ import top.lshaci.framework.excel.builder.CellStyleBuilder;
 import top.lshaci.framework.excel.builder.IndexBuilder;
 import top.lshaci.framework.excel.builder.impl.DefaultCellStyleBuilder;
 import top.lshaci.framework.excel.builder.impl.DefaultIndexBuilder;
-import top.lshaci.framework.utils.ReflectionUtils;
 
 import java.util.Objects;
 
@@ -109,8 +109,9 @@ public class ExportSheetParam {
 		param.addIndex = exportSheet.addIndex();
 		param.mergeIndex = exportSheet.mergeIndex();
 		param.freezeTitle = exportSheet.freezeTitle();
-		param.cellStyleBuilder = ReflectionUtils.newInstance(exportSheet.cellStyleBuilder());
-		param.indexBuilder = ReflectionUtils.newInstance(exportSheet.indexBuilder());
+
+		param.cellStyleBuilder = ReflectUtil.newInstance(exportSheet.cellStyleBuilder());
+		param.indexBuilder = ReflectUtil.newInstance(exportSheet.indexBuilder());
 
 		if (StrUtil.isNotBlank(exportSheet.fontName())) {
 			param.fontName = exportSheet.fontName();

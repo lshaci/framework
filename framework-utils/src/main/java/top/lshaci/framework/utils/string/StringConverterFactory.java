@@ -1,10 +1,10 @@
 package top.lshaci.framework.utils.string;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.lshaci.framework.utils.ClassUtils;
-import top.lshaci.framework.utils.ReflectionUtils;
 import top.lshaci.framework.utils.exception.UtilException;
 import top.lshaci.framework.utils.string.converter.StringConverter;
 
@@ -77,7 +77,7 @@ public class StringConverterFactory {
 				.filter(c -> StringConverter.class.isAssignableFrom(c))
 				.collect(toMap(
 					c -> ClassUtils.getInterfaceGenericType(c).getSimpleName().toLowerCase(),
-					c -> (StringConverter<?>) ReflectionUtils.newInstance(c))
+					c -> (StringConverter<?>) ReflectUtil.newInstance(c))
 				);
 
 		StringConverterFactory factory = new StringConverterFactory();

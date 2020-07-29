@@ -1,7 +1,7 @@
 package top.lshaci.framework.excel.helper;
 
+import cn.hutool.core.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
-import top.lshaci.framework.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -33,11 +33,10 @@ class BaseValueUtil {
 	protected static Object getConvertValue(Class<?> convertClass, Method convertMethod, Object value) {
 		Object convertInstance = convertCacheMap.get(convertClass);
 		if (Objects.isNull(convertInstance)) {
-			convertInstance = ReflectionUtils.newInstance(convertClass);
+			convertInstance = ReflectUtil.newInstance(convertClass);
 			convertCacheMap.put(convertClass, convertInstance);
 		}
-
-		value = ReflectionUtils.invokeMethod(convertInstance, convertMethod, value);
+		value = ReflectUtil.invoke(convertInstance, convertMethod, value);
 		if (Objects.isNull(value)) {
 			log.warn("{}.{}转换后的值为空", convertClass, convertMethod);
 			return null;
