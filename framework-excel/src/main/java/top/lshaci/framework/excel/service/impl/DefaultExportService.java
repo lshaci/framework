@@ -153,7 +153,6 @@ public class DefaultExportService implements ExportService {
      * @param data 行数据
      */
     protected void setRowContent(Object data) {
-        long start = System.currentTimeMillis();
         if (nonNull(this.collectionTitleParam)) {
             handleHasCollection(data);
         } else {
@@ -162,9 +161,6 @@ public class DefaultExportService implements ExportService {
             AtomicInteger i = new AtomicInteger();
             this.contentParams.forEach(t -> setContentCellValue(row, i.getAndIncrement(), fetch(t, data), t));
         }
-
-        long end = System.currentTimeMillis();
-        System.err.println("填充一行数据的时间：" + (end - start));
     }
 
     /**
