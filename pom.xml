@@ -50,7 +50,7 @@
 		<hutool.version>5.3.2</hutool.version>
 		<framework.version>1.0.7</framework.version>
 		<fastjson.version>1.2.47</fastjson.version>
-		<commons.compress.version>1.18</commons.compress.version>
+		<commons.compress.version>1.21</commons.compress.version>
 		<fastdfs.client.version>1.27.0.0</fastdfs.client.version>
 		<commons.collections4.version>4.3</commons.collections4.version>
 		<mybatis.plus.generator.version>3.3.1</mybatis.plus.generator.version>
